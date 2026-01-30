@@ -5,16 +5,20 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "seed": "node scripts/seed.js"
   },
   "dependencies": {
     "embla-carousel-autoplay": "^8.6.0",
     "embla-carousel-react": "^8.6.0",
     "lucide-react": "^0.563.0",
+    "mongodb": "^7.0.0",
     "next": "16.1.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
-    "swiper": "^12.0.3"
+    "swiper": "^12.0.3",
+    "mongoose": "^7.5.0",
+    "cloudinary": "^1.37.0"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",

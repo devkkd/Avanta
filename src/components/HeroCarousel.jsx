@@ -27,7 +27,7 @@ export default function HeroCarousel() {
     <div className="relative overflow-hidden group" ref={emblaRef}>
       <div className="flex">
         {slides.map((slide, index) => (
-          <div key={index} className="flex-[0_0_100%] min-w-0 relative h-[500px] md:h-[750px]">
+          <div key={index} className="flex-[0_0_100%] min-w-0 relative max-h-screen">
             {/* Background Image */}
             <img 
               src={slide.image} 
