@@ -1,5 +1,5 @@
 "use client";
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
@@ -19,9 +19,30 @@ const slides = [
 
 export default function HeroCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 6000 })]);
+  const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const scrollPrev = () => emblaApi && emblaApi.scrollPrev();
-  const scrollNext = () => emblaApi && emblaApi.scrollNext();
+  const scrollPrev = () => {
+    if (emblaApi) emblaApi.scrollPrev();
+  };
+  
+  const scrollNext = () => {
+    if (emblaApi) emblaApi.scrollNext();
+  };
+
+  useEffect(() => {
+    if (!emblaApi) return;
+
+    const onSelect = () => {
+      setSelectedIndex(emblaApi.selectedScrollSnap());
+    };
+
+    emblaApi.on('select', onSelect);
+    onSelect();
+
+    return () => {
+      emblaApi.off('select', onSelect);
+    };
+  }, [emblaApi]);
 
   return (
     <div className="relative overflow-hidden group" ref={emblaRef}>
@@ -86,7 +107,7 @@ export default function HeroCarousel() {
       {/* Pagination Dots */}
       <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
         {slides.map((_, i) => (
-          <div key={i} className={`h-1.5 rounded-full transition-all ${i === 0 ? 'w-8 bg-gray-800' : 'w-2 bg-gray-400'}`} />
+          <div key={i} className={`h-1.5 rounded-full transition-all ${i === selectedIndex ? 'w-8 bg-gray-800' : 'w-2 bg-gray-400'}`} />
         ))}
       </div>
     </div>

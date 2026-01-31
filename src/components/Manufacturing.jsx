@@ -42,24 +42,27 @@ const ManufacturingSlider = () => {
 
   // Handle slide change to update active video
   const handleSlideChange = (swiper) => {
-    setActiveSlideIndex(swiper.realIndex);
-    
-    // Pause all videos
-    videoRefs.current.forEach(video => {
-      if (video) {
-        video.pause();
+    // Use setTimeout to defer state update to avoid render-time updates
+    setTimeout(() => {
+      setActiveSlideIndex(swiper.realIndex);
+      
+      // Pause all videos
+      videoRefs.current.forEach(video => {
+        if (video) {
+          video.pause();
+        }
+      });
+      
+      // Play active video
+      if (videoRefs.current[swiper.realIndex]) {
+        const playPromise = videoRefs.current[swiper.realIndex].play();
+        if (playPromise !== undefined) {
+          playPromise.catch(error => {
+            console.log("Auto-play prevented:", error);
+          });
+        }
       }
-    });
-    
-    // Play active video
-    if (videoRefs.current[swiper.realIndex]) {
-      const playPromise = videoRefs.current[swiper.realIndex].play();
-      if (playPromise !== undefined) {
-        playPromise.catch(error => {
-          console.log("Auto-play prevented:", error);
-        });
-      }
-    }
+    }, 0);
   };
 
   // Handle play button click for non-active slides
