@@ -35,11 +35,16 @@ export async function GET(request) {
       if (subcategory.categoryId) {
         const category = await db.collection('categories').findOne({ _id: subcategory.categoryId });
         if (category) {
+          // Include isActive so callers can decide whether to show subcategory
           subcategory.categoryId = {
             _id: category._id,
             name: category.name,
-            slug: category.slug
+            slug: category.slug,
+            isActive: category.isActive
           };
+        } else {
+          // If the category no longer exists, normalize to null
+          subcategory.categoryId = null;
         }
       }
     }
@@ -63,7 +68,7 @@ export async function POST(request) {
     const { db } = await connectToDatabase();
     
     const body = await request.json();
-    const { name, description = '', categoryId, sortOrder = 0 } = body;
+    const { name, description = '', categoryId, sortOrder = 0, image = '' } = body;
 
     if (!name || name.trim().length < 2) {
       return NextResponse.json(
@@ -104,6 +109,7 @@ export async function POST(request) {
       name: name.trim(),
       slug,
       description: description.trim(),
+      image: image ? image.trim() : '',
       categoryId: new ObjectId(categoryId),
       sortOrder: parseInt(sortOrder) || 0,
       isActive: true,

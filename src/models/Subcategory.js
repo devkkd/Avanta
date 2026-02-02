@@ -22,6 +22,12 @@ const SubcategorySchema = new mongoose.Schema({
     trim: true,
     maxlength: [500, 'Description cannot exceed 500 characters']
   },
+  // Optional image URL for the subcategory
+  image: {
+    type: String,
+    trim: true,
+    default: ''
+  },
   categoryId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Category',
@@ -74,6 +80,10 @@ export const validateSubcategory = (subcategory) => {
   
   if (subcategory.sortOrder && (isNaN(subcategory.sortOrder) || subcategory.sortOrder < 0)) {
     errors.push('Sort order must be a positive number');
+  }
+
+  if (subcategory.image !== undefined && subcategory.image !== null && typeof subcategory.image !== 'string') {
+    errors.push('Invalid image URL');
   }
   
   return {

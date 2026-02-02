@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from 'react';
 import { Plus, Edit, Trash2, Eye, EyeOff } from 'lucide-react';
+import CloudinaryUpload from '@/components/admin/CloudinaryUpload';
 
 export default function SubcategoriesPage() {
   const [subcategories, setSubcategories] = useState([]);
@@ -13,7 +14,8 @@ export default function SubcategoriesPage() {
   const [formData, setFormData] = useState({
     name: '',
     description: '',
-    categoryId: ''
+    categoryId: '',
+    image: ''
   });
 
   // Fetch categories
@@ -39,7 +41,9 @@ export default function SubcategoriesPage() {
       const response = await fetch(url);
       const data = await response.json();
       if (data.success) {
-        setSubcategories(data.data);
+        // Exclude subcategories whose parent category is inactive
+        const filtered = data.data.filter(sub => !(sub.categoryId && sub.categoryId.isActive === false));
+        setSubcategories(filtered);
       }
     } catch (error) {
       console.error('Error fetching subcategories:', error);
@@ -78,13 +82,20 @@ export default function SubcategoriesPage() {
       
       const method = editingSubcategory ? 'PUT' : 'POST';
 
+      // Normalize categoryId to string id if needed
+      const payload = {
+        ...formData,
+        categoryId: formData.categoryId && formData.categoryId._id ? formData.categoryId._id : formData.categoryId
+      };
+
       const response = await fetch(url, {
         method,
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify(payload),
       });
+        setFormData({ name: '', description: '', categoryId: '', image: '' });
 
       const data = await response.json();
 
@@ -111,7 +122,8 @@ export default function SubcategoriesPage() {
     setFormData({
       name: subcategory.name,
       description: subcategory.description,
-      categoryId: subcategory.categoryId
+      categoryId: subcategory.categoryId && subcategory.categoryId._id ? subcategory.categoryId._id : subcategory.categoryId,
+      image: subcategory.image || ''
     });
     setShowForm(true);
   };
@@ -259,6 +271,18 @@ export default function SubcategoriesPage() {
 
               <div>
                 <label className="block text-sm font-medium text-gray-700 mb-1">
+                  Image
+                </label>
+                <CloudinaryUpload
+                  value={formData.image}
+                  onChange={(url) => setFormData({ ...formData, image: url })}
+                  folder="avanta/subcategories"
+                  placeholder="Upload subcategory image"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">
                   Description
                 </label>
                 <textarea
@@ -300,6 +324,9 @@ export default function SubcategoriesPage() {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                Image
+              </th>
+              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
                 Subcategory
               </th>
               <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
@@ -320,6 +347,14 @@ export default function SubcategoriesPage() {
             {subcategories.map((subcategory) => (
               <tr key={subcategory._id} className="hover:bg-gray-50">
                 <td className="px-6 py-4 whitespace-nowrap">
+                  {subcategory.image ? (
+                    <img src={subcategory.image} alt={subcategory.name} className="w-16 h-10 object-cover rounded" />
+                  ) : (
+                    <div className="w-16 h-10 bg-gray-100 rounded flex items-center justify-center text-xs text-gray-400">No Image</div>
+                  )}
+                </td>
+
+                <td className="px-6 py-4 whitespace-nowrap">
                   <div>
                     <div className="text-sm font-medium text-gray-900">
                       {subcategory.name}
@@ -329,6 +364,7 @@ export default function SubcategoriesPage() {
                     </div>
                   </div>
                 </td>
+
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
                     {getCategoryName(subcategory.categoryId)}

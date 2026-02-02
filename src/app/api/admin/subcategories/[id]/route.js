@@ -42,7 +42,8 @@ export async function GET(request, { params }) {
         subcategory.categoryId = {
           _id: category._id,
           name: category.name,
-          slug: category.slug
+          slug: category.slug,
+          isActive: category.isActive
         };
       }
     }
@@ -66,7 +67,7 @@ export async function PUT(request, { params }) {
     const { db } = await connectToDatabase();
     const { id } = await params; // await params
     const body = await request.json();
-    const { name, description, categoryId, sortOrder, isActive } = body;
+    const { name, description, categoryId, sortOrder, isActive, image } = body;
 
     if (!isValidObjectId(id)) {
       return NextResponse.json(
@@ -91,6 +92,7 @@ export async function PUT(request, { params }) {
     if (description !== undefined) updateData.description = description.trim();
     if (sortOrder !== undefined) updateData.sortOrder = parseInt(sortOrder) || 0;
     if (isActive !== undefined) updateData.isActive = Boolean(isActive);
+    if (image !== undefined) updateData.image = image ? image.trim() : '';
     
     if (categoryId !== undefined) {
       if (!isValidObjectId(categoryId)) {
@@ -148,7 +150,8 @@ export async function PUT(request, { params }) {
         result.value.categoryId = {
           _id: category._id,
           name: category.name,
-          slug: category.slug
+          slug: category.slug,
+          isActive: category.isActive
         };
       }
     }

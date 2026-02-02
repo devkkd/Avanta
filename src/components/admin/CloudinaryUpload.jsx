@@ -11,16 +11,26 @@ export default function CloudinaryUpload({
 }) {
   const [uploading, setUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
+  const [uploadError, setUploadError] = useState('');
+
+  const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
+  const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'avanta_upload';
 
   const uploadToCloudinary = async (file) => {
+    if (!CLOUD_NAME) {
+      const msg = 'Missing NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME environment variable. Set it in .env.local and restart the dev server.';
+      console.error(msg);
+      throw new Error(msg);
+    }
+
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', 'avanta_upload'); // You'll need to create this preset in Cloudinary
+    formData.append('upload_preset', UPLOAD_PRESET); // Make sure this preset exists in Cloudinary (unsigned)
     formData.append('folder', folder);
 
     try {
       const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
         {
           method: 'POST',
           body: formData,
@@ -28,7 +38,16 @@ export default function CloudinaryUpload({
       );
 
       if (!response.ok) {
-        throw new Error('Upload failed');
+        // Try to read JSON body for detailed error
+        let errData = null;
+        try {
+          errData = await response.json();
+        } catch (e) {
+          // ignore
+        }
+        console.error('Cloudinary upload failed:', errData || response.statusText);
+        const message = (errData && (errData.error?.message || errData.message)) || `Upload failed: ${response.status} ${response.statusText}`;
+        throw new Error(message);
       }
 
       const data = await response.json();
@@ -40,17 +59,18 @@ export default function CloudinaryUpload({
   };
 
   const handleFileSelect = async (file) => {
+    setUploadError('');
     if (!file) return;
 
     // Validate file type
     if (!file.type.startsWith('image/')) {
-      alert('Please select an image file');
+      setUploadError('Please select an image file');
       return;
     }
 
     // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      alert('File size must be less than 5MB');
+      setUploadError('File size must be less than 5MB');
       return;
     }
 
@@ -58,8 +78,12 @@ export default function CloudinaryUpload({
     try {
       const imageUrl = await uploadToCloudinary(file);
       onChange(imageUrl);
+      setUploadError('');
     } catch (error) {
-      alert('Failed to upload image. Please try again.');
+      const msg = error?.message || 'Failed to upload image. Please try again.';
+      setUploadError(msg);
+      // Also show a brief alert for visibility
+      alert(msg);
     } finally {
       setUploading(false);
     }
@@ -146,6 +170,10 @@ export default function CloudinaryUpload({
         </div>
       )}
       
+      {uploadError && (
+        <p className="text-sm text-red-600 mt-2">{uploadError}</p>
+      )}
+
       <p className="text-xs text-gray-500">
         Supported formats: JPG, PNG, GIF. Max size: 5MB
       </p>

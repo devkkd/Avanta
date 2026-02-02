@@ -81,10 +81,11 @@ export default function CategoriesPage() {
 
   // Handle delete
   const handleDelete = async (categoryId) => {
-    if (!confirm('Are you sure you want to delete this category?')) return;
+    if (!confirm('Are you sure you want to PERMANENTLY delete this category? This will remove related subcategories and unset the category on products. This action cannot be undone.')) return;
 
+    setLoading(true);
     try {
-      const response = await fetch(`/api/admin/categories/${categoryId}`, {
+      const response = await fetch(`/api/admin/categories/${categoryId}?hard=true`, {
         method: 'DELETE',
       });
 
@@ -99,6 +100,8 @@ export default function CategoriesPage() {
     } catch (error) {
       console.error('Error deleting category:', error);
       alert('Error deleting category');
+    } finally {
+      setLoading(false);
     }
   };
 

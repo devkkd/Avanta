@@ -156,13 +156,15 @@ export async function PUT(request, { params }) {
   }
 }
 
-// DELETE - Delete category (soft delete)
+// DELETE - Delete category (soft delete or permanent)
 export async function DELETE(request, { params }) {
   try {
     const { db } = await connectToDatabase();
     const { id } = await params; // await params
+    const { searchParams } = new URL(request.url);
+    const hardDelete = searchParams.get('hard') === 'true';
 
-    console.log('DELETE category ID:', id);
+    console.log('DELETE category ID:', id, 'hard:', hardDelete);
 
     if (!isValidObjectId(id)) {
       console.log('Invalid ObjectId:', id);
@@ -183,7 +185,39 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    // Soft delete by setting isActive to false using updateOne
+    if (hardDelete) {
+      // Find subcategory ids that belong to this category
+      const subcats = await db.collection('subcategories').find({ categoryId: new ObjectId(id) }).project({ _id: 1 }).toArray();
+      const subcatIds = subcats.map(s => s._id);
+
+      // Delete category
+      const deleteResult = await db.collection('categories').deleteOne({ _id: new ObjectId(id) });
+
+      // Delete related subcategories
+      await db.collection('subcategories').deleteMany({ categoryId: new ObjectId(id) });
+
+      // Unset categoryId on related products
+      await db.collection('products').updateMany({ categoryId: new ObjectId(id) }, { $set: { categoryId: null, updatedAt: new Date() } });
+
+      // Unset subcategoryId on products that referenced subcategories we just deleted
+      if (subcatIds.length > 0) {
+        await db.collection('products').updateMany({ subcategoryId: { $in: subcatIds } }, { $set: { subcategoryId: null, updatedAt: new Date() } });
+      }
+
+      if (deleteResult.deletedCount === 0) {
+        return NextResponse.json(
+          { error: 'Category not found' },
+          { status: 404 }
+        );
+      }
+
+      return NextResponse.json({
+        success: true,
+        message: 'Category permanently deleted (related subcategories removed, products updated)'
+      });
+    }
+
+    // Soft delete (default)
     const updateResult = await db.collection('categories').updateOne(
       { _id: new ObjectId(id) },
       { $set: { isActive: false, updatedAt: new Date() } }
