@@ -229,7 +229,7 @@ export default function Header() {
   const navigationItems = [
     { name: 'HOME', path: '/' },
     { name: 'ABOUT US', path: '/about' },
-    { name: 'SUITS SET', path: '/straight-suit' },
+    { name: 'SUITS SET', path: '/suits-set' },
     { name: 'KURTI SET', path: '/kurti-pant-dupatta' },
     { name: 'ANARKALI SET', path: '/anarkali-suit' },
     { name: 'TOP & TUNICS', path: '/top-tunics' },

@@ -13,29 +13,16 @@ export default function CloudinaryUpload({
   const [dragActive, setDragActive] = useState(false);
   const [uploadError, setUploadError] = useState('');
 
-  const CLOUD_NAME = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-  const UPLOAD_PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || 'avanta_upload';
-
   const uploadToCloudinary = async (file) => {
-    if (!CLOUD_NAME) {
-      const msg = 'Missing NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME environment variable. Set it in .env.local and restart the dev server.';
-      console.error(msg);
-      throw new Error(msg);
-    }
-
     const formData = new FormData();
     formData.append('file', file);
-    formData.append('upload_preset', UPLOAD_PRESET); // Make sure this preset exists in Cloudinary (unsigned)
     formData.append('folder', folder);
 
     try {
-      const response = await fetch(
-        `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`,
-        {
-          method: 'POST',
-          body: formData,
-        }
-      );
+      const response = await fetch('/api/upload', {
+        method: 'POST',
+        body: formData,
+      });
 
       if (!response.ok) {
         // Try to read JSON body for detailed error
@@ -45,15 +32,15 @@ export default function CloudinaryUpload({
         } catch (e) {
           // ignore
         }
-        console.error('Cloudinary upload failed:', errData || response.statusText);
-        const message = (errData && (errData.error?.message || errData.message)) || `Upload failed: ${response.status} ${response.statusText}`;
+        console.error('Upload failed:', errData || response.statusText);
+        const message = (errData && errData.error) || `Upload failed: ${response.status} ${response.statusText}`;
         throw new Error(message);
       }
 
       const data = await response.json();
-      return data.secure_url;
+      return data.url;
     } catch (error) {
-      console.error('Cloudinary upload error:', error);
+      console.error('Upload error:', error);
       throw error;
     }
   };

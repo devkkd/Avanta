@@ -64,10 +64,20 @@ export default function SubcategoriesPage() {
     fetchSubcategories(categoryId);
   };
 
-  // Get category name by ID
+  // Get category name by ID or object
   const getCategoryName = (categoryId) => {
-    const category = categories.find(cat => cat._id === categoryId);
-    return category ? category.name : 'Unknown';
+    // If categoryId is already an object with name, return it directly
+    if (categoryId && typeof categoryId === 'object' && categoryId.name) {
+      return categoryId.name;
+    }
+    
+    // If categoryId is a string, find the category
+    if (typeof categoryId === 'string') {
+      const category = categories.find(cat => cat._id === categoryId);
+      return category ? category.name : 'Unknown';
+    }
+    
+    return 'Unknown';
   };
 
   // Handle form submission
@@ -367,7 +377,10 @@ export default function SubcategoriesPage() {
 
                 <td className="px-6 py-4 whitespace-nowrap">
                   <div className="text-sm text-gray-900">
-                    {getCategoryName(subcategory.categoryId)}
+                    {subcategory.categoryId && typeof subcategory.categoryId === 'object' 
+                      ? subcategory.categoryId.name 
+                      : getCategoryName(subcategory.categoryId)
+                    }
                   </div>
                 </td>
                 <td className="px-6 py-4">

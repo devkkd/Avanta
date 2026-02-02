@@ -75,6 +75,42 @@ const mockDatabase = {
       sortOrder: 3,
       createdAt: new Date(),
       updatedAt: new Date()
+    },
+    {
+      _id: '507f1f77bcf86cd799439034',
+      name: 'Flared Suit Sets',
+      slug: 'flared-suit-sets',
+      description: 'Elegant flared suit sets with flowing silhouettes',
+      image: '/images/subcategories/flared-suit-sets.jpg',
+      categoryId: '507f1f77bcf86cd799439021',
+      isActive: true,
+      sortOrder: 4,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      _id: '507f1f77bcf86cd799439035',
+      name: 'Straight Dupatta Sets',
+      slug: 'straight-dupatta-sets',
+      description: 'Classic straight suits with matching dupatta',
+      image: '/images/subcategories/straight-dupatta-sets.jpg',
+      categoryId: '507f1f77bcf86cd799439021',
+      isActive: true,
+      sortOrder: 5,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    },
+    {
+      _id: '507f1f77bcf86cd799439036',
+      name: 'Straight Suit Sets',
+      slug: 'straight-suit-sets',
+      description: 'Complete straight suit sets with coordinated pieces',
+      image: '/images/subcategories/straight-suit-sets.jpg',
+      categoryId: '507f1f77bcf86cd799439021',
+      isActive: true,
+      sortOrder: 6,
+      createdAt: new Date(),
+      updatedAt: new Date()
     }
   ]
 };
@@ -142,7 +178,8 @@ function generateId() {
 // CATEGORY FUNCTIONS
 export async function getAllCategories() {
   try {
-    return mockDatabase.categories.filter(cat => cat.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
+    // For admin, return all categories (active and inactive)
+    return mockDatabase.categories.sort((a, b) => a.sortOrder - b.sortOrder);
   } catch (error) {
     console.error('Get categories error:', error);
     throw error;
@@ -215,7 +252,8 @@ export async function deleteCategory(categoryId) {
 // SUBCATEGORY FUNCTIONS
 export async function getAllSubcategories() {
   try {
-    return mockDatabase.subcategories.filter(sub => sub.isActive).sort((a, b) => a.sortOrder - b.sortOrder);
+    // For admin, return all subcategories (active and inactive)
+    return mockDatabase.subcategories.sort((a, b) => a.sortOrder - b.sortOrder);
   } catch (error) {
     console.error('Get subcategories error:', error);
     throw error;
@@ -292,6 +330,138 @@ export async function deleteSubcategory(subcategoryId) {
     return true;
   } catch (error) {
     console.error('Delete subcategory error:', error);
+    throw error;
+  }
+}
+
+// PRODUCT FUNCTIONS
+export async function getAllProducts() {
+  try {
+    // For admin, return all products (active and inactive)
+    return mockDatabase.products.sort((a, b) => a.sortOrder - b.sortOrder || new Date(b.createdAt) - new Date(a.createdAt));
+  } catch (error) {
+    console.error('Get products error:', error);
+    throw error;
+  }
+}
+
+export async function getProductById(productId) {
+  try {
+    return mockDatabase.products.find(product => product._id === productId);
+  } catch (error) {
+    console.error('Get product by ID error:', error);
+    throw error;
+  }
+}
+
+export async function getProductsByCategory(categoryId) {
+  try {
+    return mockDatabase.products
+      .filter(product => product.categoryId === categoryId && product.isActive)
+      .sort((a, b) => a.sortOrder - b.sortOrder || new Date(b.createdAt) - new Date(a.createdAt));
+  } catch (error) {
+    console.error('Get products by category error:', error);
+    throw error;
+  }
+}
+
+export async function getProductsBySubcategory(subcategoryId) {
+  try {
+    return mockDatabase.products
+      .filter(product => product.subcategoryId === subcategoryId && product.isActive)
+      .sort((a, b) => a.sortOrder - b.sortOrder || new Date(b.createdAt) - new Date(a.createdAt));
+  } catch (error) {
+    console.error('Get products by subcategory error:', error);
+    throw error;
+  }
+}
+
+export async function createProduct(productData) {
+  try {
+    const newProduct = {
+      _id: generateId(),
+      ...productData,
+      createdAt: new Date(),
+      updatedAt: new Date()
+    };
+    mockDatabase.products.push(newProduct);
+    return newProduct;
+  } catch (error) {
+    console.error('Create product error:', error);
+    throw error;
+  }
+}
+
+export async function updateProduct(productId, updateData) {
+  try {
+    const productIndex = mockDatabase.products.findIndex(product => product._id === productId);
+    if (productIndex === -1) {
+      return null;
+    }
+    
+    mockDatabase.products[productIndex] = {
+      ...mockDatabase.products[productIndex],
+      ...updateData,
+      updatedAt: new Date()
+    };
+    
+    return mockDatabase.products[productIndex];
+  } catch (error) {
+    console.error('Update product error:', error);
+    throw error;
+  }
+}
+
+export async function deleteProduct(productId) {
+  try {
+    const productIndex = mockDatabase.products.findIndex(product => product._id === productId);
+    if (productIndex === -1) {
+      return false;
+    }
+    
+    // Soft delete - set isActive to false
+    mockDatabase.products[productIndex].isActive = false;
+    mockDatabase.products[productIndex].updatedAt = new Date();
+    
+    return true;
+  } catch (error) {
+    console.error('Delete product error:', error);
+    throw error;
+  }
+}
+
+export async function searchProducts(query, filters = {}) {
+  try {
+    let results = mockDatabase.products.filter(product => {
+      if (!product.isActive) return false;
+      
+      // Text search
+      const searchText = query.toLowerCase();
+      const matchesText = 
+        product.name.toLowerCase().includes(searchText) ||
+        product.description.toLowerCase().includes(searchText) ||
+        product.styleCode.toLowerCase().includes(searchText) ||
+        product.sku.toLowerCase().includes(searchText) ||
+        (product.tags && product.tags.some(tag => tag.toLowerCase().includes(searchText)));
+      
+      if (!matchesText) return false;
+      
+      // Apply filters
+      if (filters.categoryId && product.categoryId !== filters.categoryId) return false;
+      if (filters.subcategoryId && product.subcategoryId !== filters.subcategoryId) return false;
+      if (filters.minPrice && product.priceRange.min < filters.minPrice) return false;
+      if (filters.maxPrice && product.priceRange.max > filters.maxPrice) return false;
+      if (filters.sizes && filters.sizes.length > 0) {
+        const hasMatchingSize = product.sizes.some(size => filters.sizes.includes(size.size));
+        if (!hasMatchingSize) return false;
+      }
+      
+      return true;
+    });
+    
+    return results.sort((a, b) => a.sortOrder - b.sortOrder || new Date(b.createdAt) - new Date(a.createdAt));
+  } catch (error) {
+    console.error('Search products error:', error);
     throw error;
   }
 }

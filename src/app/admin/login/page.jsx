@@ -29,11 +29,7 @@ export default function AdminLogin() {
     setLoading(true);
     setError('');
 
-    console.log('Form submitted with:', formData); // Debug log
-
     const result = await login(formData.username, formData.password);
-    
-    console.log('Login result:', result); // Debug log
 
     if (result.success) {
       router.push('/admin/dashboard');

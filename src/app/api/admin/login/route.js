@@ -1,13 +1,9 @@
 import { NextResponse } from 'next/server';
-import connectDB from '@/lib/mongoose';
-import { findAdmin, comparePassword, updateLastLogin } from '@/lib/mongodb-native';
-import bcrypt from 'bcryptjs';
+import { findAdmin, comparePassword, updateLastLogin } from '@/lib/database-adapter';
 import jwt from 'jsonwebtoken';
 
 export async function POST(request) {
   try {
-    await connectDB();
-
     const { username, password } = await request.json();
 
     console.log('Login attempt:', { username });
@@ -20,7 +16,7 @@ export async function POST(request) {
       );
     }
 
-    // Find admin using native MongoDB connection (for admin collection)
+    // Find admin using database adapter (MongoDB or mock)
     const admin = await findAdmin(username);
     console.log('Admin found:', admin ? 'Yes' : 'No');
 
@@ -33,7 +29,7 @@ export async function POST(request) {
     }
 
     // Check password
-    const isPasswordValid = await bcrypt.compare(password, admin.password);
+    const isPasswordValid = await comparePassword(password, admin.password);
     console.log('Password valid:', isPasswordValid);
 
     if (!isPasswordValid) {

@@ -1,17 +1,12 @@
 import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb-native';
+import { getAllCategories, createCategory } from '@/lib/database-adapter';
 import { generateSlug } from '@/models/Category';
 
 // GET - Get all categories
 export async function GET() {
   try {
-    const { db } = await connectToDatabase();
-    
-    // Admin should see all categories (active and inactive)
-    const categories = await db.collection('categories')
-      .find({}) // Remove isActive filter for admin
-      .sort({ sortOrder: 1, name: 1 })
-      .toArray();
+    // Use database adapter (MongoDB or mock)
+    const categories = await getAllCategories();
     
     return NextResponse.json({
       success: true,
@@ -29,8 +24,6 @@ export async function GET() {
 // POST - Create new category
 export async function POST(request) {
   try {
-    const { db } = await connectToDatabase();
-    
     const body = await request.json();
     const { name, description = '', sortOrder = 0 } = body;
 
@@ -44,28 +37,16 @@ export async function POST(request) {
     // Generate slug from name
     const slug = generateSlug(name);
 
-    // Check if category with same slug already exists
-    const existingCategory = await db.collection('categories').findOne({ slug });
-    if (existingCategory) {
-      return NextResponse.json(
-        { error: 'Category with this name already exists' },
-        { status: 400 }
-      );
-    }
-
     const categoryData = {
       name: name.trim(),
       slug,
       description: description.trim(),
       sortOrder: parseInt(sortOrder) || 0,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      isActive: true
     };
 
-    // Create category
-    const result = await db.collection('categories').insertOne(categoryData);
-    const newCategory = { ...categoryData, _id: result.insertedId };
+    // Create category using database adapter
+    const newCategory = await createCategory(categoryData);
 
     return NextResponse.json({
       success: true,

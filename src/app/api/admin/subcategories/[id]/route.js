@@ -1,32 +1,26 @@
 import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb-native';
+import { getSubcategoryById, updateSubcategory, deleteSubcategory, getAllCategories } from '@/lib/database-adapter';
 import { generateSlug } from '@/models/Subcategory';
-import { ObjectId } from 'mongodb';
 
-// Helper function to validate ObjectId
-function isValidObjectId(id) {
-  try {
-    return ObjectId.isValid(id) && (String(new ObjectId(id)) === String(id));
-  } catch (error) {
-    return false;
-  }
+// Helper function to validate ID (for mock database compatibility)
+function isValidId(id) {
+  return id && typeof id === 'string' && id.length > 0;
 }
 
 // GET - Get subcategory by ID
 export async function GET(request, { params }) {
   try {
-    const { db } = await connectToDatabase();
-    const { id } = await params; // await params
+    const { id } = await params;
 
-    if (!isValidObjectId(id)) {
+    if (!isValidId(id)) {
       return NextResponse.json(
         { error: 'Invalid subcategory ID' },
         { status: 400 }
       );
     }
 
-    // Get subcategory with category info
-    const subcategory = await db.collection('subcategories').findOne({ _id: new ObjectId(id) });
+    // Get subcategory using database adapter
+    const subcategory = await getSubcategoryById(id);
     
     if (!subcategory) {
       return NextResponse.json(
@@ -37,7 +31,8 @@ export async function GET(request, { params }) {
 
     // Get category info
     if (subcategory.categoryId) {
-      const category = await db.collection('categories').findOne({ _id: new ObjectId(subcategory.categoryId) });
+      const categories = await getAllCategories();
+      const category = categories.find(cat => cat._id === subcategory.categoryId);
       if (category) {
         subcategory.categoryId = {
           _id: category._id,
@@ -64,19 +59,21 @@ export async function GET(request, { params }) {
 // PUT - Update subcategory
 export async function PUT(request, { params }) {
   try {
-    const { db } = await connectToDatabase();
-    const { id } = await params; // await params
+    const { id } = await params;
     const body = await request.json();
     const { name, description, categoryId, sortOrder, isActive, image } = body;
 
-    if (!isValidObjectId(id)) {
+    console.log('PUT request received for subcategory:', id);
+    console.log('Request body:', JSON.stringify(body, null, 2));
+
+    if (!isValidId(id)) {
       return NextResponse.json(
         { error: 'Invalid subcategory ID' },
         { status: 400 }
       );
     }
 
-    const updateData = { updatedAt: new Date() };
+    const updateData = {};
     
     if (name !== undefined) {
       if (name.trim().length < 2) {
@@ -95,7 +92,8 @@ export async function PUT(request, { params }) {
     if (image !== undefined) updateData.image = image ? image.trim() : '';
     
     if (categoryId !== undefined) {
-      if (!isValidObjectId(categoryId)) {
+      if (!isValidId(categoryId)) {
+        console.log('Invalid category ID received:', categoryId);
         return NextResponse.json(
           { error: 'Invalid category ID' },
           { status: 400 }
@@ -103,40 +101,30 @@ export async function PUT(request, { params }) {
       }
       
       // Check if category exists
-      const category = await db.collection('categories').findOne({ _id: new ObjectId(categoryId) });
+      const categories = await getAllCategories();
+      console.log('Available categories for validation:', categories.map(c => ({ id: c._id.toString(), name: c.name })));
+      console.log('Looking for categoryId:', categoryId);
+      console.log('CategoryId type:', typeof categoryId);
+      
+      const category = categories.find(cat => cat._id.toString() === categoryId.toString());
+      console.log('Category found:', category ? 'YES' : 'NO');
+      
       if (!category) {
+        console.log('Category not found. Available IDs:', categories.map(c => c._id.toString()));
+        console.log('Requested ID:', categoryId);
         return NextResponse.json(
           { error: 'Category not found' },
           { status: 400 }
         );
       }
       
-      updateData.categoryId = new ObjectId(categoryId);
+      updateData.categoryId = categoryId;
     }
 
-    // Check if slug already exists (if name is being updated)
-    if (updateData.slug) {
-      const existingSubcategory = await db.collection('subcategories').findOne({ 
-        slug: updateData.slug, 
-        _id: { $ne: new ObjectId(id) } 
-      });
-      
-      if (existingSubcategory) {
-        return NextResponse.json(
-          { error: 'Subcategory with this name already exists' },
-          { status: 400 }
-        );
-      }
-    }
+    // Update subcategory using database adapter
+    const updatedSubcategory = await updateSubcategory(id, updateData);
 
-    // Update subcategory
-    const result = await db.collection('subcategories').findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: updateData },
-      { returnDocument: 'after' }
-    );
-
-    if (!result.value) {
+    if (!updatedSubcategory) {
       return NextResponse.json(
         { error: 'Subcategory not found' },
         { status: 404 }
@@ -144,10 +132,11 @@ export async function PUT(request, { params }) {
     }
 
     // Get category info for response
-    if (result.value.categoryId) {
-      const category = await db.collection('categories').findOne({ _id: result.value.categoryId });
+    if (updatedSubcategory.categoryId) {
+      const categories = await getAllCategories();
+      const category = categories.find(cat => cat._id === updatedSubcategory.categoryId);
       if (category) {
-        result.value.categoryId = {
+        updatedSubcategory.categoryId = {
           _id: category._id,
           name: category.name,
           slug: category.slug,
@@ -158,7 +147,7 @@ export async function PUT(request, { params }) {
 
     return NextResponse.json({
       success: true,
-      data: result.value,
+      data: updatedSubcategory,
       message: 'Subcategory updated successfully'
     });
 
@@ -174,24 +163,19 @@ export async function PUT(request, { params }) {
 // DELETE - Delete subcategory (soft delete)
 export async function DELETE(request, { params }) {
   try {
-    const { db } = await connectToDatabase();
-    const { id } = await params; // await params
+    const { id } = await params;
 
-    if (!isValidObjectId(id)) {
+    if (!isValidId(id)) {
       return NextResponse.json(
         { error: 'Invalid subcategory ID' },
         { status: 400 }
       );
     }
 
-    // Soft delete by setting isActive to false
-    const result = await db.collection('subcategories').findOneAndUpdate(
-      { _id: new ObjectId(id) },
-      { $set: { isActive: false, updatedAt: new Date() } },
-      { returnDocument: 'after' }
-    );
+    // Delete subcategory using database adapter (soft delete)
+    const result = await deleteSubcategory(id);
 
-    if (!result.value) {
+    if (!result) {
       return NextResponse.json(
         { error: 'Subcategory not found' },
         { status: 404 }

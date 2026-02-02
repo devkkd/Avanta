@@ -1,29 +1,115 @@
 'use client';
 
-import React from 'react';
-import { ChevronDown, LayoutGrid, Maximize2, ShoppingCart, MessageCircle, Phone, Heart } from 'lucide-react';
+import React, { useState, useEffect, useMemo } from 'react';
+import { ChevronDown, LayoutGrid, Maximize2, Phone, Heart, IndianRupee } from 'lucide-react';
 import FAQ from '@/components/FAQ';
 import ContactUs from '@/components/ContactUs';
 import CraftsmanshipSection from '@/components/CraftsmanshipSection';
 import { useProduct } from '@/context/ProductContext';
 import { useRouter } from 'next/navigation';
-
-const products = [
-  { id: 1, tag: 'NEW', title: 'Premium Anarkali Suit', price: '₹1299 to ₹2499', img: 'https://images.unsplash.com/photo-1610336307429-8a898d10e223?q=80&w=500' },
-  { id: 2, tag: 'NEW', title: 'Designer Anarkali', price: '₹1599 to ₹2999', img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=500' },
-  { id: 3, tag: null, title: 'Wedding Anarkali', price: '₹2299 to ₹3999', img: 'https://images.unsplash.com/photo-1495121553079-4c61bcce1894?q=80&w=500' },
-  { id: 4, tag: null, title: 'Casual Anarkali', price: '₹899 to ₹1599', img: 'https://images.unsplash.com/photo-1571945153237-c31b76bab38e?q=80&w=500' },
-  { id: 5, tag: null, title: 'Party Anarkali Suit', price: '₹1199 to ₹2199', img: 'https://images.unsplash.com/photo-1610336307429-8a898d10e223?q=80&w=500' },
-  { id: 6, tag: null, title: 'Festive Anarkali', price: '₹1399 to ₹2599', img: 'https://images.unsplash.com/photo-1594938298603-c8148c4dae35?q=80&w=500' },
-  { id: 7, tag: null, title: 'Royal Anarkali', price: '₹2699 to ₹4199', img: 'https://images.unsplash.com/photo-1495121553079-4c61bcce1894?q=80&w=500' },
-  { id: 8, tag: 'NEW', title: 'Embroidered Anarkali', price: '₹1599 to ₹2899', img: 'https://images.unsplash.com/photo-1571945153237-c31b76bab38e?q=80&w=500' },
-];
+import Link from 'next/link';
 
 const AnarkaliListing = () => {
   const router = useRouter();
   const { addToCart, addToWishlist } = useProduct();
-  const [sortOption, setSortOption] = React.useState('default');
-  const [viewMode, setViewMode] = React.useState('grid');
+  const [products, setProducts] = useState([]);
+  const [category, setCategory] = useState(null);
+  const [subcategories, setSubcategories] = useState([]);
+  const [selectedSubcategory, setSelectedSubcategory] = useState('all');
+  const [loading, setLoading] = useState(true);
+  const [sortOption, setSortOption] = useState('default');
+  const [viewMode, setViewMode] = useState('grid');
+
+  // Fetch category-specific data
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        
+        // First, get all categories to find "Anarkali" category
+        const categoriesResponse = await fetch('/api/admin/categories');
+        const categoriesData = await categoriesResponse.json();
+        
+        if (categoriesData.success) {
+          // Find the category that matches "anarkali"
+          const anarkaliCategory = categoriesData.data.find(
+            cat => cat.slug === 'anarkali-suit' || 
+                   cat.name.toLowerCase().includes('anarkali') ||
+                   cat.slug === 'ethnic-wear' // fallback
+          );
+          
+          if (anarkaliCategory) {
+            setCategory(anarkaliCategory);
+            
+            // Get subcategories for this category
+            const subcategoriesResponse = await fetch('/api/admin/subcategories');
+            const subcategoriesData = await subcategoriesResponse.json();
+            
+            if (subcategoriesData.success) {
+              const categorySubcategories = subcategoriesData.data.filter(sub => {
+                const subCategoryId = typeof sub.categoryId === 'object' ? sub.categoryId._id : sub.categoryId;
+                return subCategoryId === anarkaliCategory._id;
+              });
+              setSubcategories(categorySubcategories);
+            }
+            
+            // Fetch products for this category
+            const productsResponse = await fetch(`/api/products?categoryId=${anarkaliCategory._id}&limit=50`);
+            const productsData = await productsResponse.json();
+            
+            if (productsData.success) {
+              setProducts(productsData.data);
+            }
+          } else {
+            // If no specific category found, show all products
+            const productsResponse = await fetch('/api/products?limit=50');
+            const productsData = await productsResponse.json();
+            
+            if (productsData.success) {
+              setProducts(productsData.data);
+            }
+          }
+        }
+      } catch (error) {
+        console.error('Error fetching data:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  // Filter and sort products
+  const filteredAndSortedProducts = useMemo(() => {
+    let filtered = [...products];
+    
+    // Filter by subcategory if selected
+    if (selectedSubcategory !== 'all') {
+      filtered = filtered.filter(product => {
+        const productSubcategoryId = typeof product.subcategoryId === 'object' 
+          ? product.subcategoryId._id 
+          : product.subcategoryId;
+        return productSubcategoryId === selectedSubcategory;
+      });
+    }
+    
+    // Sort products
+    switch(sortOption) {
+      case 'price-low-high':
+        return filtered.sort((a, b) => (a.priceRange?.min || 0) - (b.priceRange?.min || 0));
+      case 'price-high-low':
+        return filtered.sort((a, b) => (b.priceRange?.max || 0) - (a.priceRange?.max || 0));
+      case 'newest':
+        return filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      case 'featured':
+        return filtered.filter(p => p.isFeatured).concat(filtered.filter(p => !p.isFeatured));
+      case 'name':
+        return filtered.sort((a, b) => a.name.localeCompare(b.name));
+      default:
+        return filtered;
+    }
+  }, [products, selectedSubcategory, sortOption]);
 
   const handleProductClick = (productId) => {
     router.push(`/products/${productId}`);
@@ -32,13 +118,13 @@ const AnarkaliListing = () => {
   const handleAddToCart = (e, product) => {
     e.stopPropagation();
     addToCart(product);
-    alert(`${product.title} added to cart!`);
+    alert(`${product.name} added to cart!`);
   };
 
   const handleAddToWishlist = (e, product) => {
     e.stopPropagation();
     addToWishlist(product);
-    alert(`${product.title} added to wishlist!`);
+    alert(`${product.name} added to wishlist!`);
   };
 
   const handleQuickEnquiry = (e, productId) => {
@@ -46,42 +132,81 @@ const AnarkaliListing = () => {
     router.push(`/products/${productId}#enquiry-form`);
   };
 
-  // Sort products based on selected option
-  const sortedProducts = React.useMemo(() => {
-    const sorted = [...products];
-    switch(sortOption) {
-      case 'price-low-high':
-        return sorted.sort((a, b) => {
-          const priceA = parseInt(a.price.match(/\d+/)[0]);
-          const priceB = parseInt(b.price.match(/\d+/)[0]);
-          return priceA - priceB;
-        });
-      case 'price-high-low':
-        return sorted.sort((a, b) => {
-          const priceA = parseInt(a.price.match(/\d+/)[0]);
-          const priceB = parseInt(b.price.match(/\d+/)[0]);
-          return priceB - priceA;
-        });
-      case 'newest':
-        return sorted.filter(p => p.tag === 'NEW').concat(sorted.filter(p => p.tag !== 'NEW'));
-      default:
-        return sorted;
-    }
-  }, [sortOption]);
+  // Calculate total stock for a product
+  const getTotalStock = (sizes) => {
+    if (!sizes || !Array.isArray(sizes)) return 0;
+    return sizes.reduce((total, size) => total + (size.stock || 0), 0);
+  };
+
+  if (loading) {
+    return (
+      <div className="max-w-[1440px] mx-auto px-4 md:px-12 py-10">
+        <div className="animate-pulse">
+          <div className="text-center mb-10">
+            <div className="h-4 bg-gray-200 rounded w-32 mx-auto mb-2"></div>
+            <div className="h-8 bg-gray-200 rounded w-64 mx-auto"></div>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+            {[1, 2, 3, 4, 5, 6, 7, 8].map((i) => (
+              <div key={i} className="space-y-4">
+                <div className="aspect-[3/4] bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div>
       <div className="max-w-[1440px] mx-auto px-4 md:px-12 py-10 bg-white font-sans">
         {/* Header Section */}
         <div className="text-center mb-10">
-          <p className="text-sm font-semibold tracking-widest uppercase mb-1">Ethnic Elegance</p>
+          <p className="text-sm font-semibold tracking-widest uppercase mb-1">
+            {category ? category.name : 'Ethnic Elegance'}
+          </p>
           <h1 className="text-3xl md:text-4xl font-serif font-bold tracking-tight text-gray-900 uppercase">
-            Anarkali Suits
+            {category ? category.name : 'Anarkali Suits'}
           </h1>
           <p className="text-gray-600 mt-4 max-w-2xl mx-auto">
-            Experience timeless elegance with our exquisite collection of anarkali suits, perfect for weddings, festivals, and special occasions.
+            {category?.description || 'Experience timeless elegance with our exquisite collection of anarkali suits, perfect for weddings, festivals, and special occasions.'}
+          </p>
+          <p className="text-sm text-gray-500 mt-2">
+            {filteredAndSortedProducts.length} Products Available
           </p>
         </div>
+
+        {/* Subcategory Filter Pills */}
+        {subcategories.length > 0 && (
+          <div className="flex flex-wrap justify-center gap-3 mb-8">
+            <button
+              onClick={() => setSelectedSubcategory('all')}
+              className={`px-6 py-2 rounded-full text-xs font-bold uppercase transition ${
+                selectedSubcategory === 'all' 
+                  ? 'bg-black text-white' 
+                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+              }`}
+            >
+              All {category?.name || 'Products'}
+            </button>
+            {subcategories.map((subcategory) => (
+              <button
+                key={subcategory._id}
+                onClick={() => setSelectedSubcategory(subcategory._id)}
+                className={`px-6 py-2 rounded-full text-xs font-bold uppercase transition ${
+                  selectedSubcategory === subcategory._id 
+                    ? 'bg-black text-white' 
+                    : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                }`}
+              >
+                {subcategory.name}
+              </button>
+            ))}
+          </div>
+        )}
 
         {/* Filter Bar */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center border-t border-gray-100 pt-6 mb-8 gap-4">
@@ -96,21 +221,13 @@ const AnarkaliListing = () => {
                 <option value="price-low-high">Price: Low to High</option>
                 <option value="price-high-low">Price: High to Low</option>
                 <option value="newest">Newest First</option>
-                <option value="popular">Most Popular</option>
+                <option value="featured">Featured First</option>
+                <option value="name">Name A-Z</option>
               </select>
               <ChevronDown size={14} className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none" />
             </div>
             
-            {/* Filter buttons */}
-            <button className="border border-gray-300 rounded-full px-4 py-1.5 text-xs text-gray-600 hover:bg-gray-50 transition">
-              Size: All
-            </button>
-            <button className="border border-gray-300 rounded-full px-4 py-1.5 text-xs text-gray-600 hover:bg-gray-50 transition">
-              Color: All
-            </button>
-            <button className="border border-gray-300 rounded-full px-4 py-1.5 text-xs text-gray-600 hover:bg-gray-50 transition">
-              Price Range
-            </button>
+            {/* Filter buttons - removed for now, can be added later */}
           </div>
           
           <div className="flex items-center gap-4 text-gray-400">
@@ -132,106 +249,166 @@ const AnarkaliListing = () => {
         </div>
 
         {/* Product Grid */}
-        <div className={`grid ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1'} gap-x-6 gap-y-12`}>
-          {sortedProducts.map((product) => (
-            <div 
-              key={product.id} 
-              className={`group cursor-pointer ${viewMode === 'list' ? 'flex gap-6 items-start' : ''}`}
-              onClick={() => handleProductClick(product.id)}
-            >
-              {/* Image Container */}
-              <div className={`relative overflow-hidden bg-gray-100 mb-4 ${viewMode === 'list' ? 'w-64 flex-shrink-0' : 'aspect-[3/4]'}`}>
-                <img
-                  src={product.img}
-                  alt={product.title}
-                  className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                />
-                {product.tag && (
-                  <span className="absolute top-3 left-3 bg-[#e91e63] text-white text-[10px] font-bold px-2.5 py-1 rounded-sm">
-                    {product.tag}
-                  </span>
-                )}
-                <button 
-                  onClick={(e) => handleAddToWishlist(e, product)}
-                  className="absolute top-3 right-3 p-2 bg-white/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
-                >
-                  <Heart size={16} className="text-gray-700" />
-                </button>
-              </div>
-
-              {/* Product Info */}
-              <div className={`${viewMode === 'list' ? 'flex-1' : ''}`}>
-                <div className="space-y-2">
-                  <h3 className="font-bold text-sm text-gray-900">{product.title}</h3>
-                  <p className="text-sm font-semibold text-gray-800">{product.price}</p>
-                  <p className="text-[11px] text-gray-500 leading-relaxed">
-                    Exquisite anarkali suit featuring traditional embroidery and modern elegance.
-                    {viewMode === 'list' && ' Perfect for weddings, festivals, and special celebrations. Rich fabrics with intricate craftsmanship.'}
-                  </p>
-                  
-                  {/* Additional info for list view */}
-                  {viewMode === 'list' && (
-                    <div className="mt-4 text-xs text-gray-600">
-                      <div className="flex gap-4">
-                        <span>Material: Silk Blend/Georgette</span>
-                        <span>Care: Dry Clean</span>
-                        <span>Delivery: 7-10 Days</span>
-                      </div>
+        {filteredAndSortedProducts.length > 0 ? (
+          <div className={`grid ${viewMode === 'grid' ? 'grid-cols-1 sm:grid-cols-2 lg:grid-cols-4' : 'grid-cols-1'} gap-x-6 gap-y-12`}>
+            {filteredAndSortedProducts.map((product) => (
+              <div 
+                key={product._id} 
+                className={`group cursor-pointer ${viewMode === 'list' ? 'flex gap-6 items-start' : ''}`}
+                onClick={() => handleProductClick(product._id)}
+              >
+                {/* Image Container */}
+                <div className={`relative overflow-hidden bg-gray-100 mb-4 ${viewMode === 'list' ? 'w-64 flex-shrink-0' : 'aspect-[3/4]'}`}>
+                  {product.images && product.images.main ? (
+                    <img
+                      src={product.images.main}
+                      alt={product.name}
+                      className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                  ) : (
+                    <div className="w-full h-full flex items-center justify-center bg-gray-200">
+                      <span className="text-gray-400">No Image</span>
                     </div>
                   )}
+                  
+                  {product.isFeatured && (
+                    <span className="absolute top-3 left-3 bg-[#e91e63] text-white text-[10px] font-bold px-2.5 py-1 rounded-sm">
+                      FEATURED
+                    </span>
+                  )}
+                  
+                  {!product.isActive && (
+                    <div className="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+                      <span className="text-white font-bold">OUT OF STOCK</span>
+                    </div>
+                  )}
+                  
+                  <button 
+                    onClick={(e) => handleAddToWishlist(e, product)}
+                    className="absolute top-3 right-3 p-2 bg-white/80 rounded-full opacity-0 group-hover:opacity-100 transition-opacity"
+                  >
+                    <Heart size={16} className="text-gray-700" />
+                  </button>
                 </div>
 
-                {/* Action Buttons */}
-                <div className={`flex items-center gap-2 ${viewMode === 'list' ? 'mt-6' : 'mt-4'}`}>
-                  <button 
-                    onClick={(e) => handleAddToCart(e, product)}
-                    className="flex-1 border border-gray-300 rounded-full py-2 text-[10px] font-bold uppercase hover:bg-black hover:text-white transition"
-                  >
-                    + Add to Cart
-                  </button>
-                  <button 
-                    onClick={(e) => handleQuickEnquiry(e, product.id)}
-                    className="flex-1 border border-gray-300 rounded-full py-2 text-[10px] font-bold uppercase hover:bg-gray-100 transition"
-                  >
-                    Enquiry
-                  </button>
-                  <button className="p-2 border border-gray-300 rounded-full hover:bg-green-50 transition text-green-600">
-                    <Phone size={14} fill="currentColor" />
-                  </button>
-                  {viewMode === 'list' && (
+                {/* Product Info */}
+                <div className={`${viewMode === 'list' ? 'flex-1' : ''}`}>
+                  <div className="space-y-2">
+                    <h3 className="font-bold text-sm text-gray-900">{product.name}</h3>
+                    <div className="flex items-center gap-1">
+                      <IndianRupee size={12} className="text-gray-600" />
+                      <p className="text-sm font-semibold text-gray-800">
+                        {product.priceRange?.min} to {product.priceRange?.max}
+                      </p>
+                    </div>
+                    <p className="text-[11px] text-gray-500 leading-relaxed line-clamp-2">
+                      {product.description || 'Exquisite anarkali suit featuring traditional embroidery and modern elegance.'}
+                    </p>
+                    
+                    {/* Style Code and Stock */}
+                    <div className="text-[10px] text-gray-400 space-y-1">
+                      <div>Style Code: {product.styleCode}</div>
+                      <div>Stock: {getTotalStock(product.sizes)} pieces</div>
+                      {product.color && <div>Color: {product.color.name}</div>}
+                    </div>
+                    
+                    {/* Subcategory Info */}
+                    {product.subcategoryId && typeof product.subcategoryId === 'object' && (
+                      <div className="text-[10px] text-blue-600">
+                        {product.subcategoryId.name}
+                      </div>
+                    )}
+                    
+                    {/* Additional info for list view */}
+                    {viewMode === 'list' && (
+                      <div className="mt-4 text-xs text-gray-600">
+                        <div className="flex gap-4">
+                          <span>Material: {product.productDetails?.material || 'Silk Blend/Georgette'}</span>
+                          <span>Care: {product.productDetails?.productCare || 'Dry Clean'}</span>
+                          <span>Delivery: 7-10 Days</span>
+                        </div>
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Action Buttons */}
+                  <div className={`flex items-center gap-2 ${viewMode === 'list' ? 'mt-6' : 'mt-4'}`}>
                     <button 
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        router.push(`/products/${product.id}`);
-                      }}
-                      className="border border-gray-300 rounded-full px-4 py-2 text-[10px] font-bold uppercase hover:bg-blue-50 hover:text-blue-700 transition"
+                      onClick={(e) => handleAddToCart(e, product)}
+                      disabled={!product.isActive}
+                      className="flex-1 border border-gray-300 rounded-full py-2 text-[10px] font-bold uppercase hover:bg-black hover:text-white transition disabled:opacity-50 disabled:cursor-not-allowed"
                     >
-                      View Details
+                      + Add to Cart
                     </button>
-                  )}
+                    <button 
+                      onClick={(e) => handleQuickEnquiry(e, product._id)}
+                      className="flex-1 border border-gray-300 rounded-full py-2 text-[10px] font-bold uppercase hover:bg-gray-100 transition"
+                    >
+                      Enquiry
+                    </button>
+                    <button className="p-2 border border-gray-300 rounded-full hover:bg-green-50 transition text-green-600">
+                      <Phone size={14} fill="currentColor" />
+                    </button>
+                    {viewMode === 'list' && (
+                      <Link
+                        href={`/products/${product._id}`}
+                        onClick={(e) => e.stopPropagation()}
+                        className="border border-gray-300 rounded-full px-4 py-2 text-[10px] font-bold uppercase hover:bg-blue-50 hover:text-blue-700 transition"
+                      >
+                        View Details
+                      </Link>
+                    )}
+                  </div>
                 </div>
               </div>
+            ))}
+          </div>
+        ) : (
+          <div className="text-center py-16">
+            <div className="text-gray-500 mb-4">
+              {selectedSubcategory !== 'all' 
+                ? 'No products found in this subcategory' 
+                : 'No products found in this category'
+              }
             </div>
-          ))}
-        </div>
+            <div className="space-y-2">
+              {selectedSubcategory !== 'all' && (
+                <button
+                  onClick={() => setSelectedSubcategory('all')}
+                  className="text-blue-600 hover:text-blue-800 font-medium block mx-auto"
+                >
+                  View All Products in {category?.name}
+                </button>
+              )}
+              <Link
+                href="/"
+                className="text-gray-600 hover:text-gray-800 font-medium block"
+              >
+                Browse All Categories
+              </Link>
+            </div>
+          </div>
+        )}
 
-        {/* Pagination */}
-        <div className="flex justify-center items-center gap-2 mt-16">
-          <button className="border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-50">
-            &lt;
-          </button>
-          {[1, 2, 3, 4, 5].map(num => (
-            <button 
-              key={num}
-              className={`border rounded-full w-8 h-8 flex items-center justify-center text-sm ${num === 1 ? 'bg-black text-white border-black' : 'border-gray-300 hover:bg-gray-50'}`}
-            >
-              {num}
+        {/* Pagination - Only show if there are products */}
+        {filteredAndSortedProducts.length > 0 && (
+          <div className="flex justify-center items-center gap-2 mt-16">
+            <button className="border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-50">
+              &lt;
             </button>
-          ))}
-          <button className="border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-50">
-            &gt;
-          </button>
-        </div>
+            {[1, 2, 3, 4, 5].map(num => (
+              <button 
+                key={num}
+                className={`border rounded-full w-8 h-8 flex items-center justify-center text-sm ${num === 1 ? 'bg-black text-white border-black' : 'border-gray-300 hover:bg-gray-50'}`}
+              >
+                {num}
+              </button>
+            ))}
+            <button className="border border-gray-300 rounded-full w-8 h-8 flex items-center justify-center hover:bg-gray-50">
+              &gt;
+            </button>
+          </div>
+        )}
       </div>
       <FAQ/>
       <ContactUs/>

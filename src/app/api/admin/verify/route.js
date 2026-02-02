@@ -1,5 +1,5 @@
 import { NextResponse } from 'next/server';
-import { findAdminById } from '@/lib/mongodb-native';
+import { findAdminById } from '@/lib/database-adapter';
 import jwt from 'jsonwebtoken';
 
 export async function GET(request) {
@@ -16,7 +16,7 @@ export async function GET(request) {
     // Verify JWT token
     const decoded = jwt.verify(token, process.env.JWT_SECRET || 'fallback-secret');
     
-    // Find admin using native MongoDB connection
+    // Find admin using database adapter (MongoDB or mock)
     const admin = await findAdminById(decoded.adminId);
     
     if (!admin || !admin.isActive) {

@@ -1,41 +1,32 @@
 import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb-native';
+import { getCategoryById, updateCategory, deleteCategory } from '@/lib/database-adapter';
 import { generateSlug } from '@/models/Category';
-import { ObjectId } from 'mongodb';
 
-// Helper function to validate ObjectId
-function isValidObjectId(id) {
-  try {
-    return ObjectId.isValid(id) && (String(new ObjectId(id)) === String(id));
-  } catch (error) {
-    return false;
-  }
+// Helper function to validate ObjectId (for mock database compatibility)
+function isValidId(id) {
+  // For mock database, any string is valid
+  // For MongoDB, check ObjectId format
+  return id && typeof id === 'string' && id.length > 0;
 }
 
 // GET - Get category by ID
 export async function GET(request, { params }) {
   try {
-    const { db } = await connectToDatabase();
-    const { id } = await params; // await params
+    const { id } = await params;
 
     console.log('GET category ID:', id);
 
-    if (!isValidObjectId(id)) {
-      console.log('Invalid ObjectId:', id);
+    if (!isValidId(id)) {
+      console.log('Invalid category ID:', id);
       return NextResponse.json(
         { error: 'Invalid category ID' },
         { status: 400 }
       );
     }
 
-    console.log('Searching for category with ObjectId:', new ObjectId(id));
-    const category = await db.collection('categories').findOne({ _id: new ObjectId(id) });
+    const category = await getCategoryById(id);
     console.log('Category found:', category ? 'YES' : 'NO');
     
-    if (category) {
-      console.log('Category details:', { id: category._id, name: category.name, active: category.isActive });
-    }
-
     if (!category) {
       return NextResponse.json(
         { error: 'Category not found' },
@@ -59,36 +50,22 @@ export async function GET(request, { params }) {
 // PUT - Update category
 export async function PUT(request, { params }) {
   try {
-    const { db } = await connectToDatabase();
-    const { id } = await params; // await params
+    const { id } = await params;
     const body = await request.json();
     const { name, description, sortOrder, isActive } = body;
 
     console.log('PUT category ID:', id);
     console.log('PUT request body:', body);
 
-    if (!isValidObjectId(id)) {
-      console.log('Invalid ObjectId:', id);
+    if (!isValidId(id)) {
+      console.log('Invalid category ID:', id);
       return NextResponse.json(
         { error: 'Invalid category ID' },
         { status: 400 }
       );
     }
 
-    // First check if category exists
-    console.log('Checking if category exists...');
-    const existingCategory = await db.collection('categories').findOne({ _id: new ObjectId(id) });
-    console.log('Existing category:', existingCategory ? 'FOUND' : 'NOT FOUND');
-    
-    if (!existingCategory) {
-      console.log('Category not found for update');
-      return NextResponse.json(
-        { error: 'Category not found' },
-        { status: 404 }
-      );
-    }
-
-    const updateData = { updatedAt: new Date() };
+    const updateData = {};
     
     if (name !== undefined) {
       if (name.trim().length < 2) {
@@ -107,40 +84,21 @@ export async function PUT(request, { params }) {
 
     console.log('Update data:', updateData);
 
-    // Check if slug already exists (if name is being updated)
-    if (updateData.slug) {
-      const existingCategory = await db.collection('categories').findOne({ 
-        slug: updateData.slug, 
-        _id: { $ne: new ObjectId(id) } 
-      });
-      
-      if (existingCategory) {
-        return NextResponse.json(
-          { error: 'Category with this name already exists' },
-          { status: 400 }
-        );
-      }
-    }
+    // Update category using database adapter
+    const updatedCategory = await updateCategory(id, updateData);
+    
+    console.log('API - Updated category result:', updatedCategory ? 'SUCCESS' : 'NULL/UNDEFINED');
+    console.log('API - Updated category data:', updatedCategory);
 
-    // Update category using updateOne and then fetch updated document
-    console.log('Performing update...');
-    const updateResult = await db.collection('categories').updateOne(
-      { _id: new ObjectId(id) },
-      { $set: updateData }
-    );
-
-    console.log('Update result - matched:', updateResult.matchedCount, 'modified:', updateResult.modifiedCount);
-
-    if (updateResult.matchedCount === 0) {
+    if (!updatedCategory) {
+      console.log('API - Returning 404 because updatedCategory is falsy');
       return NextResponse.json(
         { error: 'Category not found' },
         { status: 404 }
       );
     }
 
-    // Fetch the updated document
-    const updatedCategory = await db.collection('categories').findOne({ _id: new ObjectId(id) });
-
+    console.log('API - Returning success response');
     return NextResponse.json({
       success: true,
       data: updatedCategory,
@@ -156,76 +114,25 @@ export async function PUT(request, { params }) {
   }
 }
 
-// DELETE - Delete category (soft delete or permanent)
+// DELETE - Delete category (soft delete)
 export async function DELETE(request, { params }) {
   try {
-    const { db } = await connectToDatabase();
-    const { id } = await params; // await params
-    const { searchParams } = new URL(request.url);
-    const hardDelete = searchParams.get('hard') === 'true';
+    const { id } = await params;
 
-    console.log('DELETE category ID:', id, 'hard:', hardDelete);
+    console.log('DELETE category ID:', id);
 
-    if (!isValidObjectId(id)) {
-      console.log('Invalid ObjectId:', id);
+    if (!isValidId(id)) {
+      console.log('Invalid category ID:', id);
       return NextResponse.json(
         { error: 'Invalid category ID' },
         { status: 400 }
       );
     }
 
-    // First check if category exists
-    const existingCategory = await db.collection('categories').findOne({ _id: new ObjectId(id) });
-    console.log('Category exists for delete:', existingCategory ? 'YES' : 'NO');
-    
-    if (!existingCategory) {
-      return NextResponse.json(
-        { error: 'Category not found' },
-        { status: 404 }
-      );
-    }
+    // Delete category using database adapter (soft delete)
+    const result = await deleteCategory(id);
 
-    if (hardDelete) {
-      // Find subcategory ids that belong to this category
-      const subcats = await db.collection('subcategories').find({ categoryId: new ObjectId(id) }).project({ _id: 1 }).toArray();
-      const subcatIds = subcats.map(s => s._id);
-
-      // Delete category
-      const deleteResult = await db.collection('categories').deleteOne({ _id: new ObjectId(id) });
-
-      // Delete related subcategories
-      await db.collection('subcategories').deleteMany({ categoryId: new ObjectId(id) });
-
-      // Unset categoryId on related products
-      await db.collection('products').updateMany({ categoryId: new ObjectId(id) }, { $set: { categoryId: null, updatedAt: new Date() } });
-
-      // Unset subcategoryId on products that referenced subcategories we just deleted
-      if (subcatIds.length > 0) {
-        await db.collection('products').updateMany({ subcategoryId: { $in: subcatIds } }, { $set: { subcategoryId: null, updatedAt: new Date() } });
-      }
-
-      if (deleteResult.deletedCount === 0) {
-        return NextResponse.json(
-          { error: 'Category not found' },
-          { status: 404 }
-        );
-      }
-
-      return NextResponse.json({
-        success: true,
-        message: 'Category permanently deleted (related subcategories removed, products updated)'
-      });
-    }
-
-    // Soft delete (default)
-    const updateResult = await db.collection('categories').updateOne(
-      { _id: new ObjectId(id) },
-      { $set: { isActive: false, updatedAt: new Date() } }
-    );
-
-    console.log('Delete update result - matched:', updateResult.matchedCount, 'modified:', updateResult.modifiedCount);
-
-    if (updateResult.matchedCount === 0) {
+    if (!result) {
       return NextResponse.json(
         { error: 'Category not found' },
         { status: 404 }

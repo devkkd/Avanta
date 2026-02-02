@@ -1,80 +1,122 @@
 import { NextResponse } from 'next/server';
-import { connectToDatabase } from '@/lib/mongodb-native';
-import { uploadBuffer } from '@/lib/cloudinary';
-import { ObjectId } from 'mongodb';
+import { getAllProducts, createProduct, getAllCategories, getAllSubcategories, searchProducts } from '@/lib/database-adapter';
+import { generateStyleCode } from '@/models/Product';
 
-// Helper function to validate ObjectId
-function isValidObjectId(id) {
-  try {
-    return ObjectId.isValid(id) && (String(new ObjectId(id)) === String(id));
-  } catch (error) {
-    return false;
-  }
+// Helper function to validate ID (for mock database compatibility)
+function isValidId(id) {
+  return id && typeof id === 'string' && id.length > 0;
+}
+
+// Helper function to generate slug
+function generateSlug(name) {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
 }
 
 export async function GET(request) {
   try {
-    const { db } = await connectToDatabase();
-    
     const { searchParams } = new URL(request.url);
     const categoryId = searchParams.get('categoryId');
     const subcategoryId = searchParams.get('subcategoryId');
     const featured = searchParams.get('featured');
+    const search = searchParams.get('search');
     const limit = parseInt(searchParams.get('limit')) || 20;
     const page = parseInt(searchParams.get('page')) || 1;
-    const skip = (page - 1) * limit;
     
-    let query = { isActive: true };
+    let products;
     
-    if (categoryId && isValidObjectId(categoryId)) {
-      query.categoryId = new ObjectId(categoryId);
-    }
-    
-    if (subcategoryId && isValidObjectId(subcategoryId)) {
-      query.subcategoryId = new ObjectId(subcategoryId);
-    }
-    
-    if (featured === 'true') {
-      query.isFeatured = true;
-    }
-    
-    const products = await db.collection('products')
-      .find(query)
-      .sort({ sortOrder: 1, createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .toArray();
-    
-    // Populate category and subcategory info for each product
-    for (let product of products) {
-      if (product.categoryId) {
-        const category = await db.collection('categories').findOne({ _id: product.categoryId });
-        if (category) {
-          product.categoryId = {
-            _id: category._id,
-            name: category.name,
-            slug: category.slug
-          };
-        }
+    if (search) {
+      // Search products
+      const filters = {};
+      if (categoryId && isValidId(categoryId)) filters.categoryId = categoryId;
+      if (subcategoryId && isValidId(subcategoryId)) filters.subcategoryId = subcategoryId;
+      
+      products = await searchProducts(search, filters);
+    } else {
+      // Get all products
+      products = await getAllProducts();
+      
+      // Apply filters
+      if (categoryId && isValidId(categoryId)) {
+        products = products.filter(product => {
+          // Handle both ObjectId and string comparisons
+          const productCategoryId = product.categoryId && product.categoryId.toString ? product.categoryId.toString() : product.categoryId;
+          return productCategoryId === categoryId;
+        });
       }
       
-      if (product.subcategoryId) {
-        const subcategory = await db.collection('subcategories').findOne({ _id: product.subcategoryId });
-        if (subcategory) {
-          product.subcategoryId = {
-            _id: subcategory._id,
-            name: subcategory.name,
-            slug: subcategory.slug
-          };
-        }
+      if (subcategoryId && isValidId(subcategoryId)) {
+        products = products.filter(product => {
+          // Handle both ObjectId and string comparisons
+          const productSubcategoryId = product.subcategoryId && product.subcategoryId.toString ? product.subcategoryId.toString() : product.subcategoryId;
+          return productSubcategoryId === subcategoryId;
+        });
+      }
+      
+      if (featured === 'true') {
+        products = products.filter(product => product.isFeatured);
       }
     }
     
-    const total = await db.collection('products').countDocuments(query);
+    // Get categories and subcategories for population
+    const categories = await getAllCategories();
+    const subcategories = await getAllSubcategories();
+    
+    const categoryMap = {};
+    const subcategoryMap = {};
+    
+    categories.forEach(cat => {
+      // Handle both ObjectId and string keys
+      const categoryId = cat._id && cat._id.toString ? cat._id.toString() : cat._id;
+      categoryMap[categoryId] = cat;
+    });
+    
+    subcategories.forEach(sub => {
+      // Handle both ObjectId and string keys
+      const subcategoryId = sub._id && sub._id.toString ? sub._id.toString() : sub._id;
+      subcategoryMap[subcategoryId] = sub;
+    });
+    
+    // Populate category and subcategory info
+    products = products.map(product => {
+      const populatedProduct = { ...product };
+      
+      const productCategoryId = product.categoryId && product.categoryId.toString ? product.categoryId.toString() : product.categoryId;
+      if (productCategoryId && categoryMap[productCategoryId]) {
+        const category = categoryMap[productCategoryId];
+        populatedProduct.categoryId = {
+          _id: category._id,
+          name: category.name,
+          slug: category.slug
+        };
+      }
+      
+      const productSubcategoryId = product.subcategoryId && product.subcategoryId.toString ? product.subcategoryId.toString() : product.subcategoryId;
+      if (productSubcategoryId && subcategoryMap[productSubcategoryId]) {
+        const subcategory = subcategoryMap[productSubcategoryId];
+        populatedProduct.subcategoryId = {
+          _id: subcategory._id,
+          name: subcategory.name,
+          slug: subcategory.slug
+        };
+      }
+      
+      return populatedProduct;
+    });
+    
+    // Apply pagination
+    const total = products.length;
+    const skip = (page - 1) * limit;
+    const paginatedProducts = products.slice(skip, skip + limit);
     
     return NextResponse.json({
       success: true,
-      data: products,
+      data: paginatedProducts,
       pagination: {
         page,
         limit,
@@ -93,41 +135,87 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
-    const { db } = await connectToDatabase();
+    const body = await request.json();
+    const { 
+      name, 
+      description, 
+      styleCode, 
+      sku,
+      priceRange, 
+      images, 
+      sizes, 
+      productDetails, 
+      color,
+      categoryId, 
+      subcategoryId,
+      tags,
+      isFeatured = false,
+      sortOrder = 0
+    } = body;
 
-    const formData = await request.formData();
-    const title = formData.get('title');
-    const description = formData.get('description');
-    const price = parseFloat(formData.get('price') || '0');
-    const categoryId = formData.get('categoryId');
-    const subcategoryId = formData.get('subcategoryId');
-    const sku = formData.get('sku');
-    const stock = parseInt(formData.get('stock')) || 0;
-    const isFeatured = formData.get('isFeatured') === 'true';
+    console.log('Creating product with data:', JSON.stringify(body, null, 2));
 
-    if (!title || title.trim().length < 2) {
+    // Validation
+    if (!name || name.trim().length < 2) {
       return NextResponse.json(
-        { error: 'Product title must be at least 2 characters long' },
+        { error: 'Product name must be at least 2 characters long' },
         { status: 400 }
       );
     }
 
-    if (!categoryId || !isValidObjectId(categoryId)) {
+    if (!description || description.trim().length < 10) {
       return NextResponse.json(
-        { error: 'Valid category is required' },
+        { error: 'Product description must be at least 10 characters long' },
         { status: 400 }
       );
     }
 
-    if (price < 0) {
+    if (!categoryId || !isValidId(categoryId)) {
       return NextResponse.json(
-        { error: 'Price must be a positive number' },
+        { error: 'Valid category ID is required' },
+        { status: 400 }
+      );
+    }
+
+    if (!priceRange || !priceRange.min || !priceRange.max || priceRange.min < 0 || priceRange.max < priceRange.min) {
+      return NextResponse.json(
+        { error: 'Valid price range is required (min and max, with max >= min)' },
+        { status: 400 }
+      );
+    }
+
+    if (!images || !images.main) {
+      return NextResponse.json(
+        { error: 'Main product image is required' },
+        { status: 400 }
+      );
+    }
+
+    if (!sizes || !Array.isArray(sizes) || sizes.length === 0) {
+      return NextResponse.json(
+        { error: 'At least one size is required' },
+        { status: 400 }
+      );
+    }
+
+    if (!productDetails || !productDetails.material || !productDetails.productCare) {
+      return NextResponse.json(
+        { error: 'Product details (material and product care) are required' },
+        { status: 400 }
+      );
+    }
+
+    if (!color || !color.name) {
+      return NextResponse.json(
+        { error: 'Color information is required' },
         { status: 400 }
       );
     }
 
     // Check if category exists
-    const category = await db.collection('categories').findOne({ _id: new ObjectId(categoryId) });
+    const categories = await getAllCategories();
+    const category = categories.find(cat => cat._id.toString() === categoryId.toString());
+    
     if (!category) {
       return NextResponse.json(
         { error: 'Category not found' },
@@ -136,8 +224,9 @@ export async function POST(request) {
     }
 
     // Check if subcategory exists (if provided)
-    if (subcategoryId && isValidObjectId(subcategoryId)) {
-      const subcategory = await db.collection('subcategories').findOne({ _id: new ObjectId(subcategoryId) });
+    if (subcategoryId && isValidId(subcategoryId)) {
+      const subcategories = await getAllSubcategories();
+      const subcategory = subcategories.find(sub => sub._id.toString() === subcategoryId.toString());
       if (!subcategory) {
         return NextResponse.json(
           { error: 'Subcategory not found' },
@@ -146,69 +235,69 @@ export async function POST(request) {
       }
     }
 
-    // Generate slug from title
-    const slug = title
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9\s-]/g, '')
-      .replace(/\s+/g, '-')
-      .replace(/-+/g, '-')
-      .replace(/^-|-$/g, '');
+    // Generate slug from name
+    const slug = generateSlug(name);
 
-    // Check if product with same slug exists
-    const existingProduct = await db.collection('products').findOne({ slug });
-    if (existingProduct) {
-      return NextResponse.json(
-        { error: 'Product with this title already exists' },
-        { status: 400 }
-      );
-    }
+    // Generate style code if not provided
+    const finalStyleCode = styleCode || generateStyleCode();
 
-    const images = [];
-    const file = formData.get('image');
-    if (file && file.size) {
-      const arrayBuffer = await file.arrayBuffer();
-      const buffer = Buffer.from(arrayBuffer);
-      const uploadRes = await uploadBuffer(buffer, 'products');
-      images.push(uploadRes.secure_url);
-    }
+    // Generate SKU if not provided
+    const colorCode = color.name.substring(0, 3).toUpperCase();
+    const finalSku = sku || `${finalStyleCode}-${colorCode}`;
 
     const productData = {
-      title: title.trim(),
-      description: description?.trim() || '',
-      price,
-      categoryId: new ObjectId(categoryId),
-      images,
+      name: name.trim(),
+      description: description.trim(),
+      styleCode: finalStyleCode,
+      sku: finalSku,
+      priceRange: {
+        min: Number(priceRange.min),
+        max: Number(priceRange.max)
+      },
+      images: {
+        main: images.main.trim(),
+        gallery: images.gallery || []
+      },
+      sizes: sizes.map(size => ({
+        size: size.size,
+        available: size.available !== false,
+        stock: Number(size.stock) || 0
+      })),
+      productDetails: {
+        material: productDetails.material.trim(),
+        productCare: productDetails.productCare.trim(),
+        additionalInfo: productDetails.additionalInfo ? productDetails.additionalInfo.trim() : ''
+      },
+      color: {
+        name: color.name.trim(),
+        code: color.code ? color.code.trim() : ''
+      },
       slug,
-      stock,
-      isFeatured,
-      isActive: true,
-      createdAt: new Date(),
-      updatedAt: new Date()
+      categoryId,
+      subcategoryId: subcategoryId || null,
+      tags: tags || [],
+      isFeatured: Boolean(isFeatured),
+      sortOrder: Number(sortOrder) || 0,
+      isActive: true
     };
 
-    if (subcategoryId && isValidObjectId(subcategoryId)) {
-      productData.subcategoryId = new ObjectId(subcategoryId);
-    }
+    console.log('Creating product with processed data:', productData);
 
-    if (sku && sku.trim()) {
-      productData.sku = sku.trim();
-    }
-
-    const result = await db.collection('products').insertOne(productData);
-    const product = { ...productData, _id: result.insertedId };
+    // Create product using database adapter
+    const newProduct = await createProduct(productData);
     
     // Add category and subcategory info for response
-    product.categoryId = {
+    newProduct.categoryId = {
       _id: category._id,
       name: category.name,
       slug: category.slug
     };
 
-    if (product.subcategoryId) {
-      const subcategory = await db.collection('subcategories').findOne({ _id: product.subcategoryId });
+    if (newProduct.subcategoryId) {
+      const subcategories = await getAllSubcategories();
+      const subcategory = subcategories.find(sub => sub._id.toString() === newProduct.subcategoryId.toString());
       if (subcategory) {
-        product.subcategoryId = {
+        newProduct.subcategoryId = {
           _id: subcategory._id,
           name: subcategory.name,
           slug: subcategory.slug
@@ -216,9 +305,11 @@ export async function POST(request) {
       }
     }
 
+    console.log('Product created successfully:', newProduct);
+
     return NextResponse.json({
       success: true,
-      data: product,
+      data: newProduct,
       message: 'Product created successfully'
     }, { status: 201 });
 

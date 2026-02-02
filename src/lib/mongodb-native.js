@@ -10,18 +10,35 @@ if (!MONGODB_URI) {
 let client;
 let clientPromise;
 
-const options = {
-  serverSelectionTimeoutMS: 5000,
+// Determine if this is an Atlas connection
+const isAtlasConnection = MONGODB_URI.includes('mongodb+srv://');
+
+const baseOptions = {
+  serverSelectionTimeoutMS: 10000,
   socketTimeoutMS: 45000,
+  connectTimeoutMS: 10000,
   family: 4, // Use IPv4, skip trying IPv6
   maxPoolSize: 10,
+  minPoolSize: 1,
+  maxIdleTimeMS: 30000,
+};
+
+// Configure options based on connection type
+const options = isAtlasConnection ? {
+  ...baseOptions,
   tls: true,
   tlsAllowInvalidCertificates: true,
+  tlsAllowInvalidHostnames: true,
+  directConnection: false,
   serverApi: {
     version: '1',
-    strict: true,
-    deprecationErrors: true,
+    strict: false,
+    deprecationErrors: false,
   }
+} : {
+  ...baseOptions,
+  // Local MongoDB options
+  directConnection: true,
 };
 
 if (process.env.NODE_ENV === 'development') {
@@ -39,10 +56,28 @@ export async function connectToDatabase() {
   try {
     const client = await clientPromise;
     const db = client.db('avanta-web');
+    
+    // Test the connection
+    await db.admin().ping();
     console.log('MongoDB connected successfully');
     return { client, db };
   } catch (error) {
     console.error('MongoDB connection error:', error);
+    
+    // For development, provide helpful error messages
+    if (process.env.NODE_ENV === 'development') {
+      if (error.message.includes('SSL') || error.message.includes('TLS')) {
+        console.log('\n🚨 SSL/TLS Connection Issue Detected!');
+        console.log('💡 Possible solutions:');
+        console.log('1. Check if your MongoDB Atlas cluster is accessible');
+        console.log('2. Verify your IP address is whitelisted in Atlas');
+        console.log('3. Try using a local MongoDB instance for development');
+        console.log('4. Check if your network/firewall blocks MongoDB connections');
+        console.log('\n📝 To use local MongoDB:');
+        console.log('   MONGODB_URI=mongodb://localhost:27017/avanta-web');
+      }
+    }
+    
     throw error;
   }
 }
