@@ -1,6 +1,8 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   serverExternalPackages: ['mongodb'],
+  // Add empty turbopack config to silence the warning
+  turbopack: {},
   webpack: (config, { isServer }) => {
     // Optimize memory usage
     config.optimization = {

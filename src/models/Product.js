@@ -136,14 +136,11 @@ const ProductSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes for better performance
+// Indexes for better performance (removed duplicates that are already created by unique: true)
 ProductSchema.index({ categoryId: 1, isActive: 1 });
 ProductSchema.index({ subcategoryId: 1, isActive: 1 });
 ProductSchema.index({ isActive: 1, isFeatured: 1 });
 ProductSchema.index({ 'priceRange.min': 1, 'priceRange.max': 1 });
-ProductSchema.index({ styleCode: 1 });
-ProductSchema.index({ sku: 1 });
-ProductSchema.index({ slug: 1 });
 
 // Generate slug from name if not provided
 ProductSchema.pre('save', function(next) {
