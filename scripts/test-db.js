@@ -1,5 +1,7 @@
-require('dotenv').config({ path: '.env.local' });
-const { connectToDatabase, findAdmin, isUsingMongoDB } = require('../src/lib/database-adapter');
+import dotenv from 'dotenv';
+import { connectToDatabase, findAdmin, isUsingMongoDB } from '../src/lib/database-adapter.js';
+
+dotenv.config({ path: '.env.local' });
 
 async function testConnection() {
   try {

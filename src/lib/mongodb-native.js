@@ -1,60 +1,70 @@
 import { MongoClient, ObjectId } from 'mongodb';
 import bcrypt from 'bcryptjs';
 
-const MONGODB_URI = process.env.MONGODB_URI;
-
-if (!MONGODB_URI) {
-  throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
-}
-
 let client;
 let clientPromise;
 
-// Determine if this is an Atlas connection
-const isAtlasConnection = MONGODB_URI.includes('mongodb+srv://');
-
-const baseOptions = {
-  serverSelectionTimeoutMS: 10000,
-  socketTimeoutMS: 45000,
-  connectTimeoutMS: 10000,
-  family: 4, // Use IPv4, skip trying IPv6
-  maxPoolSize: 10,
-  minPoolSize: 1,
-  maxIdleTimeMS: 30000,
-};
-
-// Configure options based on connection type
-const options = isAtlasConnection ? {
-  ...baseOptions,
-  tls: true,
-  tlsAllowInvalidCertificates: true,
-  tlsAllowInvalidHostnames: true,
-  directConnection: false,
-  serverApi: {
-    version: '1',
-    strict: false,
-    deprecationErrors: false,
+function getMongoUri() {
+  const MONGODB_URI = process.env.MONGODB_URI;
+  if (!MONGODB_URI) {
+    throw new Error('Please define the MONGODB_URI environment variable inside .env.local');
   }
-} : {
-  ...baseOptions,
-  // Local MongoDB options
-  directConnection: true,
-};
+  return MONGODB_URI;
+}
 
-if (process.env.NODE_ENV === 'development') {
-  if (!global._mongoClientPromise) {
+function getClientPromise() {
+  if (clientPromise) return clientPromise;
+  
+  const MONGODB_URI = getMongoUri();
+  
+  // Determine if this is an Atlas connection
+  const isAtlasConnection = MONGODB_URI.includes('mongodb+srv://');
+
+  const baseOptions = {
+    serverSelectionTimeoutMS: 10000,
+    socketTimeoutMS: 45000,
+    connectTimeoutMS: 10000,
+    family: 4, // Use IPv4, skip trying IPv6
+    maxPoolSize: 10,
+    minPoolSize: 1,
+    maxIdleTimeMS: 30000,
+  };
+
+  // Configure options based on connection type
+  const options = isAtlasConnection ? {
+    ...baseOptions,
+    tls: true,
+    tlsAllowInvalidCertificates: true,
+    tlsAllowInvalidHostnames: true,
+    directConnection: false,
+    serverApi: {
+      version: '1',
+      strict: false,
+      deprecationErrors: false,
+    }
+  } : {
+    ...baseOptions,
+    // Local MongoDB options
+    directConnection: true,
+  };
+
+  if (process.env.NODE_ENV === 'development') {
+    if (!global._mongoClientPromise) {
+      client = new MongoClient(MONGODB_URI, options);
+      global._mongoClientPromise = client.connect();
+    }
+    clientPromise = global._mongoClientPromise;
+  } else {
     client = new MongoClient(MONGODB_URI, options);
-    global._mongoClientPromise = client.connect();
+    clientPromise = client.connect();
   }
-  clientPromise = global._mongoClientPromise;
-} else {
-  client = new MongoClient(MONGODB_URI, options);
-  clientPromise = client.connect();
+  
+  return clientPromise;
 }
 
 export async function connectToDatabase() {
   try {
-    const client = await clientPromise;
+    const client = await getClientPromise();
     const db = client.db('avanta-web');
     
     // Test the connection
