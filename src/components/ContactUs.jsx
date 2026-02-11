@@ -5,18 +5,18 @@ const ContactUs = () => {
   return (
     <section className="max-w-7xl mx-auto px-4 py-12 md:py-20 font-sans text-[#333]">
       <div className="flex flex-col lg:flex-row gap-10 items-start">
-        
+
         {/* Left Section: Contact Details */}
         <div className="w-full lg:w-1/3">
-          <div className="flex items-center gap-2 mb-6">
-            <span className="w-2 h-2 bg-pink-600 rounded-full"></span>
-            <h3 className="text-xs font-bold tracking-widest uppercase text-gray-800">
+          <div className="flex items-center justify-start gap-2 mb-3 md:mb-4">
+            <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
+            <h3 className="text-[10px] md:text-sm font-bold text-[#1a1a3d] uppercase tracking-widest">
               Avanta by Jaipur Kurti Gharana
             </h3>
-            <span className="w-2 h-2 bg-pink-600 rounded-full"></span>
+            <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-serif mb-12 italic text-black">
+          <h1 className="text-3xl md:text-4xl font-cinzel font-bold mb-12 text-black">
             Contact Us
           </h1>
 
@@ -53,8 +53,8 @@ const ContactUs = () => {
         <div className="w-full lg:w-2/3 flex flex-col md:flex-row gap-6 h-[500px] md:h-[600px]">
           {/* Hawa Mahal Image */}
           <div className="relative flex-1 h-full rounded-2xl overflow-hidden shadow-lg">
-            <img 
-              src="https://images.unsplash.com/photo-1599661046289-e31897846e41?q=80&w=1000&auto=format&fit=crop" 
+            <img
+              src="images/commitment/contact1.png"
               alt="Hawa Mahal Jaipur"
               className="w-full h-full object-cover"
             />
@@ -62,15 +62,14 @@ const ContactUs = () => {
 
           {/* Map Image */}
           <div className="relative flex-1 h-full rounded-2xl overflow-hidden shadow-lg border border-gray-100">
-             {/* Note: In a real app, replace this img with an iframe for Google Maps */}
-            <img 
-              src="https://maps.googleapis.com/maps/api/staticmap?center=26.8530,75.7600&zoom=15&size=600x800&markers=color:red%7C26.8530,75.7600&key=YOUR_API_KEY" 
+            {/* Note: In a real app, replace this img with an iframe for Google Maps */}
+            <img
+              src="images/commitment/contact2.png"
               alt="Location Map"
               className="w-full h-full object-cover grayscale-[20%]"
             />
           </div>
         </div>
-
       </div>
     </section>
   );

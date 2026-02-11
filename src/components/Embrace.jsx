@@ -3,26 +3,26 @@ import Image from 'next/image';
 
 const Embrace = () => {
   return (
-    <section className="flex flex-col md:flex-row items-stretch min-h-[600px] w-full bg-white font-sans">
+    <section className="flex flex-col md:flex-row items-stretch min-h-[600px] max-w-[90rem] mx-auto bg-white font-sans">
       
       {/* Left Content Side */}
-      <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-20 py-12">
+      <div className="w-full md:w-1/2 flex flex-col justify-center px-8 md:px-12 py-12">
         {/* Brand Tagline */}
-        <div className="flex items-center gap-2 mb-6">
-          <span className="h-2 w-2 rounded-full bg-[#9b214f]"></span>
-          <span className="text-[#2e266f] font-bold tracking-widest text-xs uppercase">
+        <div className="flex items-center justify-start gap-2 mb-3 md:mb-4">
+          <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
+          <h3 className="text-[10px] md:text-sm font-bold text-[#1a1a3d] uppercase tracking-widest">
             Avanta by Jaipur Kurti Gharana
-          </span>
-          <span className="h-2 w-2 rounded-full bg-[#9b214f]"></span>
+          </h3>
+          <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
         </div>
 
         {/* Heading */}
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif text-gray-900 leading-tight mb-8">
+        <h1 className="text-3xl md:text-4xl lg:text-5xl font-cinzel font-bold text-gray-900 leading-tight mb-8">
           EMBRACE EFFORTLESS <br /> ELEGANCE
         </h1>
 
         {/* Description */}
-        <div className="space-y-4 text-gray-600 text-sm md:text-base leading-relaxed max-w-lg">
+        <div className="space-y-4 text-gray-600 text-sm md:text-base leading-relaxed ">
           <p>
             Step into a world of understated luxury with Avanta India. Our collections bring 
             together classic refinement and contemporary design, each piece crafted with 
@@ -54,18 +54,10 @@ const Embrace = () => {
       {/* Right Image Side */}
       <div className="w-full md:w-1/2 relative flex">
         {/* Left Dress Image */}
-        <div className="w-1/2 relative h-[500px] md:h-auto border-r border-white">
+        <div className="w-full relative h-[500px] md:h-auto border-r border-white">
           <img 
-            src="/blue-dress.jpg" // Apni image ka path yahan dalein
+            src="/images/group1.png" // Apni image ka path yahan dalein
             alt="Blue Dress"
-            className="w-full h-full object-cover"
-          />
-        </div>
-        {/* Right Dress Image */}
-        <div className="w-1/2 relative h-[500px] md:h-auto">
-          <img 
-            src="/red-dress.jpg" // Apni image ka path yahan dalein
-            alt="Red Dress"
             className="w-full h-full object-cover"
           />
         </div>

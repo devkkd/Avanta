@@ -48,7 +48,7 @@ const PartnershipSection = () => {
             Avanta by Jaipur Kurti Charana
             <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
           </p>
-          <h2 className="text-3xl md:text-5xl font-serif font-medium tracking-wide mb-6">
+          <h2 className="text-3xl md:text-5xl font-cinzel font-bold tracking-wide mb-6">
             WHY PARTNER WITH AVANTA
           </h2>
           <p className="text-sm md:text-base opacity-90 font-light">

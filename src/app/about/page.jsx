@@ -14,7 +14,7 @@ import CraftsmanshipSection from '@/components/CraftsmanshipSection';
 const AvantaHero = () => {
   return (
     <div>
-    <section className="flex flex-col md:flex-row min-h-[600px] w-full bg-white font-sans">
+    <section className="max-w-[1440px] mx-auto flex flex-col md:flex-row bg-white font-sans">
       {/* Left Content Side */}
       <div className="flex-1 flex flex-col justify-center px-8 py-12 md:px-16 lg:px-24">
         <div className="flex items-center gap-2 mb-6">
@@ -25,7 +25,7 @@ const AvantaHero = () => {
           <span className="w-2 h-2 bg-pink-600 rounded-full"></span>
         </div>
 
-        <h1 className="text-4xl md:text-5xl lg:text-6xl font-serif font-medium leading-tight text-gray-900 mb-8">
+        <h1 className="text-3xl md:text-4xl font-cinzel font-bold leading-tight text-gray-900 mb-8">
           AVANTA INDIA <br />
           BY JAIPUR KURTI GHARANA
         </h1>
@@ -51,20 +51,12 @@ const AvantaHero = () => {
 
       {/* Right Image Side */}
       <div className="flex-1 p-4 md:p-8">
-        <div className="relative h-full min-h-[500px] w-full bg-[#fdfaf5] rounded-[40px] overflow-hidden flex">
+        <div className="relative h-full w-full bg-[#fdfaf5] rounded-[40px] overflow-hidden flex">
           {/* Image 1 */}
           <div className="relative flex-1 h-full border-r border-white/20">
             <img
-              src="/path-to-your-left-image.jpg" 
+              src="/images/about/about1.png" 
               alt="Model in cream kurti"
-              className="object-cover w-full h-full"
-            />
-          </div>
-          {/* Image 2 */}
-          <div className="relative flex-1 h-full">
-            <img
-              src="/path-to-your-right-image.jpg" 
-              alt="Model in blue kurti"
               className="object-cover w-full h-full"
             />
           </div>

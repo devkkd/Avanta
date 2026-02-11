@@ -7,21 +7,21 @@ const FounderSection = () => {
         
         {/* Left Side: Image Container */}
         <div className="w-full md:w-1/2 flex justify-center">
-          <div className="relative w-full aspect-[4/5] md:aspect-[3/4] overflow-hidden rounded-sm shadow-sm">
+          <div className="relative w-full md:aspect-[5/4] overflow-hidden rounded-sm shadow-sm">
             <Image
-              src="/images/banner/banner-1.svg" // Replace with your image
+              src="/images/about/about4.png" // Replace with your image
               alt="Mr. Rishabh Agarwal"
               fill
-              className="object-cover"
+              className="object-cover object-top w-full h-full"
               priority
             />
           </div>
         </div>
 
         {/* Right Side: Content Container */}
-        <div className="w-full md:w-1/2 text-center md:text-left">
+        <div className="w-full md:w-1/2 text-center md:text-right">
           {/* Subheading with Dots */}
-          <div className="flex items-center justify-center md:justify-start gap-2 mb-4">
+          <div className="flex items-center justify-center md:justify-end gap-2 mb-4">
             <span className="w-1.5 h-1.5 bg-rose-600 rounded-full"></span>
             <span className="text-xs font-bold tracking-[0.2em] text-gray-800 uppercase">
               Avanta by Jaipur Kurti Gharana
@@ -30,15 +30,15 @@ const FounderSection = () => {
           </div>
 
           {/* Heading */}
-          <h2 className="text-3xl md:text-4xl lg:text-5xl font-serif text-gray-900 mb-2">
+          <h2 className="text-3xl md:text-4xl lg:text-4xl font-cinzel font-bold text-gray-900 mb-2">
             About the Founder
           </h2>
-          <h3 className="text-2xl md:text-3xl font-serif text-gray-900 mb-8">
+          <h3 className="text-3xl md:text-4xl font-cinzel font-bold text-gray-900 mb-8">
             Mr. Rishabh Agarwal
           </h3>
 
           {/* Body Text */}
-          <div className="space-y-6 text-gray-700 leading-relaxed text-sm md:text-base">
+          <div className="space-y-6 text-black leading-relaxed text-sm md:text-base">
             <p>
               <span className="font-bold">Founded in 2016, Avanta India</span> was envisioned by 
               <span className="font-bold"> Mr. Rishabh Agarwal</span> with a clear mission to elevate 

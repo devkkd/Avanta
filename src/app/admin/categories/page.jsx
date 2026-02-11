@@ -17,6 +17,8 @@ export default function CategoriesPage() {
     try {
       const response = await fetch('/api/admin/categories');
       const data = await response.json();
+
+      console.log('Fetch categories response:', data); // Debug log
       if (data.success) {
         setCategories(data.data);
       }

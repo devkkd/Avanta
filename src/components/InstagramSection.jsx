@@ -2,25 +2,25 @@ import React from 'react';
 
 const InstagramSection = () => {
   const cards = [
-    { id: 1, image: 'https://images.unsplash.com/photo-1583391733956-3750e0ff4e8b?q=80&w=500', title: "NEW YEAR'S COLLECTION", type: 'video' },
-    { id: 2, image: 'https://images.unsplash.com/photo-1617175548912-8700593467f9?q=80&w=500', title: "NEW YEAR'S COLLECTION", type: 'video' },
-    { id: 3, image: 'https://images.unsplash.com/photo-1617627143750-d86bc21e42bb?q=80&w=500', title: "COLLECTION", type: 'video' },
-    { id: 4, image: 'https://images.unsplash.com/photo-1620916566398-39f1143ab7be?q=80&w=500', title: "NEW COLLECTION", type: 'post' },
+    { id: 1, image: 'images/collection/collection1.jpg', title: "NEW YEAR'S COLLECTION", type: 'video' },
+    { id: 2, image: 'images/collection/collection2.jpg', title: "NEW YEAR'S COLLECTION", type: 'video' },
+    { id: 3, image: 'images/collection/collection3.jpg', title: "COLLECTION", type: 'video' },
+    { id: 4, image: 'images/collection/collection4.jpg', title: "NEW COLLECTION", type: 'post' },
   ];
 
   return (
-    <section className="bg-white py-12 px-4 font-serif">
+    <section className="bg-white py-12 px-4">
       {/* Header Section */}
       <div className="max-w-4xl mx-auto text-center mb-12">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <span className="h-1.5 w-1.5 rounded-full bg-rose-600"></span>
-          <span className="text-xs tracking-[0.2em] uppercase font-semibold text-gray-800">
+        <div className="flex items-center justify-center gap-2 mb-3 md:mb-4">
+          <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
+          <h3 className="text-[10px] md:text-sm font-bold text-[#1a1a3d] uppercase tracking-widest">
             Avanta by Jaipur Kurti Gharana
-          </span>
-          <span className="h-1.5 w-1.5 rounded-full bg-rose-600"></span>
+          </h3>
+          <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
         </div>
         
-        <h2 className="text-4xl md:text-5xl font-medium mb-6 text-gray-900 tracking-tight">
+        <h2 className="text-4xl md:text-5xl font-cinzel font-bold mb-6 text-gray-900 tracking-tight">
           Stay Inspired
         </h2>
         
@@ -55,11 +55,11 @@ const InstagramSection = () => {
                 alt={card.title}
                 className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-white/90 via-transparent to-transparent"></div>
+              <div className="absolute inset-0 "></div>
             </div>
 
             {/* Card Content */}
-            <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
+            {/* <div className="absolute bottom-0 left-0 right-0 p-6 text-center">
               <p className="text-[10px] tracking-widest text-gray-500 mb-1">NEW YEAR'S</p>
               <h3 className="text-xl font-bold tracking-tight text-black mb-2">{card.title}</h3>
               
@@ -78,7 +78,7 @@ const InstagramSection = () => {
                   Inspired by Jaipur's rich traditions, Avanta creates garments that reflect skilled craftsmanship...
                 </p>
               )}
-            </div>
+            </div> */}
           </div>
         ))}
       </div>

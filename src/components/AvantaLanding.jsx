@@ -3,12 +3,12 @@ import { Layers, Box, Star, Globe } from 'lucide-react';
 
 const AvantaLanding = () => {
   return (
-    <div className="min-h-screen bg-white  text-gray-800">
+    <div className="mx-auto  bg-white  text-gray-800">
       {/* Top Section */}
-      <div className="max-w-[90rem]  ml-auto pl-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-7 items-center">
+      <div className="max-w-[90rem] mx-auto pl-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-7 items-center">
         
         {/* Left Content */}
-        <div className="space-y-6">
+        <div className="space-y-6 pl-12">
             <div className="flex items-center justify-start gap-2 mb-3 md:mb-4">
           <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-pink-600 rounded-full"></span>
           <h3 className="text-[10px] md:text-sm font-bold font-mont text-[#1a1a3d] uppercase">
@@ -16,11 +16,11 @@ const AvantaLanding = () => {
           </h3>
           <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-pink-600 rounded-full"></span>
         </div>
-        <h2 className="text-2xl md:text-4xl sm:py-3 font-bold font-cinzel text-[#1a1a3d] mb-6 uppercase ">
+        <h2 className="text-2xl md:text-4xl sm:py-3 font-cinzel font-bold text-[#1a1a3d] mb-6 uppercase ">
           ABOUT AVANTA INDIA <br />
           BY JAIPUR KURTI GHARANA
         </h2>  
-          <div className="space-y-4 text-gray-600 text-sm md:text-base leading-relaxed max-w-xl">
+          <div className="space-y-4 text-black text-sm md:text-base leading-relaxed max-w-xl">
             <p className='font-mont'>
               <span className="font-bold font-mont text-black">Avanta India</span> represents refined Indian fashion, inspired by tradition and improved through modern design. Built on a love for fine craftsmanship, our story draws from Jaipur's rich textile history and how it continues to shape today's style.
             </p>
@@ -72,7 +72,7 @@ const AvantaLanding = () => {
               <img src='/images/icon/Custom.svg' className='w-9 h-9'/>
             
             <h3 className="font-bold font-mont pt-2">Custom Manufacturing</h3>
-            <p className="text-xs font-mont  text-gray-500 leading-relaxed">
+            <p className="text-xs font-mont  text-black leading-relaxed">
               Private label and customization options available for bulk orders.
             </p>
           </div>
@@ -81,7 +81,7 @@ const AvantaLanding = () => {
           <div className="text-center flex flex-col items-center space-y-3">
               <img src='/images/icon/Flexible.svg' className='w-9 h-9'/>
             <h3 className="font-bold font-mont  pt-2">Flexible MOQ</h3>
-            <p className="text-xs font-mont  text-gray-500 leading-relaxed">
+            <p className="text-xs font-mont  text-black leading-relaxed">
               Minimum order quantities designed for businesses of all sizes.
             </p>
           </div>
@@ -90,7 +90,7 @@ const AvantaLanding = () => {
           <div className="text-center flex flex-col items-center space-y-3">
               <img src='/images/icon/Retailers.svg' className='w-9 h-9'/>
             <h3 className="font-bold font-mont ">1,000+ Retailers</h3>
-            <p className="text-xs font-mont  text-gray-500 leading-relaxed">
+            <p className="text-xs font-mont  text-black leading-relaxed">
               Trusted by boutiques & retailers across <span className="font-bold">India & 15+ countries</span> worldwide.
             </p>
           </div>
@@ -99,7 +99,7 @@ const AvantaLanding = () => {
           <div className="text-center flex flex-col items-center space-y-3">
                <img src='/images/icon/Global.svg' className='w-9 h-9'/>
             <h3 className="font-bold font-mont ">Global Shipping</h3>
-            <p className="text-xs font-mont  text-gray-500 leading-relaxed">
+            <p className="text-xs font-mont  text-black leading-relaxed">
               Reliable worldwide delivery with comprehensive export support.
             </p>
           </div>

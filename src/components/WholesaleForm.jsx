@@ -3,11 +3,11 @@ import { Upload } from 'lucide-react';
 
 const WholesaleForm = () => {
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-[#F9F9FF]">
+    <div className="flex flex-col max-w-[90rem] mx-auto lg:flex-row bg-[#F9F9FF]">
       {/* Left Side: Image Section */}
-      <div className="w-full lg:w-2/5 relative min-h-[400px] lg:min-h-screen">
+      <div className="w-full lg:w-2/5 relative">
         <img
-          src="/images/banner/banner-1.svg" // Apni image ka path yahan dalein
+          src="/images/commitment/bulk.jpg" // Apni image ka path yahan dalein
           alt="Fashion Model"
           className="absolute inset-0 w-full h-full object-cover"
         />

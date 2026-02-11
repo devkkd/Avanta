@@ -25,6 +25,7 @@ export default function SubcategoriesPage() {
       const data = await response.json();
       if (data.success) {
         setCategories(data.data);
+        // console.log('Fetched categories:', data.data);
       }
     } catch (error) {
       console.error('Error fetching categories:', error);

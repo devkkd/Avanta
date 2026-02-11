@@ -40,17 +40,17 @@ const FAQ = () => {
   return (
     <div className="max-w-7xl mx-auto px-4 py-12 md:py-20 font-sans">
       <div className="flex flex-col md:flex-row gap-10">
-        
+
         {/* Left Side: Title Section */}
         <div className="md:w-1/3">
-          <div className="flex items-center gap-2 mb-6">
-            <span className="w-1.5 h-1.5 bg-pink-600 rounded-full"></span>
-            <h3 className="text-[10px] md:text-xs font-bold tracking-[0.2em] text-gray-800 uppercase">
-              AVANTA BY JAIPUR KURTI GHARANA
+          <div className="flex items-center justify-start gap-2 mb-3 md:mb-4">
+            <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
+            <h3 className="text-[10px] md:text-sm font-bold text-[#1a1a3d] uppercase tracking-widest">
+              Avanta by Jaipur Kurti Gharana
             </h3>
-            <span className="w-1.5 h-1.5 bg-pink-600 rounded-full"></span>
+            <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
           </div>
-          <h2 className="text-4xl md:text-5xl font-serif text-gray-900 leading-[1.1]">
+          <h2 className="text-3xl md:text-4xl font-cinzel font-bold text-gray-900 leading-[1.1]">
             FREQUENTLY ASKED <br className="hidden md:block" /> QUESTIONS
           </h2>
         </div>
@@ -68,17 +68,16 @@ const FAQ = () => {
                     {item.question}
                   </span>
                   <div className={`flex-shrink-0 ml-4 p-2 rounded-full transition-all duration-300 ${openIndex === index ? 'bg-gray-100' : 'bg-[#E8EAF6]'}`}>
-                    <ChevronDown 
+                    <ChevronDown
                       className={`w-5 h-5 text-[#9FA8DA] transition-transform duration-300 ${openIndex === index ? 'rotate-180' : ''}`}
                     />
                   </div>
                 </button>
-                
+
                 {/* Accordion Content with Smooth Transition */}
-                <div 
-                  className={`overflow-hidden transition-all duration-300 ease-in-out ${
-                    openIndex === index ? 'max-h-60 opacity-100 mb-6' : 'max-h-0 opacity-0'
-                  }`}
+                <div
+                  className={`overflow-hidden transition-all duration-300 ease-in-out ${openIndex === index ? 'max-h-60 opacity-100 mb-6' : 'max-h-0 opacity-0'
+                    }`}
                 >
                   <p className="text-gray-500 text-sm md:text-base leading-relaxed pr-10">
                     {item.answer}

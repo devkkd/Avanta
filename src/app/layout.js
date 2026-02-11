@@ -2,6 +2,7 @@ import { Geist, Geist_Mono, Montserrat, Cinzel } from "next/font/google";
 import "./globals.css";
 import { ProductProvider } from '@/context/ProductContext';
 import ConditionalLayout from '@/components/ConditionalLayout';
+import { EnquiryProvider, InquiryProvider } from "@/context/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -36,9 +37,9 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${cinzel.variable} antialiased`}
       >
-        <ProductProvider>
+        <EnquiryProvider>
           <ConditionalLayout>{children}</ConditionalLayout>
-        </ProductProvider>
+        </EnquiryProvider>
       </body>
     </html>
   );

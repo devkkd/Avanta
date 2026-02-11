@@ -24,11 +24,11 @@ const AboutAchievements = () => {
     <section className="py-20 px-6 bg-white">
       <div className="max-w-7xl mx-auto text-center">
         {/* Header Section */}
-        <h2 className="text-3xl md:text-4xl font-serif font-semibold tracking-wide mb-4 text-black uppercase">
+        <h2 className="text-3xl md:text-4xl font-cinzel font-bold tracking-wide mb-4 text-black uppercase">
           Our Achievements
         </h2>
         
-        <p className="max-w-2xl mx-auto text-sm md:text-base text-gray-800 font-light leading-relaxed mb-16 tracking-tight">
+        <p className="max-w-2xl mx-auto  text-black leading-relaxed mb-16 tracking-tight">
           Each Milestone Reflects Our Commitment To Quality, Craftsmanship, And The Trust Placed In Us By A Growing Community Of Discerning Customers.
         </p>
 
@@ -42,10 +42,10 @@ const AboutAchievements = () => {
                 index !== stats.length - 1 ? 'lg:border-r' : ''
               }`}
             >
-              <h3 className="text-3xl md:text-4xl font-serif font-bold text-black mb-3">
+              <h3 className="text-3xl md:text-4xl font-cinzel font-bold text-black mb-3">
                 {stat.value}
               </h3>
-              <p className="text-[13px] md:text-[14px] text-gray-700 leading-snug max-w-[200px] font-normal">
+              <p className="text-[13px] md:text-[14px] text-black leading-snug max-w-[200px] font-normal">
                 {stat.label}
               </p>
             </div>

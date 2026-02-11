@@ -6,7 +6,7 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 
 const slides = [
   {
-    image: "/images/banner/banner-1.svg", // Replace with your image path
+    image: "/images/banner/banner-1.svg",
     title: "THE LEGACY OF CRAFT UNITED WITH MODERN DISTINCTION",
     subtitle: "Premium B2B Wholesale Ethnic Wear"
   },
@@ -21,67 +21,52 @@ export default function HeroCarousel() {
   const [emblaRef, emblaApi] = useEmblaCarousel({ loop: true }, [Autoplay({ delay: 6000 })]);
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  const scrollPrev = () => {
-    if (emblaApi) emblaApi.scrollPrev();
-  };
-  
-  const scrollNext = () => {
-    if (emblaApi) emblaApi.scrollNext();
-  };
+  const scrollPrev = () => emblaApi && emblaApi.scrollPrev();
+  const scrollNext = () => emblaApi && emblaApi.scrollNext();
 
   useEffect(() => {
     if (!emblaApi) return;
-
-    const onSelect = () => {
-      setSelectedIndex(emblaApi.selectedScrollSnap());
-    };
-
+    const onSelect = () => setSelectedIndex(emblaApi.selectedScrollSnap());
     emblaApi.on('select', onSelect);
     onSelect();
-
-    return () => {
-      emblaApi.off('select', onSelect);
-    };
+    return () => emblaApi.off('select', onSelect);
   }, [emblaApi]);
 
   return (
-    <div className="relative overflow-hidden group" ref={emblaRef}>
-      <div className="flex">
+    <div className="relative overflow-hidden w-full h-[80vh] md:h-screen group" ref={emblaRef}>
+      <div className="flex h-full">
         {slides.map((slide, index) => (
-          <div key={index} className="flex-[0_0_100%] min-w-0 relative max-h-screen">
-            {/* Background Image */}
+          <div key={index} className="flex-[0_0_100%] min-w-0 relative h-full">
             <img 
               src={slide.image} 
-              alt="Model" 
-              className="w-full h-full object-cover"
+              alt="Hero Banner" 
+              className="w-full h-full object-cover object-center"
             />
             
-            {/* Overlay Gradient for better text readability */}
-            <div className="absolute inset-0 bg-black/5" />
+            <div className="absolute inset-0 bg-black/10" />
 
             {/* Central Content Card */}
-            <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
-              <div className="bg-[#801830] text-white p-8 md:p-12 rounded-[40px] max-w-sm  text-center shadow-2xl pointer-events-auto border border-white/10 relative">
+            <div className="absolute inset-0 flex items-center justify-center p-4 pointer-events-none">
+              <div className="bg-[#801830] text-white p-6 md:p-12 rounded-[30px] md:rounded-[40px] w-full max-w-[85%] sm:max-w-md text-center shadow-2xl pointer-events-auto border border-white/10 relative z-10">
                 
-                {/* Decorative Flourish (Optional SVG) */}
-                <div className="mb-4 opacity-80">
-                  {/* <svg width="100%" height="20" viewBox="0 0 200 20" fill="none" className="mx-auto">
-                    <path d="M10 10C50 10 60 2 100 2C140 2 150 10 190 10" stroke="white" strokeWidth="0.5" />
-                  </svg> */}
-
-                  <img src='/images/banner/Group.svg'/>
+                <div className="mb-4 md:mb-6 flex justify-center opacity-80">
+                  <img 
+                    src='/images/banner/Group.svg' 
+                    alt="decoration" 
+                    className="w-20 md:w-auto h-auto"
+                  />
                 </div>
 
-                <h2 className="text-2xl  md:text-4xl font-cinzel font-semibold leading-tight  mb-6">
+                <h2 className="text-lg sm:text-2xl md:text-4xl font-cinzel font-semibold leading-tight mb-4 md:mb-6 px-2">
                   {slide.title}
                 </h2>
                 
-                <p className="text-sm md:text-2xl font-light font-mont  opacity-90 mb-8">
+                <p className="text-[10px] sm:text-sm md:text-xl font-light font-mont opacity-90 mb-6 md:mb-8">
                   {slide.subtitle}
                 </p>
 
-                <button className="bg-white font-mont text-black px-8 py-3 rounded-full text-md font-bold hover:bg-gray-100 transition-all flex items-center gap-2 mx-auto">
-                  Explore Collections <span className="text-lg">↓</span>
+                <button className="bg-white font-mont text-black px-6 py-2 md:px-8 md:py-3 rounded-full text-xs md:text-base font-bold hover:bg-gray-100 transition-all flex items-center gap-2 mx-auto active:scale-95">
+                  Explore Collections <span className="text-sm md:text-lg">↓</span>
                 </button>
               </div>
             </div>
@@ -89,25 +74,32 @@ export default function HeroCarousel() {
         ))}
       </div>
 
-      {/* Navigation Arrows */}
+      {/* Navigation Arrows - Visible on Mobile & Desktop */}
       <button 
         onClick={scrollPrev}
-        className="absolute left-6 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow-lg hover:bg-white transition-all z-20"
+        className="absolute left-2 md:left-6 top-1/2 -translate-y-1/2 bg-white/80 p-2 md:p-3 rounded-full shadow-lg hover:bg-white transition-all z-30 active:scale-90"
+        aria-label="Previous slide"
       >
-        <ChevronLeft className="w-5 h-5 text-gray-800" />
+        <ChevronLeft className="w-4 h-4 md:w-5 md:h-5 text-gray-800" />
       </button>
 
       <button 
         onClick={scrollNext}
-        className="absolute right-6 top-1/2 -translate-y-1/2 bg-white/90 p-3 rounded-full shadow-lg hover:bg-white transition-all z-20"
+        className="absolute right-2 md:right-6 top-1/2 -translate-y-1/2 bg-white/80 p-2 md:p-3 rounded-full shadow-lg hover:bg-white transition-all z-30 active:scale-90"
+        aria-label="Next slide"
       >
-        <ChevronRight className="w-5 h-5 text-gray-800" />
+        <ChevronRight className="w-4 h-4 md:w-5 md:h-5 text-gray-800" />
       </button>
 
       {/* Pagination Dots */}
-      <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-2">
+      <div className="absolute bottom-6 md:bottom-8 left-1/2 -translate-x-1/2 flex gap-2 z-30">
         {slides.map((_, i) => (
-          <div key={i} className={`h-1.5 rounded-full transition-all ${i === selectedIndex ? 'w-8 bg-gray-800' : 'w-2 bg-gray-400'}`} />
+          <div 
+            key={i} 
+            className={`h-1 md:h-1.5 rounded-full transition-all duration-300 ${
+              i === selectedIndex ? 'w-6 md:w-8 bg-white' : 'w-2 bg-white/50'
+            }`} 
+          />
         ))}
       </div>
     </div>

@@ -20,15 +20,15 @@ const Achievements = () => {
     <section className="max-w-7xl mx-auto px-4 py-16 bg-white font-sans">
       {/* Header Section */}
       <div className="text-center mb-12">
-        <div className="flex items-center justify-center gap-2 mb-4">
-          <span className="h-2 w-2 rounded-full bg-pink-600"></span>
-          <span className="text-xs font-bold tracking-widest text-gray-800 uppercase">
+        <div className="flex items-center justify-center gap-2 mb-3 md:mb-4">
+          <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
+          <h3 className="text-[10px] md:text-sm font-bold text-[#1a1a3d] uppercase tracking-widest">
             Avanta by Jaipur Kurti Gharana
-          </span>
-          <span className="h-2 w-2 rounded-full bg-pink-600"></span>
+          </h3>
+          <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
         </div>
         
-        <h2 className="text-3xl md:text-4xl font-serif font-semibold text-gray-900 mb-4">
+        <h2 className="text-3xl md:text-4xl font-cinzel font-bold text-gray-900 mb-4">
           OUR ACHIEVEMENTS
         </h2>
         
@@ -58,7 +58,7 @@ const Achievements = () => {
         <div className="relative h-[400px] md:h-[600px] w-full">
           {/* Aap yahan apni actual image path use karein */}
           <img 
-            src="/images/collection/gown.svg" 
+            src="/images/collection/archi.png" 
             alt="Fashion Models"
             className="w-full h-full object-cover rounded-sm shadow-sm"
           />

@@ -1,478 +1,208 @@
-// "use client";
-// import React, { useState, useEffect } from 'react';
-// import { ChevronDown, Menu, X } from 'lucide-react';
-
-// export default function Header() {
-//   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-//   const [isScrolled, setIsScrolled] = useState(false);
-
-//   useEffect(() => {
-//     const handleScroll = () => {
-//       setIsScrolled(window.scrollY > 10);
-//     };
-//     window.addEventListener('scroll', handleScroll);
-//     return () => window.removeEventListener('scroll', handleScroll);
-//   }, []);
-
-//   const navigationItems = [
-//     'HOME', 'ABOUT US', 'SUITS SET', 'KURTI SET', 'ANARKALI SET',
-//     'TOP & TUNICS', 'GOWN', 'CO-ORD SET', 'CONTACT US', 'DOWNLOAD CATALOG'
-//   ];
-
-//   return (
-//     <>
-//       {/* Header Container */}
-//       <header className={`sticky top-0 w-full z-50 transition-all duration-300 font-mont 
-//         ${isScrolled ? 'bg-white/15 backdrop-blur-xl shadow-lg' : 'bg-white/5 backdrop-blur-lg'}`}>
-
-//         <div className="max-w-[1920px] mx-auto px-4 md:px-8 lg:px-12 py-2">
-//           {/* Top Bar */}
-//           <div className="flex items-center justify-between py-3 md:py-4 relative">
-
-//             {/* Left: Mobile Menu & Location Selector */}
-//             <div className="flex items-center gap-3 md:gap-6">
-//               {/* Mobile Menu Button */}
-//               <button
-//                 className="md:hidden p-2"
-//                 onClick={() => setIsSidebarOpen(true)}
-//                 aria-label="Open menu"
-//               >
-//                 <Menu className="w-5 h-5 text-gray-800" />
-//               </button>
-
-//               {/* Location Selector - Desktop */}
-//               <div className="hidden md:flex items-center gap-2 border border-[#CFCCF5] rounded-full px-4 py-2.5 bg-white">
-//                 <span className="text-xs font-medium text-gray-800 uppercase">Ship To</span>
-//                 <div className="flex items-center gap-2">
-//                   <img
-//                     src="/images/flag.svg"
-//                     alt="India Flag"
-//                     className="w-5 h-3.5 object-cover rounded-sm"
-//                     onError={(e) => {
-//                       e.target.onerror = null;
-//                       e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'%3E%3Crect width='30' height='20' fill='%230f52ba'/%3E%3Ccircle cx='15' cy='10' r='4' fill='white'/%3E%3C/svg%3E";
-//                     }}
-//                   />
-//                   <span className="text-xs font-medium text-gray-800">INDIA</span>
-//                   <ChevronDown className="w-3 h-3 text-gray-600" />
-//                 </div>
-//               </div>
-
-//               {/* Search Bar - Desktop */}
-//               <div className="hidden lg:flex items-center relative w-[280px] lg:w-[300px]">
-//                 <div className="absolute left-3.5">
-//                   <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-//                   </svg>
-//                 </div>
-//                 <input
-//                   type="text"
-//                   placeholder="Search product or categories & more..."
-//                   className="w-full pl-10 pr-4 py-2.5 border border-[#CFCCF5] rounded-full text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300"
-//                 />
-//               </div>
-//             </div>
-
-//             {/* Center: Logo */}
-//             <div className="absolute left-1/2 -translate-x-1/2">
-//               <img
-//                 src='/images/Avanta-Logo.svg'
-//                 alt="Avanta India"
-//                 className="w-28 md:w-32 h-auto"
-//                 onError={(e) => {
-//                   e.target.onerror = null;
-//                   e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Ctext x='100' y='35' font-family='Arial' font-size='24' text-anchor='middle' fill='%231F1951'%3EAvanta India%3C/text%3E%3C/svg%3E";
-//                 }}
-//               />
-//             </div>
-
-//             {/* Right: Action Buttons */}
-//             <div className="flex items-center gap-2 md:gap-3">
-//               {/* Call Button */}
-//               <button className="hidden sm:flex items-center gap-2 bg-[#1F1951] text-white px-4 py-2.5 md:px-5 md:py-3 rounded-full text-xs font-medium hover:bg-[#2A2468] transition-colors">
-//                 <img src='/images/icon/call-calling.svg' className='w-5 h-5' />
-//                 <span className="hidden lg:inline text-xs">Call Now +</span>
-//               </button>
-
-//               {/* WhatsApp Button */}
-//               <button className="flex items-center gap-2 bg-[#00C349] text-white px-4 py-2.5 md:px-5 md:py-3 rounded-full text-xs font-medium hover:bg-[#00A83F] transition-colors">
-//                  <img src='  /images/icon/whatsapp-icon.svg' className='w-5 h-5'/>
-//                 <span className="hidden lg:inline text-xs">Enquiry Now +</span>
-//               </button>
-
-//               {/* Instagram Button */}
-//               <button className="hidden md:flex items-center gap-2 bg-[#0E0E0E] text-white px-4 py-2.5 md:px-5 md:py-3 rounded-full text-xs font-medium hover:bg-gray-800 transition-colors">
-//                <img src='/images/icon/instagram-logo.svg' className='w-5 h-5'/>
-//                 <span className="hidden lg:inline text-xs">Instagram</span>
-//               </button>
-//             </div>
-//           </div>
-
-//           {/* Desktop Navigation */}
-//           <nav className="hidden md:block pt-3 pb-2 w-full">
-//             <ul className="flex items-center justify-center flex-wrap gap-3 lg:gap-3">
-//               {navigationItems.map((item, idx) => (
-//                 <li key={idx}>
-//                   <a
-//                     href="#"
-//                     className={`text-xs font-bold uppercase tracking-wider hover:text-[#1F1951] transition-colors px-2 py-1 ${item === 'HOME'
-//                         ? 'text-[#1F1951] border-b-2 border-[#1F1951] pb-1'
-//                         : 'text-gray-700'
-//                       }`}
-//                   >
-//                     {item}
-//                   </a>
-//                 </li>
-//               ))}
-//             </ul>
-//           </nav>
-//         </div>
-//       </header>
-
-//       {/* Mobile Sidebar Overlay */}
-//       <div
-//         className={`fixed inset-0 bg-black/50 z-60 transition-opacity duration-300 md:hidden ${isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-//           }`}
-//         onClick={() => setIsSidebarOpen(false)}
-//       />
-
-//       {/* Mobile Sidebar Content */}
-//       <aside className={`fixed top-0 left-0 h-full w-[280px] bg-white z-70 shadow-2xl transition-transform duration-300 md:hidden ${isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-//         }`}>
-//         <div className="p-6 flex flex-col h-full">
-//           <div className="flex items-center justify-between mb-8">
-//             <img
-//               src='/images/Avanta-Logo.svg'
-//               alt="Avanta India"
-//               className="w-24"
-//             />
-//             <button
-//               onClick={() => setIsSidebarOpen(false)}
-//               className="p-2 hover:bg-gray-100 rounded-full"
-//             >
-//               <X className="w-5 h-5 text-gray-600" />
-//             </button>
-//           </div>
-
-//           {/* Mobile Search Bar */}
-//           <div className="mb-6 relative">
-//             <div className="absolute left-3 top-1/2 -translate-y-1/2">
-//               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-//               </svg>
-//             </div>
-//             <input
-//               type="text"
-//               placeholder="Search..."
-//               className="w-full pl-10 pr-4 py-2.5 border border-gray-300 rounded-lg text-sm"
-//             />
-//           </div>
-
-//           <nav className="flex-1 overflow-y-auto">
-//             <ul className="space-y-1">
-//               {navigationItems.map((item, idx) => (
-//                 <li key={idx}>
-//                   <a
-//                     href="#"
-//                     className={`block py-3 px-4 text-sm font-medium rounded-lg transition-colors ${item === 'HOME'
-//                         ? 'bg-[#1F1951] text-white'
-//                         : 'text-gray-700 hover:bg-gray-100'
-//                       }`}
-//                     onClick={() => setIsSidebarOpen(false)}
-//                   >
-//                     {item}
-//                   </a>
-//                 </li>
-//               ))}
-//             </ul>
-//           </nav>
-
-//           <div className="pt-6 border-t border-gray-200 mt-6 space-y-4">
-//             {/* Mobile Action Buttons */}
-//             <button className="w-full flex items-center justify-center gap-2 bg-[#1F1951] text-white py-3 rounded-lg font-medium text-sm">
-//               <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-//                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-//               </svg>
-//               Call Now
-//             </button>
-
-//             <button className="w-full flex items-center justify-center gap-2 bg-[#00C349] text-white py-3 rounded-lg font-medium text-sm">
-//               <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-//                 <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.91-9.91-9.91zm5.19 13.98c-.27.76-1.36 1.39-1.88 1.48-.51.09-1.15.15-2.71-.6-1.96-.95-3.24-3.37-3.34-3.53-.1-.16-.79-1.05-.79-2.01 0-.96.5-1.43.67-1.61.17-.18.37-.24.5-.24.12 0 .24 0 .34.01.1.01.24-.03.38.4.14.43.48 1.5.52 1.61.04.11.06.24 0 .37-.06.13-.09.21-.18.33-.09.12-.19.26-.27.35-.09.09-.18.19-.08.37.1.18.44.78.95 1.26.66.62 1.22.81 1.41.91.19.1.31.08.42-.05.11-.13.47-.55.6-.74.13-.19.26-.16.41-.1.15.06.94.44 1.1.52.16.08.26.12.3.19.04.07.04.43-.23 1.01z" />
-//               </svg>
-//               WhatsApp Enquiry
-//             </button>
-//           </div>
-//         </div>
-//       </aside>
-//     </>
-//   );
-// }
-
-
 "use client";
-import React, { useState, useEffect } from 'react';
-import { ChevronDown, Menu, X } from 'lucide-react';
 
-export default function Header() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false);
+import React, { useState } from 'react';
+import { ChevronDown, Search, Menu, X, ShoppingBag } from 'lucide-react';
+import Link from 'next/link';
+import categories from "@/data/MainCategory.json";
+import { useEnquiry } from "@/context/CartContext"; // Ensure path matches your project
 
-  useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 10);
-    };
-    window.addEventListener('scroll', handleScroll);
-    return () => window.removeEventListener('scroll', handleScroll);
-  }, []);
+const Header = () => {
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { Enquiries } = useEnquiry(); // Consuming your context
 
-  const navigationItems = [
-    { name: 'HOME', path: '/' },
-    { name: 'ABOUT US', path: '/about' },
-    { name: 'SUITS SET', path: '/suits-set' },
-    { name: 'KURTI SET', path: '/kurti-pant-dupatta' },
-    { name: 'ANARKALI SET', path: '/anarkali-suit' },
-    { name: 'TOP & TUNICS', path: '/top-tunics' },
-    { name: 'GOWN', path: '/gown' },
-    { name: 'CO-ORD SET', path: '/co-ord-set' },
-    { name: 'CONTACT US', path: '/contact' },
-    { name: 'DOWNLOAD CATALOG', path: '/catalog' }
+  const staticLinks = [
+    { name: "HOME", href: "/" },
+    { name: "ABOUT US", href: "/about" }
   ];
 
+  const categoryLinks = categories
+    .filter(cat => cat.isActive)
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .map(cat => ({
+      name: cat.name.toUpperCase(),
+      href: `/store/${cat.slug}`
+    }));
+
+  const footerLinks = [
+    { name: "CONTACT US", href: "/contact" },
+    { name: "DOWNLOAD CATALOG ↓", href: "/catalog" }
+  ];
+
+  const navigation = [
+    ...staticLinks,
+    ...categoryLinks,
+    ...footerLinks
+  ];
+
+  const MAX_VISIBLE_CATEGORIES = 6;
+  const visibleCategories = categoryLinks.slice(0, MAX_VISIBLE_CATEGORIES);
+  const overflowCategories = categoryLinks.slice(MAX_VISIBLE_CATEGORIES);
+
   return (
-    <>
-      {/* Header Container */}
-      <header className={`sticky top-0 w-full z-50 transition-all duration-300 font-mont 
-        ${isScrolled ? 'bg-white/15 backdrop-blur-xl shadow-lg' : 'bg-white/5 backdrop-blur-lg'}`}>
+    <header className="sticky top-0 w-full z-50 font-sans">
+      {/* Top Announcement Bar */}
+      <div className="bg-[#1F1951] text-white py-2 px-4 flex items-center justify-center relative overflow-hidden">
+        <button className="absolute left-4 lg:left-10 text-white/70 hover:text-white">
+          <ChevronDown className="rotate-90 w-5 h-5" />
+        </button>
+        <p className="text-[10px] md:text-xs tracking-wide text-center px-8 font-light italic">
+          Welcome To Avanta India By Jaipur Kurti Gharana Thoughtfully Crafted To Celebrate Heritage, Purpose-built For Discerning Resellers.
+        </p>
+        <button className="absolute right-4 lg:right-10 text-white/70 hover:text-white">
+          <ChevronDown className="-rotate-90 w-5 h-5" />
+        </button>
+      </div>
 
-        <div className="max-w-[1920px] mx-auto px-4 md:px-8 lg:px-12 py-2">
-          {/* Top Bar */}
-          <div className="flex items-center justify-between py-3 md:py-4 relative">
+      {/* Glassmorphism Header Content */}
+      <div className="bg-white/70 backdrop-blur-md border-b border-white/20 shadow-sm transition-all duration-300">
+        <div className="max-w-[1440px] mx-auto px-4 py-4 lg:py-6">
+          <div className="flex items-center justify-between gap-4 relative">
 
-            {/* Left: Mobile Menu & Location Selector */}
-            <div className="flex items-center gap-3 md:gap-6">
-              {/* Mobile Menu Button */}
-              <button
-                className="md:hidden p-2"
-                onClick={() => setIsSidebarOpen(true)}
-                aria-label="Open menu"
-              >
-                <Menu className="w-5 h-5 text-gray-800" />
-              </button>
-
-              {/* Location Selector - Desktop */}
-              <div className="hidden md:flex items-center gap-2 border border-[#CFCCF5] rounded-full px-4 py-2.5 bg-white">
-                <span className="text-xs font-medium text-gray-800 uppercase">Ship To</span>
-                <div className="flex items-center gap-2">
-                  <img
-                    src="/images/flag.svg"
-                    alt="India Flag"
-                    className="w-5 h-3.5 object-cover rounded-sm"
-                    onError={(e) => {
-                      e.target.onerror = null;
-                      e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 20'%3E%3Crect width='30' height='20' fill='%230f52ba'/%3E%3Ccircle cx='15' cy='10' r='4' fill='white'/%3E%3C/svg%3E";
-                    }}
-                  />
-                  <span className="text-xs font-medium text-gray-800">INDIA</span>
-                  <ChevronDown className="w-3 h-3 text-gray-600" />
+            {/* Left: Shipping & Search */}
+            <div className="hidden lg:flex items-center gap-4 flex-1">
+              <div className="flex items-center gap-2 border border-indigo-100/50 rounded-full px-4 py-2.5 bg-white/50 hover:bg-white transition-colors">
+                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Ship To</span>
+                <div className="flex items-center gap-1.5">
+                  <img src="https://flagcdn.com/w20/in.png" alt="India" className="w-4 h-3 object-cover" />
+                  <span className="text-xs font-bold text-gray-800 uppercase">India</span>
+                  <ChevronDown className="w-3 h-3 text-gray-400" />
                 </div>
               </div>
 
-              {/* Search Bar - Desktop */}
-              <div className="hidden lg:flex items-center relative w-[280px] lg:w-[300px]">
-                <div className="absolute left-3.5">
-                  <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-                  </svg>
-                </div>
+              <div className="relative flex-1 max-w-sm">
+                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search product or categories & more..."
-                  className="w-full pl-10 pr-4 py-2.5 border border-[#CFCCF5] rounded-full text-sm bg-white focus:outline-none focus:ring-2 focus:ring-blue-100 focus:border-blue-300"
+                  className="w-full bg-white/40 border border-indigo-50/50 rounded-full py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:ring-4 focus:ring-indigo-50/30 transition-all"
                 />
               </div>
             </div>
 
             {/* Center: Logo */}
-            <div className="absolute left-1/2 -translate-x-1/2">
-              <a href="/">
-                <img
-                  src='/images/Avanta-Logo.svg'
-                  alt="Avanta India"
-                  className="w-28 md:w-32 h-auto"
-                  onError={(e) => {
-                    e.target.onerror = null;
-                    e.target.src = "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 60'%3E%3Ctext x='100' y='35' font-family='Arial' font-size='24' text-anchor='middle' fill='%231F1951'%3EAvanta India%3C/text%3E%3C/svg%3E";
-                  }}
-                />
-              </a>
+            <div className="absolute left-1/2 -translate-x-1/2 z-10">
+              <Link href="/">
+                <img src='/images/Avanta-Logo.svg' alt="Avanta India" className="w-28 md:w-32 h-auto" />
+              </Link>
             </div>
 
-            {/* Right: Action Buttons */}
-            <div className="flex items-center gap-2 md:gap-3">
-              {/* Call Button */}
-              <a 
-                href="tel:+1234567890" 
-                className="hidden sm:flex items-center gap-2 bg-[#1F1951] text-white px-4 py-2.5 md:px-5 md:py-3 rounded-full text-xs font-medium hover:bg-[#2A2468] transition-colors"
-              >
-                <img src='/images/icon/call-calling.svg' className='w-5 h-5' alt="Call" />
-                <span className="hidden lg:inline text-xs">Call Now +</span>
-              </a>
+            {/* Right: Actions */}
+            <div className="flex items-center gap-3 flex-1 justify-end">
 
-              {/* WhatsApp Button */}
-              <a 
-                href="https://wa.me/1234567890" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="flex items-center gap-2 bg-[#00C349] text-white px-4 py-2.5 md:px-5 md:py-3 rounded-full text-xs font-medium hover:bg-[#00A83F] transition-colors"
-              >
-                <img src='/images/icon/whatsapp-icon.svg' className='w-5 h-5' alt="WhatsApp" />
-                <span className="hidden lg:inline text-xs">Enquiry Now +</span>
-              </a>
+              {/* Desktop Cart Section */}
+              <Link href="/cart" className="relative group hidden lg:flex items-center mr-2">
+                <ShoppingBag className="w-6 h-6 text-[#1F1951] group-hover:scale-110 transition-transform" />
+                {Enquiries.length > 0 && (
+                  <span className="absolute -top-2 -right-2 bg-[#E12B5E] text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-white animate-in zoom-in">
+                    {Enquiries.length}
+                  </span>
+                )}
+              </Link>
 
-              {/* Instagram Button */}
-              <a 
-                href="https://instagram.com" 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="hidden md:flex items-center gap-2 bg-[#0E0E0E] text-white px-4 py-2.5 md:px-5 md:py-3 rounded-full text-xs font-medium hover:bg-gray-800 transition-colors"
-              >
-                <img src='/images/icon/instagram-logo.svg' className='w-5 h-5' alt="Instagram" />
-                <span className="hidden lg:inline text-xs">Instagram</span>
-              </a>
+              <div className="hidden lg:flex items-center gap-3">
+                <button className="bg-[#1F1951] text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:scale-105 transition-all shadow-md">
+                  <img src="/images/icon/call-calling.svg" alt="Call" className="w-3.5 h-3.5" />
+                  Call Now →
+                </button>
+                <button className="bg-[#00C349] text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:scale-105 transition-all shadow-md">
+                  <img src="/images/icon/whatsapp.svg" alt="WA" className="w-3.5 h-3.5" />
+                  Enquiry Now →
+                </button>
+                <button className="bg-black text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:bg-zinc-800 transition-all shadow-md">
+                  <img src="/images/icon/instagram.svg" alt="WA" className="w-3.5 h-3.5" />
+                  Instagram
+                </button>
+              </div>
+
+              {/* Mobile Right Section (Cart + Menu) */}
+              <div className="flex items-center gap-3 lg:hidden">
+                <Link href="/cart" className="relative">
+                  <ShoppingBag className="w-6 h-6 text-[#1F1951]" />
+                  {Enquiries.length > 0 && (
+                    <span className="absolute -top-2 -right-2 bg-[#E12B5E] text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
+                      {Enquiries.length}
+                    </span>
+                  )}
+                </Link>
+                <button className="p-2 text-[#1F1951]" onClick={() => setIsMenuOpen(!isMenuOpen)}>
+                  {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+                </button>
+              </div>
+
             </div>
           </div>
 
-          {/* Desktop Navigation */}
-          <nav className="hidden md:block pt-3 pb-2 w-full">
-            <ul className="flex items-center justify-center flex-wrap gap-2 lg:gap-3">
-              {navigationItems.map((item, idx) => (
-                <li key={idx}>
-                  <a
-                    href={item.path}
-                    className={`text-xs font-bold uppercase tracking-wider hover:text-[#1F1951] transition-colors px-2 py-1 whitespace-nowrap ${
-                      item.name === 'HOME'
-                        ? 'text-[#1F1951] border-b-2 border-[#1F1951] pb-1'
-                        : 'text-gray-700'
-                    }`}
-                  >
-                    {item.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
+          {/* Desktop Navigation Bar */}
+          <nav className="hidden lg:flex items-center justify-center mt-8 gap-10">
+            {staticLinks.map(item => (
+              <NavLink key={item.name} item={item} />
+            ))}
+
+            {visibleCategories.map(item => (
+              <NavLink key={item.name} item={item} />
+            ))}
+
+            {overflowCategories.length > 0 && (
+              <div className="relative group">
+                <button className="flex items-center gap-1 text-[11px] font-bold tracking-[0.15em] text-gray-800 hover:text-[#1F1951] uppercase transition-colors">
+                  All Categories
+                  <ChevronDown className="w-3 h-3 transition-transform group-hover:rotate-180" />
+                </button>
+                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[260px] bg-white border border-[#E5E2D6] rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
+                  {overflowCategories.map((item, index) => (
+                    <Link
+                      key={item.name}
+                      href={item.href}
+                      className="block px-6 py-4 text-xs font-bold tracking-widest text-gray-700 hover:bg-[#1F1951] hover:text-white transition-colors border-b border-gray-50 last:border-0 uppercase"
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {footerLinks.map(item => (
+              <NavLink key={item.name} item={item} />
+            ))}
           </nav>
         </div>
-      </header>
+      </div>
 
-      {/* Mobile Sidebar Overlay */}
-      <div
-        className={`fixed inset-0 bg-black/50 z-60 transition-opacity duration-300 md:hidden ${
-          isSidebarOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
-        }`}
-        onClick={() => setIsSidebarOpen(false)}
-      />
-
-      {/* Mobile Sidebar Content */}
-      <aside
-        className={`fixed top-0 left-0 h-full w-[280px] bg-white z-70 shadow-2xl transition-transform duration-300 md:hidden ${
-          isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
-        }`}
-      >
-        <div className="p-5 flex flex-col h-full">
-          <div className="flex items-center justify-between mb-6">
-            <a href="/" onClick={() => setIsSidebarOpen(false)}>
-              <img
-                src='/images/Avanta-Logo.svg'
-                alt="Avanta India"
-                className="w-24"
-              />
-            </a>
-            <button
-              onClick={() => setIsSidebarOpen(false)}
-              className="p-2 hover:bg-gray-100 rounded-full"
-              aria-label="Close menu"
-            >
-              <X className="w-5 h-5 text-gray-600" />
-            </button>
+      {/* Mobile Sidebar */}
+      <div className={`lg:hidden fixed inset-0 z-50 bg-[#1F1951]/20 backdrop-blur-sm transition-opacity ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+        <div className={`absolute left-0 top-0 h-full w-[85%] bg-white p-8 transition-transform duration-500 ease-out shadow-2xl ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+          <div className="flex justify-between items-center mb-10">
+            <img src='/images/Avanta-Logo.svg' alt="Avanta India" className="w-28 md:w-32 h-auto" />
+            <X className="text-gray-400 cursor-pointer" onClick={() => setIsMenuOpen(false)} />
           </div>
-
-          {/* Mobile Search Bar */}
-          <div className="mb-6 relative">
-            <div className="absolute left-3 top-1/2 -translate-y-1/2">
-              <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
-              </svg>
-            </div>
-            <input
-              type="text"
-              placeholder="Search..."
-              className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg text-sm"
-            />
-          </div>
-
-          <nav className="flex-1 overflow-y-auto">
-            <ul className="space-y-1">
-              {navigationItems.map((item, idx) => (
-                <li key={idx}>
-                  <a
-                    href={item.path}
-                    className={`block py-3 px-4 text-sm font-medium rounded-lg transition-colors ${
-                      item.name === 'HOME'
-                        ? 'bg-[#1F1951] text-white'
-                        : 'text-gray-700 hover:bg-gray-100'
-                    }`}
-                    onClick={() => setIsSidebarOpen(false)}
-                  >
-                    {item.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </nav>
-
-          <div className="pt-6 border-t border-gray-200 mt-6 space-y-3">
-            {/* Mobile Action Buttons */}
-            <a 
-              href="tel:+1234567890" 
-              className="w-full flex items-center justify-center gap-2 bg-[#1F1951] text-white py-3 rounded-lg font-medium text-sm"
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
-              </svg>
-              Call Now
-            </a>
-
-            <a 
-              href="https://wa.me/1234567890" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 bg-[#00C349] text-white py-3 rounded-lg font-medium text-sm"
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12.04 2c-5.46 0-9.91 4.45-9.91 9.91 0 1.75.46 3.45 1.32 4.95L2.05 22l5.25-1.38c1.45.79 3.08 1.21 4.74 1.21 5.46 0 9.91-4.45 9.91-9.91 0-5.46-4.45-9.91-9.91-9.91zm5.19 13.98c-.27.76-1.36 1.39-1.88 1.48-.51.09-1.15.15-2.71-.6-1.96-.95-3.24-3.37-3.34-3.53-.1-.16-.79-1.05-.79-2.01 0-.96.5-1.43.67-1.61.17-.18.37-.24.5-.24.12 0 .24 0 .34.01.1.01.24-.03.38.4.14.43.48 1.5.52 1.61.04.11.06.24 0 .37-.06.13-.09.21-.18.33-.09.12-.19.26-.27.35-.09.09-.18.19-.08.37.1.18.44.78.95 1.26.66.62 1.22.81 1.41.91.19.1.31.08.42-.05.11-.13.47-.55.6-.74.13-.19.26-.16.41-.1.15.06.94.44 1.1.52.16.08.26.12.3.19.04.07.04.43-.23 1.01z" />
-              </svg>
-              WhatsApp Enquiry
-            </a>
-
-            {/* Mobile Instagram Button */}
-            <a 
-              href="https://instagram.com" 
-              target="_blank" 
-              rel="noopener noreferrer"
-              className="w-full flex items-center justify-center gap-2 bg-[#0E0E0E] text-white py-3 rounded-lg font-medium text-sm"
-              onClick={() => setIsSidebarOpen(false)}
-            >
-              <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-              </svg>
-              Instagram
-            </a>
+          <div className="flex flex-col gap-6">
+            {navigation.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={() => setIsMenuOpen(false)}
+                className="text-xs font-bold tracking-[0.2em] border-b border-gray-50 pb-4 text-gray-700 uppercase"
+              >
+                {item.name}
+              </Link>
+            ))}
           </div>
         </div>
-      </aside>
-    </>
+      </div>
+    </header>
   );
-}
+};
+
+// NavLink Sub-component to keep code clean
+const NavLink = ({ item }) => (
+  <Link
+    href={item.href}
+    className="text-[11px] font-bold tracking-[0.15em] text-gray-800 hover:text-[#1F1951] transition-colors relative group uppercase"
+  >
+    {item.name}
+    <span className="absolute -bottom-1 left-0 h-0.5 bg-[#1F1951] transition-all duration-300 w-0 group-hover:w-full"></span>
+  </Link>
+);
+
+export default Header;
