@@ -1,59 +1,26 @@
 import { NextResponse } from 'next/server';
-import { getAllSubcategories, createSubcategory, getAllCategories } from '@/lib/database-adapter';
+import dbConnect from '@/lib/mongodb';
+import Subcategory from '@/models/Subcategory';
+import Category from '@/models/Category';
 import { generateSlug } from '@/models/Subcategory';
-
-// Helper function to validate ID (for mock database compatibility)
-function isValidId(id) {
-  return id && typeof id === 'string' && id.length > 0;
-}
 
 // GET - Get all subcategories
 export async function GET(request) {
   try {
+    await dbConnect();
+    
     const { searchParams } = new URL(request.url);
     const categoryId = searchParams.get('categoryId');
     
-    // Use database adapter (MongoDB or mock)
-    let subcategories = await getAllSubcategories();
-    
-    // Filter by categoryId if provided
-    if (categoryId && isValidId(categoryId)) {
-      subcategories = subcategories.filter(sub => {
-        // Handle both ObjectId and string comparisons
-        const subCategoryId = sub.categoryId && sub.categoryId.toString ? sub.categoryId.toString() : sub.categoryId;
-        return subCategoryId === categoryId;
-      });
+    let query = {};
+    if (categoryId) {
+      query.categoryId = categoryId;
     }
     
-    // Get all categories for population
-    const categories = await getAllCategories();
-    const categoryMap = {};
-    categories.forEach(cat => {
-      // Handle both ObjectId and string keys
-      const categoryId = cat._id && cat._id.toString ? cat._id.toString() : cat._id;
-      categoryMap[categoryId] = cat;
-    });
-    
-    // Populate category info for each subcategory
-    subcategories = subcategories.map(subcategory => {
-      const subCategoryId = subcategory.categoryId && subcategory.categoryId.toString ? subcategory.categoryId.toString() : subcategory.categoryId;
-      if (subCategoryId && categoryMap[subCategoryId]) {
-        const category = categoryMap[subCategoryId];
-        return {
-          ...subcategory,
-          categoryId: {
-            _id: category._id,
-            name: category.name,
-            slug: category.slug,
-            isActive: category.isActive
-          }
-        };
-      }
-      return {
-        ...subcategory,
-        categoryId: null
-      };
-    });
+    const subcategories = await Subcategory.find(query)
+      .sort({ sortOrder: 1, name: 1 })
+      .populate('categoryId', 'name slug isActive')
+      .lean();
     
     return NextResponse.json({
       success: true,
@@ -71,10 +38,10 @@ export async function GET(request) {
 // POST - Create new subcategory
 export async function POST(request) {
   try {
+    await dbConnect();
+    
     const body = await request.json();
     const { name, description = '', categoryId, sortOrder = 0, image = '' } = body;
-
-    console.log('Creating subcategory with data:', { name, categoryId, description, sortOrder });
 
     if (!name || name.trim().length < 2) {
       return NextResponse.json(
@@ -83,23 +50,15 @@ export async function POST(request) {
       );
     }
 
-    if (!categoryId || !isValidId(categoryId)) {
-      console.log('Invalid or missing categoryId:', categoryId);
+    if (!categoryId) {
       return NextResponse.json(
-        { error: 'Valid category ID is required' },
+        { error: 'Category ID is required' },
         { status: 400 }
       );
     }
 
     // Check if category exists
-    const categories = await getAllCategories();
-    console.log('Available categories:', categories.map(c => ({ id: c._id, name: c.name })));
-    
-    const category = categories.find(cat => cat._id.toString() === categoryId.toString());
-    console.log('Category found:', category ? 'YES' : 'NO');
-    console.log('Looking for categoryId:', categoryId);
-    console.log('Category IDs in DB:', categories.map(c => c._id.toString()));
-    
+    const category = await Category.findById(categoryId);
     if (!category) {
       return NextResponse.json(
         { error: 'Category not found' },
@@ -109,6 +68,15 @@ export async function POST(request) {
 
     // Generate slug from name
     const slug = generateSlug(name);
+
+    // Check if slug already exists
+    const existingSubcategory = await Subcategory.findOne({ slug });
+    if (existingSubcategory) {
+      return NextResponse.json(
+        { error: 'A subcategory with this name already exists' },
+        { status: 400 }
+      );
+    }
 
     const subcategoryData = {
       name: name.trim(),
@@ -120,19 +88,10 @@ export async function POST(request) {
       isActive: true
     };
 
-    console.log('Creating subcategory with data:', subcategoryData);
-
-    // Create subcategory using database adapter
-    const newSubcategory = await createSubcategory(subcategoryData);
+    const newSubcategory = await Subcategory.create(subcategoryData);
     
-    // Add category info for response
-    newSubcategory.categoryId = {
-      _id: category._id,
-      name: category.name,
-      slug: category.slug
-    };
-
-    console.log('Subcategory created successfully:', newSubcategory);
+    // Populate category info for response
+    await newSubcategory.populate('categoryId', 'name slug isActive');
 
     return NextResponse.json({
       success: true,

@@ -3,6 +3,7 @@ import "./globals.css";
 import { ProductProvider } from '@/context/ProductContext';
 import ConditionalLayout from '@/components/ConditionalLayout';
 import { EnquiryProvider, InquiryProvider } from "@/context/CartContext";
+import { CartProvider } from "@/context/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,9 +38,11 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${cinzel.variable} antialiased`}
       >
-        <EnquiryProvider>
-          <ConditionalLayout>{children}</ConditionalLayout>
-        </EnquiryProvider>
+        <CartProvider>
+          <EnquiryProvider>
+            <ConditionalLayout>{children}</ConditionalLayout>
+          </EnquiryProvider>
+        </CartProvider>
       </body>
     </html>
   );

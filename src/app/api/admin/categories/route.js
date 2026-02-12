@@ -1,12 +1,14 @@
 import { NextResponse } from 'next/server';
-import { getAllCategories, createCategory } from '@/lib/database-adapter';
+import dbConnect from '@/lib/mongodb';
+import Category from '@/models/Category';
 import { generateSlug } from '@/models/Category';
 
 // GET - Get all categories
 export async function GET() {
   try {
-    // Use database adapter (MongoDB or mock)
-    const categories = await getAllCategories();
+    await dbConnect();
+    
+    const categories = await Category.find({}).sort({ sortOrder: 1, name: 1 }).lean();
     
     return NextResponse.json({
       success: true,
@@ -24,6 +26,8 @@ export async function GET() {
 // POST - Create new category
 export async function POST(request) {
   try {
+    await dbConnect();
+    
     const body = await request.json();
     const { name, description = '', sortOrder = 0 } = body;
 
@@ -37,6 +41,15 @@ export async function POST(request) {
     // Generate slug from name
     const slug = generateSlug(name);
 
+    // Check if slug already exists
+    const existingCategory = await Category.findOne({ slug });
+    if (existingCategory) {
+      return NextResponse.json(
+        { error: 'A category with this name already exists' },
+        { status: 400 }
+      );
+    }
+
     const categoryData = {
       name: name.trim(),
       slug,
@@ -45,8 +58,7 @@ export async function POST(request) {
       isActive: true
     };
 
-    // Create category using database adapter
-    const newCategory = await createCategory(categoryData);
+    const newCategory = await Category.create(categoryData);
 
     return NextResponse.json({
       success: true,

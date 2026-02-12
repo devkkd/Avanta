@@ -119,6 +119,10 @@ const ProductSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  isNew: {
+    type: Boolean,
+    default: false
+  },
   sortOrder: {
     type: Number,
     default: 0
@@ -143,7 +147,7 @@ ProductSchema.index({ isActive: 1, isFeatured: 1 });
 ProductSchema.index({ 'priceRange.min': 1, 'priceRange.max': 1 });
 
 // Generate slug from name if not provided
-ProductSchema.pre('save', function(next) {
+ProductSchema.pre('save', function() {
   if (!this.slug && this.name) {
     this.slug = this.name
       .toLowerCase()
@@ -158,17 +162,14 @@ ProductSchema.pre('save', function(next) {
   if (this.sizes && this.sizes.length > 0) {
     this.totalStock = this.sizes.reduce((total, size) => total + (size.stock || 0), 0);
   }
-  
-  next();
 });
 
 // Generate SKU if not provided
-ProductSchema.pre('save', function(next) {
+ProductSchema.pre('save', function() {
   if (!this.sku && this.styleCode && this.color && this.color.name) {
     const colorCode = this.color.name.substring(0, 3).toUpperCase();
     this.sku = `${this.styleCode}-${colorCode}`;
   }
-  next();
 });
 
 // Helper method to generate style code

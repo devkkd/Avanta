@@ -1,6 +1,8 @@
-const { MongoClient } = require('mongodb');
-const bcrypt = require('bcryptjs');
-require('dotenv').config({ path: '.env.local' });
+import { MongoClient } from 'mongodb';
+import bcrypt from 'bcryptjs';
+import dotenv from 'dotenv';
+
+dotenv.config({ path: '.env.local' });
 
 async function createAdmin() {
   const uri = process.env.MONGODB_URI;
@@ -32,13 +34,33 @@ async function createAdmin() {
       console.log('👤 Username:', existingAdmin.username);
       console.log('🔄 Active:', existingAdmin.isActive);
       console.log('');
+      console.log('🔄 Updating admin credentials...');
+      
+      // Update password
+      const newPassword = 'Avanta@123';
+      const hashedPassword = await bcrypt.hash(newPassword, 12);
+      
+      await db.collection('admins').updateOne(
+        { _id: existingAdmin._id },
+        { 
+          $set: { 
+            password: hashedPassword,
+            email: 'admin@avanta.com',
+            updatedAt: new Date()
+          } 
+        }
+      );
+      
+      console.log('✅ Admin credentials updated successfully!');
+      console.log('📧 Email: admin@avanta.com');
+      console.log('🔑 Password: Avanta@123');
+      console.log('');
       console.log('✅ You can login at: http://localhost:3000/admin/login');
-      console.log('🔑 Use credentials: admin / admin123');
       return;
     }
     
     // Hash password
-    const password = 'admin123';
+    const password = 'Avanta@123';
     const hashedPassword = await bcrypt.hash(password, 12);
     
     // Create admin user
@@ -58,11 +80,11 @@ async function createAdmin() {
     console.log('🎉 Admin user created successfully!');
     console.log('📧 Email: admin@avanta.com');
     console.log('👤 Username: admin');
-    console.log('🔑 Password: admin123');
+    console.log('🔑 Password: Avanta@123');
     console.log('🆔 Admin ID:', result.insertedId);
     console.log('');
     console.log('✅ You can now login to admin panel at: http://localhost:3000/admin/login');
-    console.log('⚠️  IMPORTANT: Change password after first login!');
+    console.log('⚠️  IMPORTANT: Keep these credentials secure!');
     
   } catch (error) {
     console.error('❌ Error creating admin:', error);

@@ -1,46 +1,26 @@
 import { NextResponse } from 'next/server';
-import { getSubcategoryById, updateSubcategory, deleteSubcategory, getAllCategories } from '@/lib/database-adapter';
+import dbConnect from '@/lib/mongodb';
+import Subcategory from '@/models/Subcategory';
+import Category from '@/models/Category';
+import Product from '@/models/Product';
 import { generateSlug } from '@/models/Subcategory';
-
-// Helper function to validate ID (for mock database compatibility)
-function isValidId(id) {
-  return id && typeof id === 'string' && id.length > 0;
-}
 
 // GET - Get subcategory by ID
 export async function GET(request, { params }) {
   try {
+    await dbConnect();
+    
     const { id } = await params;
 
-    if (!isValidId(id)) {
-      return NextResponse.json(
-        { error: 'Invalid subcategory ID' },
-        { status: 400 }
-      );
-    }
-
-    // Get subcategory using database adapter
-    const subcategory = await getSubcategoryById(id);
+    const subcategory = await Subcategory.findById(id)
+      .populate('categoryId', 'name slug isActive')
+      .lean();
     
     if (!subcategory) {
       return NextResponse.json(
         { error: 'Subcategory not found' },
         { status: 404 }
       );
-    }
-
-    // Get category info
-    if (subcategory.categoryId) {
-      const categories = await getAllCategories();
-      const category = categories.find(cat => cat._id === subcategory.categoryId);
-      if (category) {
-        subcategory.categoryId = {
-          _id: category._id,
-          name: category.name,
-          slug: category.slug,
-          isActive: category.isActive
-        };
-      }
     }
 
     return NextResponse.json({
@@ -59,19 +39,11 @@ export async function GET(request, { params }) {
 // PUT - Update subcategory
 export async function PUT(request, { params }) {
   try {
+    await dbConnect();
+    
     const { id } = await params;
     const body = await request.json();
     const { name, description, categoryId, sortOrder, isActive, image } = body;
-
-    console.log('PUT request received for subcategory:', id);
-    console.log('Request body:', JSON.stringify(body, null, 2));
-
-    if (!isValidId(id)) {
-      return NextResponse.json(
-        { error: 'Invalid subcategory ID' },
-        { status: 400 }
-      );
-    }
 
     const updateData = {};
     
@@ -92,57 +64,28 @@ export async function PUT(request, { params }) {
     if (image !== undefined) updateData.image = image ? image.trim() : '';
     
     if (categoryId !== undefined) {
-      if (!isValidId(categoryId)) {
-        console.log('Invalid category ID received:', categoryId);
-        return NextResponse.json(
-          { error: 'Invalid category ID' },
-          { status: 400 }
-        );
-      }
-      
       // Check if category exists
-      const categories = await getAllCategories();
-      console.log('Available categories for validation:', categories.map(c => ({ id: c._id.toString(), name: c.name })));
-      console.log('Looking for categoryId:', categoryId);
-      console.log('CategoryId type:', typeof categoryId);
-      
-      const category = categories.find(cat => cat._id.toString() === categoryId.toString());
-      console.log('Category found:', category ? 'YES' : 'NO');
-      
+      const category = await Category.findById(categoryId);
       if (!category) {
-        console.log('Category not found. Available IDs:', categories.map(c => c._id.toString()));
-        console.log('Requested ID:', categoryId);
         return NextResponse.json(
           { error: 'Category not found' },
           { status: 400 }
         );
       }
-      
       updateData.categoryId = categoryId;
     }
 
-    // Update subcategory using database adapter
-    const updatedSubcategory = await updateSubcategory(id, updateData);
+    const updatedSubcategory = await Subcategory.findByIdAndUpdate(
+      id,
+      { $set: updateData },
+      { new: true, runValidators: true }
+    ).populate('categoryId', 'name slug isActive').lean();
 
     if (!updatedSubcategory) {
       return NextResponse.json(
         { error: 'Subcategory not found' },
         { status: 404 }
       );
-    }
-
-    // Get category info for response
-    if (updatedSubcategory.categoryId) {
-      const categories = await getAllCategories();
-      const category = categories.find(cat => cat._id === updatedSubcategory.categoryId);
-      if (category) {
-        updatedSubcategory.categoryId = {
-          _id: category._id,
-          name: category.name,
-          slug: category.slug,
-          isActive: category.isActive
-        };
-      }
     }
 
     return NextResponse.json({
@@ -160,27 +103,33 @@ export async function PUT(request, { params }) {
   }
 }
 
-// DELETE - Delete subcategory (soft delete)
+// DELETE - Delete subcategory (hard delete)
 export async function DELETE(request, { params }) {
   try {
+    await dbConnect();
+    
     const { id } = await params;
 
-    if (!isValidId(id)) {
-      return NextResponse.json(
-        { error: 'Invalid subcategory ID' },
-        { status: 400 }
-      );
-    }
-
-    // Delete subcategory using database adapter (soft delete)
-    const result = await deleteSubcategory(id);
-
-    if (!result) {
+    // Check if subcategory exists
+    const subcategory = await Subcategory.findById(id);
+    if (!subcategory) {
       return NextResponse.json(
         { error: 'Subcategory not found' },
         { status: 404 }
       );
     }
+
+    // Check if there are products under this subcategory
+    const productsCount = await Product.countDocuments({ subcategoryId: id });
+    if (productsCount > 0) {
+      return NextResponse.json(
+        { error: `Cannot delete subcategory. It has ${productsCount} products. Please delete them first.` },
+        { status: 400 }
+      );
+    }
+
+    // Hard delete the subcategory
+    await Subcategory.findByIdAndDelete(id);
 
     return NextResponse.json({
       success: true,

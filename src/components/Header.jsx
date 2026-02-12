@@ -1,27 +1,45 @@
 "use client";
 
-import React, { useState } from 'react';
-import { ChevronDown, Search, Menu, X, ShoppingBag } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { ChevronDown, Search, Menu, X, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
-import categories from "@/data/MainCategory.json";
-import { useEnquiry } from "@/context/CartContext"; // Ensure path matches your project
+import { useEnquiry } from "@/context/CartContext";
 
 const Header = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const { Enquiries } = useEnquiry(); // Consuming your context
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const { Enquiries } = useEnquiry();
+
+  // Fetch categories from API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories');
+        const result = await response.json();
+        if (result.success) {
+          setCategories(result.data);
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchCategories();
+  }, []);
 
   const staticLinks = [
     { name: "HOME", href: "/" },
     { name: "ABOUT US", href: "/about" }
   ];
 
-  const categoryLinks = categories
-    .filter(cat => cat.isActive)
-    .sort((a, b) => a.sortOrder - b.sortOrder)
-    .map(cat => ({
-      name: cat.name.toUpperCase(),
-      href: `/store/${cat.slug}`
-    }));
+  const categoryLinks = categories.map(cat => ({
+    name: cat.name.toUpperCase(),
+    href: `/store/${cat.slug}`,
+    subcategories: cat.subcategories || []
+  }));
 
   const footerLinks = [
     { name: "CONTACT US", href: "/contact" },
@@ -91,7 +109,7 @@ const Header = () => {
 
               {/* Desktop Cart Section */}
               <Link href="/cart" className="relative group hidden lg:flex items-center mr-2">
-                <ShoppingBag className="w-6 h-6 text-[#1F1951] group-hover:scale-110 transition-transform" />
+                <ShoppingCart className="w-6 h-6 text-[#1F1951] group-hover:scale-110 transition-transform" />
                 {Enquiries.length > 0 && (
                   <span className="absolute -top-2 -right-2 bg-[#E12B5E] text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-white animate-in zoom-in">
                     {Enquiries.length}
@@ -117,7 +135,7 @@ const Header = () => {
               {/* Mobile Right Section (Cart + Menu) */}
               <div className="flex items-center gap-3 lg:hidden">
                 <Link href="/cart" className="relative">
-                  <ShoppingBag className="w-6 h-6 text-[#1F1951]" />
+                  <ShoppingCart className="w-6 h-6 text-[#1F1951]" />
                   {Enquiries.length > 0 && (
                     <span className="absolute -top-2 -right-2 bg-[#E12B5E] text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
                       {Enquiries.length}
@@ -138,28 +156,48 @@ const Header = () => {
               <NavLink key={item.name} item={item} />
             ))}
 
-            {visibleCategories.map(item => (
-              <NavLink key={item.name} item={item} />
-            ))}
+            {loading ? (
+              <div className="text-xs text-gray-400">Loading...</div>
+            ) : (
+              <>
+                {visibleCategories.map(item => (
+                  <CategoryNavLink key={item.name} item={item} />
+                ))}
 
-            {overflowCategories.length > 0 && (
-              <div className="relative group">
-                <button className="flex items-center gap-1 text-[11px] font-bold tracking-[0.15em] text-gray-800 hover:text-[#1F1951] uppercase transition-colors">
-                  All Categories
-                  <ChevronDown className="w-3 h-3 transition-transform group-hover:rotate-180" />
-                </button>
-                <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[260px] bg-white border border-[#E5E2D6] rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
-                  {overflowCategories.map((item, index) => (
-                    <Link
-                      key={item.name}
-                      href={item.href}
-                      className="block px-6 py-4 text-xs font-bold tracking-widest text-gray-700 hover:bg-[#1F1951] hover:text-white transition-colors border-b border-gray-50 last:border-0 uppercase"
-                    >
-                      {item.name}
-                    </Link>
-                  ))}
-                </div>
-              </div>
+                {overflowCategories.length > 0 && (
+                  <div className="relative group">
+                    <button className="flex items-center gap-1 text-[11px] font-bold tracking-[0.15em] text-gray-800 hover:text-[#1F1951] uppercase transition-colors">
+                      All Categories
+                      <ChevronDown className="w-3 h-3 transition-transform group-hover:rotate-180" />
+                    </button>
+                    <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[280px] bg-white border border-[#E5E2D6] rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden max-h-[500px] overflow-y-auto">
+                      {overflowCategories.map((item) => (
+                        <div key={item.name} className="border-b border-gray-50 last:border-0">
+                          <Link
+                            href={item.href}
+                            className="block px-6 py-4 text-xs font-bold tracking-widest text-gray-700 hover:bg-[#1F1951] hover:text-white transition-colors uppercase"
+                          >
+                            {item.name}
+                          </Link>
+                          {item.subcategories && item.subcategories.length > 0 && (
+                            <div className="bg-gray-50 px-6 py-2">
+                              {item.subcategories.map(sub => (
+                                <Link
+                                  key={sub.slug}
+                                  href={`/store/${item.href.split('/').pop()}/${sub.slug}`}
+                                  className="block py-2 text-[10px] font-medium text-gray-600 hover:text-[#1F1951] transition-colors"
+                                >
+                                  • {sub.name}
+                                </Link>
+                              ))}
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </>
             )}
 
             {footerLinks.map(item => (
@@ -171,13 +209,54 @@ const Header = () => {
 
       {/* Mobile Sidebar */}
       <div className={`lg:hidden fixed inset-0 z-50 bg-[#1F1951]/20 backdrop-blur-sm transition-opacity ${isMenuOpen ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-        <div className={`absolute left-0 top-0 h-full w-[85%] bg-white p-8 transition-transform duration-500 ease-out shadow-2xl ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+        <div className={`absolute left-0 top-0 h-full w-[85%] bg-white p-8 transition-transform duration-500 ease-out shadow-2xl overflow-y-auto ${isMenuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
           <div className="flex justify-between items-center mb-10">
             <img src='/images/Avanta-Logo.svg' alt="Avanta India" className="w-28 md:w-32 h-auto" />
             <X className="text-gray-400 cursor-pointer" onClick={() => setIsMenuOpen(false)} />
           </div>
-          <div className="flex flex-col gap-6">
-            {navigation.map((item) => (
+          <div className="flex flex-col gap-4">
+            {staticLinks.map((item) => (
+              <Link
+                key={item.name}
+                href={item.href}
+                onClick={() => setIsMenuOpen(false)}
+                className="text-xs font-bold tracking-[0.2em] border-b border-gray-50 pb-4 text-gray-700 uppercase"
+              >
+                {item.name}
+              </Link>
+            ))}
+            
+            {loading ? (
+              <div className="text-xs text-gray-400 py-4">Loading categories...</div>
+            ) : (
+              categoryLinks.map((item) => (
+                <div key={item.name} className="border-b border-gray-50 pb-4">
+                  <Link
+                    href={item.href}
+                    onClick={() => setIsMenuOpen(false)}
+                    className="text-xs font-bold tracking-[0.2em] text-gray-700 uppercase block mb-2"
+                  >
+                    {item.name}
+                  </Link>
+                  {item.subcategories && item.subcategories.length > 0 && (
+                    <div className="ml-4 mt-2 space-y-2">
+                      {item.subcategories.map(sub => (
+                        <Link
+                          key={sub.slug}
+                          href={`/store/${item.href.split('/').pop()}/${sub.slug}`}
+                          onClick={() => setIsMenuOpen(false)}
+                          className="block text-[10px] font-medium text-gray-600 hover:text-[#1F1951]"
+                        >
+                          • {sub.name}
+                        </Link>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              ))
+            )}
+            
+            {footerLinks.map((item) => (
               <Link
                 key={item.name}
                 href={item.href}
@@ -204,5 +283,47 @@ const NavLink = ({ item }) => (
     <span className="absolute -bottom-1 left-0 h-0.5 bg-[#1F1951] transition-all duration-300 w-0 group-hover:w-full"></span>
   </Link>
 );
+
+// CategoryNavLink with subcategories dropdown
+const CategoryNavLink = ({ item }) => {
+  const hasSubcategories = item.subcategories && item.subcategories.length > 0;
+
+  if (!hasSubcategories) {
+    return <NavLink item={item} />;
+  }
+
+  return (
+    <div className="relative group">
+      <Link
+        href={item.href}
+        className="flex items-center gap-1 text-[11px] font-bold tracking-[0.15em] text-gray-800 hover:text-[#1F1951] transition-colors relative uppercase"
+      >
+        {item.name}
+        <ChevronDown className="w-3 h-3 transition-transform group-hover:rotate-180" />
+        <span className="absolute -bottom-1 left-0 h-0.5 bg-[#1F1951] transition-all duration-300 w-0 group-hover:w-full"></span>
+      </Link>
+      
+      {/* Subcategories Dropdown */}
+      <div className="absolute top-full left-1/2 -translate-x-1/2 mt-4 w-[280px] bg-white border border-[#E5E2D6] rounded-2xl shadow-xl opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-300 z-50 overflow-hidden">
+        <div className="p-4">
+          <div className="text-[10px] font-bold text-[#1F1951] mb-3 tracking-wider uppercase border-b border-gray-100 pb-2">
+            {item.name} Collections
+          </div>
+          <div className="space-y-1">
+            {item.subcategories.map(sub => (
+              <Link
+                key={sub.slug}
+                href={`/store/${item.href.split('/').pop()}/${sub.slug}`}
+                className="block px-4 py-2.5 text-[11px] font-medium text-gray-700 hover:bg-[#1F1951] hover:text-white rounded-lg transition-all duration-200"
+              >
+                {sub.name}
+              </Link>
+            ))}
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 export default Header;
