@@ -1,58 +1,70 @@
 import { NextResponse } from 'next/server';
-import { v2 as cloudinary } from 'cloudinary';
-
-// Configure Cloudinary
-cloudinary.config({
-  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
-  api_key: process.env.CLOUDINARY_API_KEY,
-  api_secret: process.env.CLOUDINARY_API_SECRET,
-});
+import { uploadToCloudinary, uploadMultipleToCloudinary } from '@/lib/cloudinary';
 
 export async function POST(request) {
   try {
-    const formData = await request.formData();
-    const file = formData.get('file');
-    const folder = formData.get('folder') || 'avanta';
+    const contentType = request.headers.get('content-type');
 
-    if (!file) {
-      return NextResponse.json(
-        { error: 'No file provided' },
-        { status: 400 }
-      );
+    // Handle FormData (from CloudinaryUpload component)
+    if (contentType?.includes('multipart/form-data')) {
+      const formData = await request.formData();
+      const file = formData.get('file');
+      const folder = formData.get('folder') || 'avanta-products';
+
+      if (!file) {
+        return NextResponse.json(
+          { success: false, error: 'No file provided' },
+          { status: 400 }
+        );
+      }
+
+      // Convert file to buffer
+      const bytes = await file.arrayBuffer();
+      const buffer = Buffer.from(bytes);
+      
+      // Convert to base64
+      const base64 = `data:${file.type};base64,${buffer.toString('base64')}`;
+
+      // Upload to Cloudinary
+      const imageUrl = await uploadToCloudinary(base64, folder);
+
+      return NextResponse.json({
+        success: true,
+        url: imageUrl
+      });
     }
 
-    // Convert file to buffer
-    const bytes = await file.arrayBuffer();
-    const buffer = Buffer.from(bytes);
+    // Handle JSON (for programmatic uploads)
+    const body = await request.json();
+    const { image, images, folder } = body;
 
-    // Upload to Cloudinary
-    const result = await new Promise((resolve, reject) => {
-      cloudinary.uploader.upload_stream(
-        {
-          folder: folder,
-          resource_type: 'auto',
-        },
-        (error, result) => {
-          if (error) {
-            console.error('Cloudinary upload error:', error);
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        }
-      ).end(buffer);
-    });
+    // Single image upload
+    if (image) {
+      const imageUrl = await uploadToCloudinary(image, folder);
+      return NextResponse.json({
+        success: true,
+        data: { url: imageUrl }
+      });
+    }
 
-    return NextResponse.json({
-      success: true,
-      url: result.secure_url,
-      public_id: result.public_id
-    });
+    // Multiple images upload
+    if (images && Array.isArray(images)) {
+      const imageUrls = await uploadMultipleToCloudinary(images, folder);
+      return NextResponse.json({
+        success: true,
+        data: { urls: imageUrls }
+      });
+    }
+
+    return NextResponse.json(
+      { success: false, error: 'No image data provided' },
+      { status: 400 }
+    );
 
   } catch (error) {
-    console.error('Upload API error:', error);
+    console.error('Upload error:', error);
     return NextResponse.json(
-      { error: 'Upload failed: ' + error.message },
+      { success: false, error: error.message || 'Failed to upload image' },
       { status: 500 }
     );
   }

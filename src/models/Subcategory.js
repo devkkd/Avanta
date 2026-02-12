@@ -1,5 +1,16 @@
 import mongoose from 'mongoose';
 
+// Generate slug from name
+export const generateSlug = (name) => {
+  return name
+    .toLowerCase()
+    .trim()
+    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
+    .replace(/\s+/g, '-') // Replace spaces with hyphens
+    .replace(/-+/g, '-') // Replace multiple hyphens with single
+    .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
+};
+
 // Subcategory Schema for MongoDB Atlas
 const SubcategorySchema = new mongoose.Schema({
   name: {
@@ -51,11 +62,10 @@ SubcategorySchema.index({ categoryId: 1, isActive: 1, sortOrder: 1 });
 SubcategorySchema.index({ isActive: 1, sortOrder: 1 });
 
 // Pre-save middleware to generate slug if not provided
-SubcategorySchema.pre('save', function(next) {
+SubcategorySchema.pre('save', function() {
   if (!this.slug && this.name) {
     this.slug = generateSlug(this.name);
   }
-  next();
 });
 
 // Export the model
@@ -90,15 +100,4 @@ export const validateSubcategory = (subcategory) => {
     isValid: errors.length === 0,
     errors
   };
-};
-
-// Generate slug from name
-export const generateSlug = (name) => {
-  return name
-    .toLowerCase()
-    .trim()
-    .replace(/[^a-z0-9\s-]/g, '') // Remove special characters
-    .replace(/\s+/g, '-') // Replace spaces with hyphens
-    .replace(/-+/g, '-') // Replace multiple hyphens with single
-    .replace(/^-|-$/g, ''); // Remove leading/trailing hyphens
 };

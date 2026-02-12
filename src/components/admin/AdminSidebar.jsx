@@ -10,7 +10,8 @@ import {
   Settings, 
   FolderOpen,
   Tags,
-  LogOut
+  LogOut,
+  MessageSquare
 } from 'lucide-react';
 
 const menuItems = [
@@ -33,6 +34,11 @@ const menuItems = [
     title: 'Products',
     href: '/admin/products',
     icon: Package
+  },
+  {
+    title: 'Inquiries',
+    href: '/admin/inquiries',
+    icon: MessageSquare
   },
   {
     title: 'Orders',

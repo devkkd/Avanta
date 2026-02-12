@@ -1,11 +1,8 @@
 import { NextResponse } from 'next/server';
-import { getAllProducts, createProduct, getAllCategories, getAllSubcategories, searchProducts } from '@/lib/database-adapter';
-import { generateStyleCode } from '@/models/Product';
-
-// Helper function to validate ID (for mock database compatibility)
-function isValidId(id) {
-  return id && typeof id === 'string' && id.length > 0;
-}
+import dbConnect from '@/lib/mongodb';
+import Product, { generateStyleCode } from '@/models/Product';
+import Category from '@/models/Category';
+import Subcategory from '@/models/Subcategory';
 
 // Helper function to generate slug
 function generateSlug(name) {
@@ -20,6 +17,8 @@ function generateSlug(name) {
 
 export async function GET(request) {
   try {
+    await dbConnect();
+    
     const { searchParams } = new URL(request.url);
     const categoryId = searchParams.get('categoryId');
     const subcategoryId = searchParams.get('subcategoryId');
@@ -28,95 +27,37 @@ export async function GET(request) {
     const limit = parseInt(searchParams.get('limit')) || 20;
     const page = parseInt(searchParams.get('page')) || 1;
     
-    let products;
+    // Build query
+    let query = { isActive: true };
     
+    if (categoryId) query.categoryId = categoryId;
+    if (subcategoryId) query.subcategoryId = subcategoryId;
+    if (featured === 'true') query.isFeatured = true;
     if (search) {
-      // Search products
-      const filters = {};
-      if (categoryId && isValidId(categoryId)) filters.categoryId = categoryId;
-      if (subcategoryId && isValidId(subcategoryId)) filters.subcategoryId = subcategoryId;
-      
-      products = await searchProducts(search, filters);
-    } else {
-      // Get all products
-      products = await getAllProducts();
-      
-      // Apply filters
-      if (categoryId && isValidId(categoryId)) {
-        products = products.filter(product => {
-          // Handle both ObjectId and string comparisons
-          const productCategoryId = product.categoryId && product.categoryId.toString ? product.categoryId.toString() : product.categoryId;
-          return productCategoryId === categoryId;
-        });
-      }
-      
-      if (subcategoryId && isValidId(subcategoryId)) {
-        products = products.filter(product => {
-          // Handle both ObjectId and string comparisons
-          const productSubcategoryId = product.subcategoryId && product.subcategoryId.toString ? product.subcategoryId.toString() : product.subcategoryId;
-          return productSubcategoryId === subcategoryId;
-        });
-      }
-      
-      if (featured === 'true') {
-        products = products.filter(product => product.isFeatured);
-      }
+      query.$or = [
+        { name: { $regex: search, $options: 'i' } },
+        { description: { $regex: search, $options: 'i' } },
+        { styleCode: { $regex: search, $options: 'i' } },
+        { sku: { $regex: search, $options: 'i' } },
+        { tags: { $in: [new RegExp(search, 'i')] } }
+      ];
     }
     
-    // Get categories and subcategories for population
-    const categories = await getAllCategories();
-    const subcategories = await getAllSubcategories();
+    // Get total count
+    const total = await Product.countDocuments(query);
     
-    const categoryMap = {};
-    const subcategoryMap = {};
-    
-    categories.forEach(cat => {
-      // Handle both ObjectId and string keys
-      const categoryId = cat._id && cat._id.toString ? cat._id.toString() : cat._id;
-      categoryMap[categoryId] = cat;
-    });
-    
-    subcategories.forEach(sub => {
-      // Handle both ObjectId and string keys
-      const subcategoryId = sub._id && sub._id.toString ? sub._id.toString() : sub._id;
-      subcategoryMap[subcategoryId] = sub;
-    });
-    
-    // Populate category and subcategory info
-    products = products.map(product => {
-      const populatedProduct = { ...product };
-      
-      const productCategoryId = product.categoryId && product.categoryId.toString ? product.categoryId.toString() : product.categoryId;
-      if (productCategoryId && categoryMap[productCategoryId]) {
-        const category = categoryMap[productCategoryId];
-        populatedProduct.categoryId = {
-          _id: category._id,
-          name: category.name,
-          slug: category.slug
-        };
-      }
-      
-      const productSubcategoryId = product.subcategoryId && product.subcategoryId.toString ? product.subcategoryId.toString() : product.subcategoryId;
-      if (productSubcategoryId && subcategoryMap[productSubcategoryId]) {
-        const subcategory = subcategoryMap[productSubcategoryId];
-        populatedProduct.subcategoryId = {
-          _id: subcategory._id,
-          name: subcategory.name,
-          slug: subcategory.slug
-        };
-      }
-      
-      return populatedProduct;
-    });
-    
-    // Apply pagination
-    const total = products.length;
-    const skip = (page - 1) * limit;
-    const paginatedProducts = products.slice(skip, skip + limit);
+    // Get products with pagination
+    const products = await Product.find(query)
+      .populate('categoryId', 'name slug')
+      .populate('subcategoryId', 'name slug')
+      .sort({ sortOrder: 1, createdAt: -1 })
+      .skip((page - 1) * limit)
+      .limit(limit)
+      .lean();
     
     return NextResponse.json({
       success: true,
-      data: paginatedProducts,
+      data: products,
       pagination: {
         page,
         limit,
@@ -135,6 +76,8 @@ export async function GET(request) {
 
 export async function POST(request) {
   try {
+    await dbConnect();
+    
     const body = await request.json();
     const { 
       name, 
@@ -150,10 +93,9 @@ export async function POST(request) {
       subcategoryId,
       tags,
       isFeatured = false,
+      isNew = false,
       sortOrder = 0
     } = body;
-
-    console.log('Creating product with data:', JSON.stringify(body, null, 2));
 
     // Validation
     if (!name || name.trim().length < 2) {
@@ -170,9 +112,9 @@ export async function POST(request) {
       );
     }
 
-    if (!categoryId || !isValidId(categoryId)) {
+    if (!categoryId) {
       return NextResponse.json(
-        { error: 'Valid category ID is required' },
+        { error: 'Category ID is required' },
         { status: 400 }
       );
     }
@@ -213,9 +155,7 @@ export async function POST(request) {
     }
 
     // Check if category exists
-    const categories = await getAllCategories();
-    const category = categories.find(cat => cat._id.toString() === categoryId.toString());
-    
+    const category = await Category.findById(categoryId);
     if (!category) {
       return NextResponse.json(
         { error: 'Category not found' },
@@ -224,9 +164,8 @@ export async function POST(request) {
     }
 
     // Check if subcategory exists (if provided)
-    if (subcategoryId && isValidId(subcategoryId)) {
-      const subcategories = await getAllSubcategories();
-      const subcategory = subcategories.find(sub => sub._id.toString() === subcategoryId.toString());
+    if (subcategoryId) {
+      const subcategory = await Subcategory.findById(subcategoryId);
       if (!subcategory) {
         return NextResponse.json(
           { error: 'Subcategory not found' },
@@ -277,35 +216,19 @@ export async function POST(request) {
       subcategoryId: subcategoryId || null,
       tags: tags || [],
       isFeatured: Boolean(isFeatured),
+      isNew: Boolean(isNew),
       sortOrder: Number(sortOrder) || 0,
       isActive: true
     };
 
-    console.log('Creating product with processed data:', productData);
-
-    // Create product using database adapter
-    const newProduct = await createProduct(productData);
+    // Create product
+    const newProduct = await Product.create(productData);
     
-    // Add category and subcategory info for response
-    newProduct.categoryId = {
-      _id: category._id,
-      name: category.name,
-      slug: category.slug
-    };
-
+    // Populate category and subcategory
+    await newProduct.populate('categoryId', 'name slug');
     if (newProduct.subcategoryId) {
-      const subcategories = await getAllSubcategories();
-      const subcategory = subcategories.find(sub => sub._id.toString() === newProduct.subcategoryId.toString());
-      if (subcategory) {
-        newProduct.subcategoryId = {
-          _id: subcategory._id,
-          name: subcategory.name,
-          slug: subcategory.slug
-        };
-      }
+      await newProduct.populate('subcategoryId', 'name slug');
     }
-
-    console.log('Product created successfully:', newProduct);
 
     return NextResponse.json({
       success: true,
@@ -316,8 +239,17 @@ export async function POST(request) {
   } catch (error) {
     console.error('Create product error:', error);
     
+    // Handle duplicate key errors
+    if (error.code === 11000) {
+      const field = Object.keys(error.keyPattern)[0];
+      return NextResponse.json(
+        { error: `A product with this ${field} already exists` },
+        { status: 400 }
+      );
+    }
+    
     return NextResponse.json(
-      { error: 'Failed to create product' },
+      { error: error.message || 'Failed to create product' },
       { status: 500 }
     );
   }

@@ -47,6 +47,7 @@ export default function CreateProductPage() {
     subcategoryId: '',
     tags: [],
     isFeatured: false,
+    isNew: false,
     sortOrder: 0
   });
 
@@ -723,6 +724,16 @@ export default function CreateProductPage() {
                   className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
                 <span className="text-sm text-gray-700">Featured Product</span>
+              </label>
+
+              <label className="flex items-center gap-2">
+                <input
+                  type="checkbox"
+                  checked={formData.isNew}
+                  onChange={(e) => setFormData({ ...formData, isNew: e.target.checked })}
+                  className="rounded border-gray-300 text-green-600 focus:ring-green-500"
+                />
+                <span className="text-sm text-gray-700">New Product (Show "NEW" Badge)</span>
               </label>
             </div>
           </div>
