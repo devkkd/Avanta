@@ -11,7 +11,7 @@ const ArtisanExcellence = () => {
   ];
 
   return (
-    <section className="bg-white py-12 ">
+    <section className="bg-white py-12 px-4">
       {/* Top Section: Text and Image Grid */}
       <div className="max-w-[1341px] mx-auto grid grid-cols-1 lg:grid-cols-2  items-center">
         

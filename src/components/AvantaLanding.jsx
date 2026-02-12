@@ -5,10 +5,10 @@ const AvantaLanding = () => {
   return (
     <div className="mx-auto  bg-white  text-gray-800">
       {/* Top Section */}
-      <div className="max-w-[90rem] mx-auto pl-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-7 items-center">
+      <div className="max-w-[90rem] mx-auto px-6 py-16 grid grid-cols-1 lg:grid-cols-2 gap-7 items-center">
         
         {/* Left Content */}
-        <div className="space-y-6 pl-12">
+        <div className="space-y-6">
             <div className="flex items-center justify-start gap-2 mb-3 md:mb-4">
           <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-pink-600 rounded-full"></span>
           <h3 className="text-[10px] md:text-sm font-bold font-mont text-[#1a1a3d] uppercase">
@@ -43,7 +43,7 @@ const AvantaLanding = () => {
         </div>
 
         {/* Right Images */}
-        <div className="relative  h-[300px] sm:h-[500px] w-full bg-[#fdf8f1] rounded-l-2xl overflow-hidden flex">
+        <div className="relative  h-[300px] sm:h-[500px] w-full bg-[#fdf8f1] rounded-2xl overflow-hidden flex">
           <div className="w-full h-full relative">
             {/* Replace with your image paths */}
             <img 

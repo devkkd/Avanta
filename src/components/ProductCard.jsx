@@ -50,9 +50,9 @@ const ProductCard = ({ product }) => {
           
               <EnquiryBtn product={product} />
 
-              <button className="w-10 h-10 flex items-center justify-center bg-[#25D366] text-white rounded-full shadow-sm">
+              {/* <button className="w-10 h-10 flex items-center justify-center bg-[#25D366] text-white rounded-full shadow-sm">
                 <MessageCircle size={20} fill="white" stroke="none" />
-              </button>
+              </button> */}
         </div>
       </div>
     </div>

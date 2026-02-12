@@ -8,12 +8,21 @@ import ProductCard from "@/components/ProductCard";
 import mainCategories from "@/data/MainCategory.json";
 import subCategories from "@/data/CategoryData.json";
 import productData from "@/data/ProductData.json";
+import { useSearchParams } from "next/navigation";
+import { useEffect } from "react";
+
 
 export default function CategoryPage() {
   const { category_slug } = useParams();
 
-  const [activeSub, setActiveSub] = useState(null);
+  const searchParams = useSearchParams();
+  const subFromURL = searchParams.get("sub");
+
+  const [activeSub, setActiveSub] = useState(subFromURL || null);
+
   const [sortBy, setSortBy] = useState("default");
+
+
 
   /* ================= MAIN CATEGORY ================= */
   const currentCategory =
@@ -21,6 +30,10 @@ export default function CategoryPage() {
     mainCategories[0];
 
   const categoryId = currentCategory._id;
+
+  useEffect(() => {
+    setActiveSub(subFromURL || null);
+  }, [subFromURL, categoryId]);
 
   /* ================= SUBCATEGORIES ================= */
   const currentSubcategories = useMemo(() => {
@@ -85,10 +98,9 @@ export default function CategoryPage() {
         <button
           onClick={() => setActiveSub(null)}
           className={`px-4 py-2 rounded-full text-[11px] md:text-xs font-medium transition-all duration-300 border
-            ${
-              activeSub === null
-                ? "bg-black text-white border-black"
-                : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"
+            ${activeSub === null
+              ? "bg-black text-white border-black"
+              : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"
             }`}
         >
           All
@@ -102,10 +114,9 @@ export default function CategoryPage() {
               key={sub._id}
               onClick={() => setActiveSub(sub._id)}
               className={`px-4 py-2 rounded-full text-[11px] md:text-xs font-medium transition-all duration-300 border flex items-center gap-2
-                ${
-                  activeSub === sub._id
-                    ? "bg-black text-white border-black"
-                    : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"
+                ${activeSub === sub._id
+                  ? "bg-black text-white border-black"
+                  : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"
                 }`}
             >
               <span>{sub.name}</span>
