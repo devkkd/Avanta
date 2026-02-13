@@ -1,71 +1,67 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
-import { useParams } from "next/navigation";
+import React, { useState, useMemo, useEffect } from "react";
+import { useParams, useSearchParams, useRouter } from "next/navigation";
 import { LayoutGrid, Maximize2, ChevronDown } from "lucide-react";
-
 import ProductCard from "@/components/ProductCard";
-import mainCategories from "@/data/MainCategory.json";
-import subCategories from "@/data/CategoryData.json";
-import productData from "@/data/ProductData.json";
-import { useSearchParams } from "next/navigation";
-import { useEffect } from "react";
-
 
 export default function CategoryPage() {
   const { category_slug } = useParams();
-
   const searchParams = useSearchParams();
+  const router = useRouter();
   const subFromURL = searchParams.get("sub");
 
-  const [activeSub, setActiveSub] = useState(subFromURL || null);
-
+  const [activeSub, setActiveSub] = useState(null);
   const [sortBy, setSortBy] = useState("default");
+  const [loading, setLoading] = useState(true);
+  const [categoryData, setCategoryData] = useState(null);
+  const [error, setError] = useState(null);
 
-
-
-  /* ================= MAIN CATEGORY ================= */
-  const currentCategory =
-    mainCategories.find((cat) => cat.slug === category_slug) ||
-    mainCategories[0];
-
-  const categoryId = currentCategory._id;
-
+  // Fetch category data from API
   useEffect(() => {
-    setActiveSub(subFromURL || null);
-  }, [subFromURL, categoryId]);
+    const fetchCategoryData = async () => {
+      try {
+        setLoading(true);
+        const response = await fetch(`/api/store/${category_slug}`);
+        const result = await response.json();
+        
+        if (result.success) {
+          setCategoryData(result.data);
+          
+          // Set active subcategory from URL if exists
+          if (subFromURL) {
+            // Find subcategory by ID or slug
+            const subExists = result.data.subcategories.find(
+              sub => sub._id === subFromURL || sub.slug === subFromURL
+            );
+            if (subExists) {
+              setActiveSub(subExists._id);
+            }
+          }
+        } else {
+          setError(result.error || 'Failed to load category');
+        }
+      } catch (err) {
+        console.error('Error fetching category:', err);
+        setError('Failed to load category');
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  /* ================= SUBCATEGORIES ================= */
-  const currentSubcategories = useMemo(() => {
-    return subCategories
-      .filter(
-        (sub) => sub.categoryId === categoryId && sub.isActive
-      )
-      .sort((a, b) => a.sortOrder - b.sortOrder);
-  }, [categoryId]);
-
-  /* ================= PRODUCT COUNT MAP ================= */
-  const productCountBySubcategory = useMemo(() => {
-    const counts = {};
-
-    productData.products.forEach((product) => {
-      if (!product.active) return;
-      if (product.categoryId !== categoryId) return;
-      if (!product.subcategoryId) return;
-
-      counts[product.subcategoryId] =
-        (counts[product.subcategoryId] || 0) + 1;
-    });
-
-    return counts;
-  }, [categoryId]);
+    if (category_slug) {
+      fetchCategoryData();
+    }
+  }, [category_slug, subFromURL]);
 
   /* ================= FILTER + SORT PRODUCTS ================= */
   const filteredProducts = useMemo(() => {
-    let products = productData.products.filter((product) => {
-      if (!product.active) return false;
-      if (product.categoryId !== categoryId) return false;
+    if (!categoryData) return [];
+
+    let products = categoryData.products.filter((product) => {
       if (!activeSub) return true;
+      
+      // Filter by subcategory ID
       return product.subcategoryId === activeSub;
     });
 
@@ -82,50 +78,82 @@ export default function CategoryPage() {
     }
 
     return products;
-  }, [categoryId, activeSub, sortBy]);
+  }, [categoryData, activeSub, sortBy]);
+
+  /* ================= LOADING STATE ================= */
+  if (loading) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-10 min-h-screen bg-white">
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-gray-900 mx-auto mb-4"></div>
+            <p className="text-gray-500 text-sm">Loading category...</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
+
+  /* ================= ERROR STATE ================= */
+  if (error || !categoryData) {
+    return (
+      <div className="max-w-7xl mx-auto px-4 py-10 min-h-screen bg-white">
+        <div className="flex items-center justify-center h-96">
+          <div className="text-center">
+            <p className="text-red-500 text-lg mb-2">Error</p>
+            <p className="text-gray-500 text-sm">{error || 'Category not found'}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   /* ================= RENDER ================= */
   return (
     <div className="max-w-7xl mx-auto px-4 py-10 min-h-screen bg-white">
       {/* ================= TITLE ================= */}
       <h1 className="text-center text-3xl md:text-4xl font-cinzel font-bold tracking-[0.2em] text-gray-900 mb-10 uppercase">
-        {currentCategory.name}
+        {categoryData.category.name}
       </h1>
 
       {/* ================= SUBCATEGORY PILLS ================= */}
       <div className="flex flex-wrap justify-center gap-2 md:gap-3 mb-12">
         {/* ALL */}
         <button
-          onClick={() => setActiveSub(null)}
+          onClick={() => {
+            setActiveSub(null);
+            router.push(`/store/${category_slug}`, { scroll: false });
+          }}
           className={`px-4 py-2 rounded-full text-[11px] md:text-xs font-medium transition-all duration-300 border
-            ${activeSub === null
-              ? "bg-black text-white border-black"
-              : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"
+            ${
+              activeSub === null
+                ? "bg-black text-white border-black"
+                : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"
             }`}
         >
           All
         </button>
 
-        {currentSubcategories.map((sub) => {
-          const count = productCountBySubcategory[sub._id] || 0;
-
-          return (
-            <button
-              key={sub._id}
-              onClick={() => setActiveSub(sub._id)}
-              className={`px-4 py-2 rounded-full text-[11px] md:text-xs font-medium transition-all duration-300 border flex items-center gap-2
-                ${activeSub === sub._id
+        {categoryData.subcategories.map((sub) => (
+          <button
+            key={sub._id}
+            onClick={() => {
+              setActiveSub(sub._id);
+              router.push(`/store/${category_slug}?sub=${sub.slug}`, { scroll: false });
+            }}
+            className={`px-4 py-2 rounded-full text-[11px] md:text-xs font-medium transition-all duration-300 border flex items-center gap-2
+              ${
+                activeSub === sub._id
                   ? "bg-black text-white border-black"
                   : "bg-gray-50 text-gray-500 border-transparent hover:border-gray-200"
-                }`}
-            >
-              <span>{sub.name}</span>
-              <span className="text-[10px] opacity-70">
-                ({count})
-              </span>
-            </button>
-          );
-        })}
+              }`}
+          >
+            <span>{sub.name}</span>
+            <span className="text-[10px] opacity-70">
+              ({sub.productCount})
+            </span>
+          </button>
+        ))}
       </div>
 
       {/* ================= TOOLBAR ================= */}

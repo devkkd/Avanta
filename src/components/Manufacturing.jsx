@@ -74,8 +74,6 @@ const VideoSlider = () => {
         modules={[Navigation]}
         centeredSlides
         loop
-        loopedSlides={videoSlides.length}
-        loopAdditionalSlides={videoSlides.length}
         watchOverflow
         speed={600}
         spaceBetween={24}

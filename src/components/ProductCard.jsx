@@ -21,6 +21,30 @@ const ProductCard = ({ product }) => {
   // Get product slug for URL
   const productSlug = product?.slug || product?._id;
 
+  // WhatsApp inquiry handler
+  const handleWhatsAppInquiry = () => {
+    const styleCode = product?.styleCode || product?._id?.slice(-6) || "N/A";
+    const material = product?.material || product?.productDetails?.material || "Premium Fabric";
+    const color = product?.primaryColor || product?.color || "As Shown";
+    
+    const message = `Hello! I'm interested in this product:
+
+*${productName}*
+Style Code: ${styleCode}
+Material: ${material}
+Color: ${color}
+Price: ${priceText}
+
+Please provide wholesale pricing, MOQ, and delivery details.
+
+Thank you!`;
+
+    const whatsappNumber = "919119127346"; // Update with actual number
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
+    
+    window.open(whatsappUrl, '_blank');
+  };
+
   return (
     <div className="flex flex-col justify-between group">
       {/* Image (Clickable) */}
@@ -69,9 +93,13 @@ const ProductCard = ({ product }) => {
         <div className="flex items-center gap-2 pt-5">
           <EnquiryBtn product={product} />
 
-              {/* <button className="w-10 h-10 flex items-center justify-center bg-[#25D366] text-white rounded-full shadow-sm">
-                <MessageCircle size={20} fill="white" stroke="none" />
-              </button> */}
+          <button 
+            onClick={handleWhatsAppInquiry}
+            className="w-10 h-10 flex items-center justify-center bg-[#25D366] text-white rounded-full shadow-sm hover:bg-[#20BA5A] transition-colors"
+            title="WhatsApp Inquiry"
+          >
+            <MessageCircle size={20} fill="white" stroke="none" />
+          </button>
         </div>
       </div>
     </div>

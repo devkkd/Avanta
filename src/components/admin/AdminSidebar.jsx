@@ -11,7 +11,9 @@ import {
   FolderOpen,
   Tags,
   LogOut,
-  MessageSquare
+  MessageSquare,
+  FileText,
+  Upload
 } from 'lucide-react';
 
 const menuItems = [
@@ -36,9 +38,19 @@ const menuItems = [
     icon: Package
   },
   {
+    title: 'Bulk Upload',
+    href: '/admin/products/bulk-upload',
+    icon: Upload
+  },
+  {
     title: 'Inquiries',
     href: '/admin/inquiries',
     icon: MessageSquare
+  },
+  {
+    title: 'Customer Inquiries',
+    href: '/admin/customer-inquiries',
+    icon: FileText
   },
   {
     title: 'Orders',

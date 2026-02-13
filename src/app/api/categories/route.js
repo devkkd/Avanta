@@ -7,9 +7,10 @@ export async function GET() {
   try {
     await dbConnect();
 
-    // Fetch all active categories sorted by sortOrder
+    // Fetch all active categories sorted by creation date (oldest first)
+    // This ensures the first 6 created categories always show in the main menu
     const categories = await Category.find({ isActive: true })
-      .sort({ sortOrder: 1 })
+      .sort({ createdAt: 1 })
       .lean();
 
     // Fetch all active subcategories

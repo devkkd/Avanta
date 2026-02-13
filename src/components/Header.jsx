@@ -1,29 +1,43 @@
 "use client";
 
 import React, { useState, useEffect } from 'react';
-import { ChevronDown, Search, Menu, X, ShoppingBag } from 'lucide-react';
+import { ChevronDown, Search, Menu, X, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
-import categories from "@/data/MainCategory.json";
+import { usePathname } from 'next/navigation';
 import { useEnquiry } from "@/context/CartContext";
-import subCategories from "@/data/CategoryData.json";
-
 
 const Header = () => {
+  const pathname = usePathname();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isScrolled, setIsScrolled] = useState(false); // State to track scroll
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [isScrolled, setIsScrolled] = useState(false);
   const [hoveredImage, setHoveredImage] = useState(null);
-
   const { Enquiries } = useEnquiry();
 
+  // Fetch categories from API
+  useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const response = await fetch('/api/categories');
+        const result = await response.json();
+        if (result.success) {
+          setCategories(result.data);
+        }
+      } catch (error) {
+        console.error('Error fetching categories:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
 
-  // Scroll listener to toggle announcement bar
+    fetchCategories();
+  }, []);
+
+  // Scroll listener
   useEffect(() => {
     const handleScroll = () => {
-      if (window.scrollY > 50) {
-        setIsScrolled(true);
-      } else {
-        setIsScrolled(false);
-      }
+      setIsScrolled(window.scrollY > 50);
     };
 
     window.addEventListener("scroll", handleScroll);
@@ -35,13 +49,11 @@ const Header = () => {
     { name: "ABOUT US", href: "/about" }
   ];
 
-  const categoryLinks = categories
-    .filter(cat => cat.isActive)
-    .sort((a, b) => a.sortOrder - b.sortOrder)
-    .map(cat => ({
-      name: cat.name.toUpperCase(),
-      href: `/store/${cat.slug}`
-    }));
+  const categoryLinks = categories.map(cat => ({
+    name: cat.name.toUpperCase(),
+    href: `/store/${cat.slug}`,
+    subcategories: cat.subcategories || []
+  }));
 
   const footerLinks = [
     { name: "CONTACT US", href: "/contact" },
@@ -114,7 +126,7 @@ const Header = () => {
 
               {/* Desktop Cart Section */}
               <Link href="/cart" className="relative group hidden lg:flex items-center mr-2">
-                <ShoppingBag className="w-6 h-6 text-[#1F1951] group-hover:scale-110 transition-transform" />
+                <ShoppingCart className="w-6 h-6 text-[#1F1951] group-hover:scale-110 transition-transform" />
                 {Enquiries.length > 0 && (
                   <span className="absolute -top-2 -right-2 bg-[#E12B5E] text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-white animate-in zoom-in">
                     {Enquiries.length}
@@ -140,7 +152,7 @@ const Header = () => {
               {/* Mobile Right Section (Cart + Menu) */}
               <div className="flex items-center gap-3 lg:hidden">
                 <Link href="/cart" className="relative">
-                  <ShoppingBag className="w-6 h-6 text-[#1F1951]" />
+                  <ShoppingCart className="w-6 h-6 text-[#1F1951]" />
                   {Enquiries.length > 0 && (
                     <span className="absolute -top-2 -right-2 bg-[#E12B5E] text-white text-[10px] w-5 h-5 flex items-center justify-center rounded-full border-2 border-white">
                       {Enquiries.length}
@@ -157,7 +169,7 @@ const Header = () => {
           {/* Desktop Navigation Bar */}
           <nav className="hidden lg:flex items-center justify-center mt-8 gap-10 pb-2">
             {staticLinks.map(item => (
-              <NavLink key={item.name} item={item} />
+              <NavLink key={item.name} item={item} pathname={pathname} />
             ))}
 
             {visibleCategories.map(item => {
@@ -165,12 +177,9 @@ const Header = () => {
                 cat.slug === item.href.split("/").pop()
               );
 
-              const relatedSubCategories = subCategories
-                .filter(sub =>
-                  sub.categoryId === category?._id && sub.isActive
-                )
-                .sort((a, b) => a.sortOrder - b.sortOrder);
-
+              const relatedSubCategories = category?.subcategories || [];
+              const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+              
               return (
                 <div key={item.name} className="relative group">
                   <Link
@@ -178,7 +187,7 @@ const Header = () => {
                     className="text-[11px] font-bold tracking-[0.15em] text-gray-800 hover:text-[#1F1951] transition-colors relative uppercase"
                   >
                     {item.name}
-                    <span className="absolute -bottom-1 left-0 h-0.5 bg-[#1F1951] transition-all duration-300 w-0 group-hover:w-full"></span>
+                    <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#1F1951] transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
                   </Link>
 
                   {relatedSubCategories.length > 0 && (
@@ -186,13 +195,13 @@ const Header = () => {
 
                       {/* LEFT SIDE - SUBCATEGORY LIST */}
                       <div className="w-[240px] p-8 flex flex-col gap-1 bg-white">
-                        <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-4 font-bold">
+                        {/* <p className="text-[10px] uppercase tracking-[0.2em] text-gray-400 mb-4 font-bold">
                           Shop by Style
-                        </p>
+                        </p> */}
                         {relatedSubCategories.map((sub) => (
                           <Link
                             key={sub._id}
-                            href={`/store/${category.slug}?sub=${sub._id}`}
+                            href={`/store/${category.slug}?sub=${sub.slug}`}
                             className="group/link flex items-center justify-between text-[11px] font-bold tracking-widest text-gray-700 hover:text-[#1F1951] py-3 border-b border-gray-50 last:border-0 transition-all uppercase"
                             onMouseEnter={() => setHoveredImage(sub.image)}
                           >
@@ -206,12 +215,14 @@ const Header = () => {
                       <div className="flex-1 relative bg-[#F9F8F3] overflow-hidden">
                         <div className="absolute inset-0 p-4">
                           <div className="relative h-full w-full rounded-lg overflow-hidden">
-                            <img
-                              src={hoveredImage || relatedSubCategories[0]?.image}
-                              alt="Category Preview"
-                              className="w-full h-full object-cover transition-all duration-700 ease-out scale-100 group-hover:scale-105"
-                              key={hoveredImage}
-                            />
+                            {(hoveredImage || relatedSubCategories[0]?.image) && (
+                              <img
+                                src={hoveredImage || relatedSubCategories[0]?.image}
+                                alt="Category Preview"
+                                className="w-full h-full object-cover transition-all duration-700 ease-out scale-100 group-hover:scale-105"
+                                key={hoveredImage}
+                              />
+                            )}
                             {/* Subtle Overlay for the "Fashion Look" */}
                             <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
 
@@ -245,10 +256,8 @@ const Header = () => {
 
                   {overflowCategories.map((item) => {
                     const category = categories.find((cat) => cat.slug === item.href.split("/").pop());
-                    const relatedSubCategories = subCategories
-                      .filter((sub) => sub.categoryId === category?._id && sub.isActive)
-                      .sort((a, b) => a.sortOrder - b.sortOrder);
-
+                    const relatedSubCategories = category?.subcategories || [];
+                    console.log("sub",relatedSubCategories);
                     const hasSubs = relatedSubCategories.length > 0;
 
                     return (
@@ -257,9 +266,6 @@ const Header = () => {
                         <Link
                           href={item.href}
                           className="flex items-center justify-between px-4 py-3 text-[11px] font-bold tracking-widest text-gray-600 hover:bg-[#1F1951] hover:text-white rounded-lg transition-all duration-200 uppercase"
-                          onMouseEnter={() => {
-                            if (hasSubs) setHoveredImage(relatedSubCategories[0].image);
-                          }}
                         >
                           <div className="flex items-center gap-2">
                             {hasSubs && <ChevronDown className="w-3 h-3 rotate-90 opacity-50 group-hover/item:opacity-100" />}
@@ -282,7 +288,7 @@ const Header = () => {
                                 {relatedSubCategories.map((sub) => (
                                   <Link
                                     key={sub._id}
-                                    href={`/store/${category.slug}?sub=${sub._id}`}
+                                    href={`/store/${category.slug}?sub=${sub.slug}`}
                                     className="group/link flex items-center justify-between text-[11px] font-bold tracking-widest text-gray-700 hover:text-[#1F1951] py-3 border-b border-gray-50 last:border-0 transition-all uppercase"
                                     onMouseEnter={() => setHoveredImage(sub.image)}
                                   >
@@ -296,12 +302,14 @@ const Header = () => {
                               <div className="flex-1 relative bg-[#F9F8F3] overflow-hidden">
                                 <div className="absolute inset-0 p-4">
                                   <div className="relative h-full w-full rounded-lg overflow-hidden">
-                                    <img
-                                      src={hoveredImage || relatedSubCategories[0]?.image}
-                                      alt="Category Preview"
-                                      className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105"
-                                      key={hoveredImage}
-                                    />
+                                    {(hoveredImage || relatedSubCategories[0]?.image) && (
+                                      <img
+                                        src={hoveredImage || relatedSubCategories[0]?.image}
+                                        alt="Category Preview"
+                                        className="w-full h-full object-cover transition-all duration-700 ease-out group-hover:scale-105"
+                                        key={hoveredImage}
+                                      />
+                                    )}
 
                                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 via-transparent to-transparent" />
 
@@ -328,7 +336,7 @@ const Header = () => {
               </div>
             )}
             {footerLinks.map(item => (
-              <NavLink key={item.name} item={item} />
+              <NavLink key={item.name} item={item} pathname={pathname} />
             ))}
           </nav>
         </div>
@@ -359,14 +367,18 @@ const Header = () => {
   );
 };
 
-const NavLink = ({ item }) => (
-  <Link
-    href={item.href}
-    className="text-[11px] font-bold tracking-[0.15em] text-gray-800 hover:text-[#1F1951] transition-colors relative group uppercase"
-  >
-    {item.name}
-    <span className="absolute -bottom-1 left-0 h-0.5 bg-[#1F1951] transition-all duration-300 w-0 group-hover:w-full"></span>
-  </Link>
-);
+const NavLink = ({ item, pathname }) => {
+  const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
+  
+  return (
+    <Link
+      href={item.href}
+      className="text-[11px] font-bold tracking-[0.15em] text-gray-800 hover:text-[#1F1951] transition-colors relative group uppercase"
+    >
+      {item.name}
+      <span className={`absolute -bottom-1 left-0 h-0.5 bg-[#1F1951] transition-all duration-300 ${isActive ? 'w-full' : 'w-0 group-hover:w-full'}`}></span>
+    </Link>
+  );
+};
 
 export default Header;

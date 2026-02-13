@@ -55,7 +55,7 @@ const CartPage = () => {
         toast.success("Inquiry submitted successfully! We'll contact you soon.");
         
         // Clear form and enquiries after successful submission
-        setFormData({
+        setFormData({  
           fullName: "",
           email: "",
           phone: "",
@@ -79,14 +79,56 @@ const CartPage = () => {
       return;
     }
 
-    const productList = Enquiries.map((item, index) => 
-      `${index + 1}. ${item.name || item.title} (Style: ${item.styleCode || item._id.slice(-6)})`
-    ).join("\n");
+    // Build detailed product list with all information
+    const productList = Enquiries.map((item, index) => {
+      const productName = item.name || item.title;
+      const styleCode = item.styleCode || item._id.slice(-6);
+      
+      // Get actual material and color from database
+      const material = item.material || item.productDetails?.material || "Premium Fabric";
+      const color = item.primaryColor || item.color || "As Shown";
+      
+      return `${index + 1}. *${productName}*
+   Style Code: ${styleCode}
+   Material: ${material}
+   Color: ${color}`;
+    }).join("\n\n");
 
-    const message = `Hello! I'm interested in the following products:\n\n${productList}\n\nPlease provide wholesale pricing and details.`;
-    const whatsappUrl = `https://wa.me/919876543210?text=${encodeURIComponent(message)}`;
+    // Build customer details if filled
+    let customerDetails = "";
+    if (formData.fullName || formData.email || formData.phone || formData.company || formData.location) {
+      customerDetails = "\n\n*Customer Details:*\n";
+      if (formData.fullName) customerDetails += `Name: ${formData.fullName}\n`;
+      if (formData.email) customerDetails += `Email: ${formData.email}\n`;
+      if (formData.phone) customerDetails += `Phone: ${formData.phone}\n`;
+      if (formData.company) customerDetails += `Company: ${formData.company}\n`;
+      if (formData.location) customerDetails += `Location: ${formData.location}\n`;
+    }
+
+    // Add notes if provided
+    let notesSection = "";
+    if (formData.notes) {
+      notesSection = `\n\n*Additional Requirements:*\n${formData.notes}`;
+    }
+
+    // Complete message
+    const message = `Hello! I'm interested in wholesale inquiry for the following products:
+
+*Selected Products (${Enquiries.length}):*
+
+${productList}${customerDetails}${notesSection}
+
+Please provide wholesale pricing, MOQ, and delivery details.
+
+Thank you!`;
+
+    // Use api.whatsapp.com instead of wa.me for better compatibility
+    // This works even if number is not on WhatsApp
+    const whatsappNumber = "919119127346"; // Update this with actual number
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
     
     window.open(whatsappUrl, '_blank');
+    toast.success("Opening WhatsApp...");
   };
 
   // --- EMPTY STATE ---
