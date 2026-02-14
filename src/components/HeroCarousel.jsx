@@ -3,6 +3,7 @@ import React, { useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import Image from 'next/image';
 
 const slides = [
   {
@@ -11,8 +12,7 @@ const slides = [
     subtitle: "Premium B2B Wholesale Ethnic Wear"
   },
   {
-    image: "/images/banner/banner-1.svg", // Replace with different image if available
-    title: "TRADITION REIMAGINED FOR THE MODERN WOMAN",
+    image: "/images/banner/banner-1.svg", // Replace with different imag
     subtitle: "Exquisite Collections for Discerning Resellers"
   }
 ];

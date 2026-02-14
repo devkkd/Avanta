@@ -77,9 +77,8 @@ const VideoSlider = () => {
       {/* Slider */}
       <Swiper
         modules={[Navigation]}
-        centeredSlides
-        loop
-        loopedSlides={videoSlides.length}
+        centeredSlides={true}
+        loop={true}
         initialSlide={3}
         speed={600}
         spaceBetween={24}
