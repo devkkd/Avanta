@@ -2,7 +2,6 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 import ProductCard from './ProductCard'; 
-import productData from "@/data/productData.json"; //
 
 const DiscoverMore = () => {
   const [discoverProducts, setDiscoverProducts] = useState([]);
