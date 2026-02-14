@@ -54,7 +54,7 @@ const Embrace = () => {
       {/* Right Image Side */}
       <div className="w-full md:w-1/2 relative flex">
         {/* Left Dress Image */}
-        <div className="w-full relative h-[500px] md:h-auto border-r border-white">
+        <div className="w-full relative sm:h-[500px] md:h-auto border-r border-white">
           <img 
             src="/images/group1.png" // Apni image ka path yahan dalein
             alt="Blue Dress"

@@ -24,13 +24,13 @@ const AvantaBanner = () => {
             <span className="w-2 h-2 bg-white rounded-full"></span>
           </div>
 
-          <h1 className="text-2xl md:text-4xl font-cinzel font-bold lg:text-4xl tracking-wide leading-tight uppercase">
+          <h1 className="text-2xl md:text-4xl font-cinzel pb-3 font-bold lg:text-4xl tracking-wide leading-tight uppercase">
             This Season's Most Coveted Avanta Pieces
           </h1>
         </div>
 
         {/* Right Image Section */}
-        <div className="w-full md:w-1/5 relative">
+        <div className="w-full md:w-1/5 relative hidden md:block">
           <img
             src="/images/manufacuring/image-43.svg"
             alt="Model Right"

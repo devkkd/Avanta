@@ -51,7 +51,7 @@ const TrustedNetwork = () => {
   );
 
   return (
-    <section className="py-16 px-4 max-w-[1440px] mx-auto font-mont">
+    <section className="pt-16 md:pb-16 px-4 max-w-[1440px] mx-auto font-mont">
       {/* Header Section */}
       <div className="text-center max-w-6xl mx-auto mb-12">
         <div className="flex items-center justify-center gap-2 mb-4">
@@ -73,7 +73,7 @@ const TrustedNetwork = () => {
       </div>
 
       {/* India Top Cities */}
-      <div className="mb-16">
+      <div className="sm:mb-16">
         <h3 className="text-center text-xl md:text-2xl font-cinzel font-bold text-[#0E0E0E] mb-10 uppercase ">
           India Top Cities
         </h3>

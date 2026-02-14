@@ -2,25 +2,40 @@
 
 import React, { useState, useEffect } from 'react';
 import ProductCard from './ProductCard';
-import productData from "@/data/productData.json";
 
 const BestSelling = () => {
   const [featuredProducts, setFeaturedProducts] = useState([]);
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    if (!productData?.products) return;
+    const fetchProducts = async () => {
+      try {
+        setMounted(true);
 
-    // Filter only active and featured products
-    const featuredList = productData.products.filter(p => p.active && p.featured);
+        const response = await fetch("/api/products");
+        const result = await response.json();
 
-    // Shuffle and pick 4
-    const shuffled = [...featuredList]
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 4);
-    
-    setFeaturedProducts(shuffled);
+        if (!result.success) return;
+
+        // ✅ Only active products
+        const activeProducts = result.data.filter(
+          (p) => p.isActive === true
+        );
+
+        // ✅ Proper Fisher-Yates shuffle
+        const shuffled = [...activeProducts];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        setFeaturedProducts(shuffled.slice(0, 4));
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   if (!mounted) {

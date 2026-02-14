@@ -26,7 +26,7 @@ export default function ViewProductPage({ params }) {
       try {
         const response = await fetch(`/api/products/${productId}`);
         const data = await response.json();
-
+console.log('Fetched product data:', data);
         if (data.success) {
           setProduct(data.data);
         } else {

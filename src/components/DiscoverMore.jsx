@@ -1,21 +1,40 @@
 "use client";
 
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ProductCard from './ProductCard'; 
 import productData from "@/data/productData.json"; //
 
 const DiscoverMore = () => {
-  // Logic to pick 8 random active products from the JSON
-  const discoverProducts = useMemo(() => {
-    if (!productData?.products) return [];
+  const [discoverProducts, setDiscoverProducts] = useState([]);
 
-    // Filter only active products
-    const activeProducts = productData.products.filter(p => p.active); 
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+      
+        const response = await fetch("/api/products");
+        const result = await response.json();
 
-    // Shuffle and pick a maximum of 8 products
-    return [...activeProducts]
-      .sort(() => 0.5 - Math.random())
-      .slice(0, 8);
+        if (!result.success) return;
+
+        // ✅ Only active products
+        const activeProducts = result.data.filter(
+          (p) => p.isActive === true
+        );
+
+        // ✅ Proper Fisher-Yates shuffle
+        const shuffled = [...activeProducts];
+        for (let i = shuffled.length - 1; i > 0; i--) {
+          const j = Math.floor(Math.random() * (i + 1));
+          [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        setDiscoverProducts(shuffled.slice(0, 8));
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+
+    fetchProducts();
   }, []);
 
   return (
@@ -35,7 +54,7 @@ const DiscoverMore = () => {
           Discover More
         </h2>
         
-        <p className="text-sm md:text-[15px] text-gray-700 max-w-3xl mx-auto leading-relaxed italic font-mont">
+        <p className="text-sm md:text-[15px] text-gray-700 max-w-3xl mx-auto leading-relaxed font-mont">
           Explore thoughtfully curated styles crafted to elevate every occasion; uncover what inspires you next.
         </p>
       </div>

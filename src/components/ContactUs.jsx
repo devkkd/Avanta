@@ -3,7 +3,7 @@ import Image from 'next/image';
 
 const ContactUs = () => {
   return (
-    <section className="max-w-7xl mx-auto px-4 py-12 md:py-20 font-sans text-[#333]">
+    <section className="max-w-7xl mx-auto px-4 py-12 md:py-20  font-sans text-[#333]">
       <div className="flex flex-col lg:flex-row gap-10 items-start">
 
         {/* Left Section: Contact Details */}
@@ -54,7 +54,7 @@ const ContactUs = () => {
           {/* Hawa Mahal Image */}
           <div className="relative flex-1 h-full rounded-2xl overflow-hidden shadow-lg">
             <img
-              src="images/commitment/contact1.png"
+              src="/images/commitment/contact1.png"
               alt="Hawa Mahal Jaipur"
               className="w-full h-full object-cover"
             />
@@ -64,7 +64,7 @@ const ContactUs = () => {
           <div className="relative flex-1 h-full rounded-2xl overflow-hidden shadow-lg border border-gray-100">
             {/* Note: In a real app, replace this img with an iframe for Google Maps */}
             <img
-              src="images/commitment/contact2.png"
+              src="/images/commitment/contact2.png"
               alt="Location Map"
               className="w-full h-full object-cover grayscale-[20%]"
             />

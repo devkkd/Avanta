@@ -52,21 +52,6 @@ const menuItems = [
     href: '/admin/customer-inquiries',
     icon: FileText
   },
-  {
-    title: 'Orders',
-    href: '/admin/orders',
-    icon: ShoppingCart
-  },
-  {
-    title: 'Users',
-    href: '/admin/users',
-    icon: Users
-  },
-  {
-    title: 'Settings',
-    href: '/admin/settings',
-    icon: Settings
-  }
 ];
 
 export default function AdminSidebar() {

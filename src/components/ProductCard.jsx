@@ -11,13 +11,13 @@ const ProductCard = ({ product }) => {
 
   // Get main image from product.images.main or fallback
   const mainImage = product?.images?.main || product?.image || "/placeholder.jpg";
-  
+
   // Get product name
   const productName = product?.name || product?.title || "Untitled Product";
-  
+
   // Get product description
   const productDescription = product?.description || "";
-  
+
   // Get product slug for URL
   const productSlug = product?.slug || product?._id;
 
@@ -26,7 +26,7 @@ const ProductCard = ({ product }) => {
     const styleCode = product?.styleCode || product?._id?.slice(-6) || "N/A";
     const material = product?.material || product?.productDetails?.material || "Premium Fabric";
     const color = product?.primaryColor || product?.color || "As Shown";
-    
+
     const message = `Hello! I'm interested in this product:
 
 *${productName}*
@@ -41,7 +41,7 @@ Thank you!`;
 
     const whatsappNumber = "919119127346"; // Update with actual number
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
-    
+
     window.open(whatsappUrl, '_blank');
   };
 
@@ -93,12 +93,12 @@ Thank you!`;
         <div className="flex items-center gap-2 pt-5">
           <EnquiryBtn product={product} />
 
-          <button 
+          <button
             onClick={handleWhatsAppInquiry}
             className="w-10 h-10 flex items-center justify-center bg-[#25D366] text-white rounded-full shadow-sm hover:bg-[#20BA5A] transition-colors"
             title="WhatsApp Inquiry"
           >
-            <MessageCircle size={20} fill="white" stroke="none" />
+            <img src="/images/icon/whatsapp.svg" alt="WA" className="w-5 h-5" />
           </button>
         </div>
       </div>

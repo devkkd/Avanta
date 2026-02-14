@@ -28,6 +28,11 @@ const VideoSlider = () => {
       src: "/images/videos/video3.mp4",
       thumbnail: "/images/videos/thumb3.png",
     },
+    {
+      id: 4,
+      src: "/images/videos/video4.mp4",
+      thumbnail: "/images/videos/thumb4.png",
+    },
   ];
 
   const stopAllVideos = () => {
@@ -74,10 +79,11 @@ const VideoSlider = () => {
         modules={[Navigation]}
         centeredSlides
         loop
-        watchOverflow
+        loopedSlides={videoSlides.length}
+        initialSlide={3}
         speed={600}
         spaceBetween={24}
-        slidesPerView={1.2}
+        slidesPerView={1.4}
         navigation={{
           nextEl: ".next-btn",
           prevEl: ".prev-btn",
@@ -91,6 +97,7 @@ const VideoSlider = () => {
         onSlideChange={stopAllVideos}
         className="!overflow-visible"
       >
+
         {videoSlides.map((video, index) => (
           <SwiperSlide key={video.id}>
             <div className="relative aspect-[16/7] rounded-2xl md:rounded-[2.5rem] overflow-hidden shadow-lg">
@@ -106,9 +113,8 @@ const VideoSlider = () => {
               <video
                 ref={(el) => (videoRefs.current[index] = el)}
                 src={video.src}
-                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
-                  playingIndex === index ? "opacity-100" : "opacity-0"
-                }`}
+                className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${playingIndex === index ? "opacity-100" : "opacity-0"
+                  }`}
                 muted
                 playsInline
                 controls={playingIndex === index}

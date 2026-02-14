@@ -269,89 +269,89 @@ const collections = [
   {
     title: "SUITS SETS",
     description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
-     bgColor: "bg-[#FFF4D9]", // Pale Yellow
+    bgColor: "bg-[#FFF4D9]",
     img: "/images/collection/suit.svg",
-    reverse: false, // Default layout
+    reverse: false,
   },
   {
     title: "KURTI SETS",
     description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
-     bgColor: "bg-[#F3E5F5]", // Pale Pinkish/Purple
+    bgColor: "bg-[#F3E5F5]",
     img: "/images/collection/kurti.svg",
-    reverse: true, // Reverse layout for this one
+    reverse: true,
   },
   {
     title: "ANARKALI SETS",
     description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
-    bgColor: "bg-[#F2F9FF]", // Pale Blue
+    bgColor: "bg-[#F2F9FF]",
     img: "/images/collection/anarkali.svg",
     reverse: false,
   },
   {
     title: "TOP & TUNICS",
     description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
-    bgColor: "bg-[#FCE4EC]", // Pale Rose
+    bgColor: "bg-[#FCE4EC]",
     img: "/images/collection/top.svg",
-    reverse: true, // Reverse layout for this one
+    reverse: true,
   },
   {
     title: "GOWN",
     description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
-  bgColor: "bg-[#FFF3E0]", // Pale Orange
+    bgColor: "bg-[#FFF3E0]",
     img: "/images/collection/gown.svg",
     reverse: false,
   },
   {
     title: "CO-ORD SETS",
     description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
-    bgColor: "bg-[#F9FBE7]", // Pale Cream
+    bgColor: "bg-[#F9FBE7]",
     img: "/images/collection/co.svg",
-    reverse: true, // Reverse layout for this one
+    reverse: true,
   },
 ];
 
 const PremiumCollections = () => {
   return (
     <section className="py-12 w-full bg-white">
-      {/* Header Section */}
-     <div className="text-center mb-8 md:mb-12">
-         <div className="flex items-center justify-center gap-2 mb-3 md:mb-4">
-           <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-pink-600 rounded-full"></span>
+      
+      {/* Header */}
+      <div className="text-center mb-8 md:mb-12">
+        <div className="flex items-center justify-center gap-2 mb-3 md:mb-4">
+          <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-pink-600 rounded-full"></span>
           <h3 className="text-[10px] md:text-sm font-bold font-mont text-[#1a1a3d] uppercase">
-             Avanta by Jaipur Kurti Gharana
-           </h3>
-           <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-pink-600 rounded-full"></span>
-         </div>
-        
-         <h2 className="text-2xl md:text-4xl sm:py-3 font-bold font-cinzel text-[#1a1a3d] mb-6 uppercase ">
-          Premium Collections
-         </h2>
-        
-       </div>
+            Avanta by Jaipur Kurti Gharana
+          </h3>
+          <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-pink-600 rounded-full"></span>
+        </div>
 
-      {/* Grid Layout */}
+        <h2 className="text-2xl md:text-4xl sm:py-3 font-bold font-cinzel text-[#1a1a3d] mb-6 uppercase">
+          Premium Collections
+        </h2>
+      </div>
+
+      {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2">
         {collections.map((item, index) => (
           <div
             key={index}
-            className={`flex flex-col md:flex-row h-auto md:h-[350px] ${item.bgColor} ${
+            className={`relative flex flex-col md:flex-row h-auto md:h-[350px] ${item.bgColor} ${
               item.reverse ? 'md:flex-row-reverse' : ''
             }`}
           >
-            {/* Image Side (The Arch Part) */}
-            <div className="relative w-full md:w-2/3 h-[300px] md:h-full flex items-center justify-center overflow-hidden">
-              {/* Background Arch Shape */}
-              <div 
-                className="absolute inset-0 bg-white opacity-40"
-                style={{
-                  clipPath: "path('M0,500 L0,150 C0,70 100,0 250,0 C400,0 500,70 500,150 L500,500 Z')",
-                  transform: 'scale(0.8) translateY(10%)',
-                  transformOrigin: 'bottom'
-                }}
-              ></div>
-              
-              {/* Model Image */}
-              <div className="relative w-full h-full z-10">
+            {/* Pattern Background */}
+            <div
+              className="absolute inset-0 pointer-events-none"
+              style={{
+                backgroundImage: 'url("/images/pattern.png")',
+                backgroundRepeat: 'repeat',
+                backgroundPosition: 'center',
+                backgroundSize: 'auto',
+              }}
+            ></div>
+
+            {/* Image Side */}
+            <div className="relative w-full md:w-2/3 h-[300px] md:h-full flex items-center justify-center overflow-hidden z-10">
+              <div className="relative w-full h-full">
                 <Image
                   src={item.img}
                   alt={item.title}
@@ -363,14 +363,14 @@ const PremiumCollections = () => {
             </div>
 
             {/* Content Side */}
-            <div className="w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-end items-start">
+            <div className="relative z-10 w-full md:w-1/2 p-8 md:p-12 flex flex-col justify-end items-start">
               <h3 className="text-xl md:text-2xl font-cinzel font-bold text-gray-800 mb-4 tracking-tight">
                 {item.title}
               </h3>
               <p className="text-[13px] text-black mb-3 font-mont leading-relaxed max-w-[250px]">
                 {item.description}
               </p>
-              <button className="px-8 py-3 rounded-full border border-gray-400 text-[12px] font-bold uppercase text-gray-700 transition-all duration-300 hover:bg-[#DA295D] hover:text-white hover:border-transparent">
+              <button className="px-8 py-3 rounded-full border border-gray-400 text-[10px] font-bold uppercase text-gray-700 transition-all duration-300 hover:bg-[#DA295D] hover:text-white hover:border-transparent">
                 Explore Collections +
               </button>
             </div>

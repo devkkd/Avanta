@@ -37,9 +37,17 @@ const PartnershipSection = () => {
 
   return (
     <section className="bg-[#1a1a4b] text-white py-16 px-6 md:px-12 lg:px-24 font-sans min-h-screen flex flex-col justify-center relative overflow-hidden">
-      {/* Background Pattern - Simplified representation */}
-      <div className="absolute inset-0 opacity-10 pointer-events-none" style={{ backgroundImage: 'radial-gradient(circle, #ffffff 1px, transparent 1px)', backgroundSize: '40px 40px' }}></div>
+      {/* Background Pattern - Using your PNG file */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          backgroundImage: 'url("/images/pattern.png")',
+          backgroundRepeat: 'repeat',
+          backgroundPosition: 'center',
+          backgroundSize: 'auto'
+        }}
 
+      ></div>
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Header Section */}
         <div className="text-center mb-16">
@@ -60,10 +68,10 @@ const PartnershipSection = () => {
         <div className="grid grid-cols-1 md:grid-cols-3 gap-y-12 relative">
           {/* Horizontal Divider for Desktop */}
           <div className="hidden md:block absolute top-1/2 left-0 w-full h-[1px] bg-white/20 -translate-y-1/2"></div>
-          
+
           {features.map((item, index) => (
-            <div 
-              key={index} 
+            <div
+              key={index}
               className={`px-8 py-6 flex flex-col items-start relative
                 ${index % 3 !== 2 ? 'md:border-r border-white/20' : ''}
                 ${index < 3 ? 'md:pb-12' : 'md:pt-12'}
@@ -72,10 +80,10 @@ const PartnershipSection = () => {
               <div className="mb-6">
                 <Star className="w-6 h-6 fill-white text-white rotate-12" />
               </div>
-              
+
               <h3 className="text-xl font-bold mb-1">{item.title}</h3>
               {item.subtitle && <h4 className="text-lg font-semibold mb-4">{item.subtitle}</h4>}
-              
+
               <p className="text-sm leading-relaxed opacity-70 font-light text-justify">
                 {item.description}
               </p>

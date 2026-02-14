@@ -57,7 +57,7 @@ const Header = () => {
 
   const footerLinks = [
     { name: "CONTACT US", href: "/contact" },
-    { name: "DOWNLOAD CATALOG ↓", href: "/catalog" }
+    { name: "DOWNLOAD CATALOG ↓", href: "#" }
   ];
 
   const navigation = [
@@ -74,7 +74,7 @@ const Header = () => {
     <header className="sticky top-0 w-full z-50 font-sans">
       {/* Top Announcement Bar - Dynamic transition */}
       <div
-        className={`bg-[#1F1951] text-white flex items-center justify-center relative transition-all duration-500 ease-in-out overflow-hidden ${isScrolled ? "max-h-0 py-0 opacity-0" : "max-h-20 py-2 opacity-100"
+        className={`bg-[#1F1951] text-white flex items-center justify-center relative transition-all duration-500 ease-in-out overflow-hidden ${isScrolled ? "max-h-0 py-0 opacity-0" : "max-h-20 py-1 opacity-100"
           }`}
       >
         <button className="absolute left-4 lg:left-10 text-white/70 hover:text-white">
@@ -90,7 +90,7 @@ const Header = () => {
 
       {/* Glassmorphism Header Content - Stays Exactly the Same */}
       <div className="bg-white/70 backdrop-blur-md border-b border-white/20 shadow-sm transition-all duration-300">
-        <div className="max-w-[1440px] mx-auto px-4 py-4 lg:py-6">
+        <div className="max-w-[1440px] mx-auto px-4 py-2 lg:py-3">
           <div className="flex items-center justify-between gap-4 relative">
 
             {/* Left: Shipping & Search */}
@@ -117,7 +117,7 @@ const Header = () => {
             {/* Center: Logo */}
             <div className="absolute left-1/2 -translate-x-1/2 z-10">
               <Link href="/">
-                <img src='/images/Avanta-Logo.svg' alt="Avanta India" className="w-28 md:w-32 h-auto" />
+                <img src='/images/Avanta-Logo.svg' alt="Avanta India" className="w-20 md:w-24 h-auto" />
               </Link>
             </div>
 
@@ -135,19 +135,36 @@ const Header = () => {
               </Link>
 
               <div className="hidden lg:flex items-center gap-3">
+
                 <button className="bg-[#1F1951] text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:scale-105 transition-all shadow-md">
                   <img src="/images/icon/call-calling.svg" alt="Call" className="w-3.5 h-3.5" />
                   Call Now →
                 </button>
-                <button className="bg-[#00C349] text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:scale-105 transition-all shadow-md">
+
+                {/* WhatsApp */}
+                <a
+                  href="https://wa.me/918619242626"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-[#00C349] text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:scale-105 transition-all shadow-md"
+                >
                   <img src="/images/icon/whatsapp.svg" alt="WA" className="w-3.5 h-3.5" />
                   Enquiry Now →
-                </button>
-                <button className="bg-black text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:bg-zinc-800 transition-all shadow-md">
-                  <img src="/images/icon/instagram.svg" alt="WA" className="w-3.5 h-3.5" />
+                </a>
+
+                {/* Instagram */}
+                <a
+                  href="https://www.instagram.com/__avanta__"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="bg-black text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:bg-zinc-800 transition-all shadow-md"
+                >
+                  <img src="/images/icon/instagram.svg" alt="Instagram" className="w-3.5 h-3.5" />
                   Instagram
-                </button>
+                </a>
+
               </div>
+
 
               {/* Mobile Right Section (Cart + Menu) */}
               <div className="flex items-center gap-3 lg:hidden">
@@ -167,7 +184,7 @@ const Header = () => {
           </div>
 
           {/* Desktop Navigation Bar */}
-          <nav className="hidden lg:flex items-center justify-center mt-8 gap-10 pb-2">
+          <nav className="hidden lg:flex items-center justify-center mt-3 gap-10 pb-1">
             {staticLinks.map(item => (
               <NavLink key={item.name} item={item} pathname={pathname} />
             ))}
@@ -179,7 +196,7 @@ const Header = () => {
 
               const relatedSubCategories = category?.subcategories || [];
               const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-              
+
               return (
                 <div key={item.name} className="relative group">
                   <Link
@@ -257,7 +274,7 @@ const Header = () => {
                   {overflowCategories.map((item) => {
                     const category = categories.find((cat) => cat.slug === item.href.split("/").pop());
                     const relatedSubCategories = category?.subcategories || [];
-                    console.log("sub",relatedSubCategories);
+                    console.log("sub", relatedSubCategories);
                     const hasSubs = relatedSubCategories.length > 0;
 
                     return (
@@ -369,7 +386,7 @@ const Header = () => {
 
 const NavLink = ({ item, pathname }) => {
   const isActive = pathname === item.href || pathname.startsWith(item.href + '/');
-  
+
   return (
     <Link
       href={item.href}
