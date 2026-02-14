@@ -1,7 +1,8 @@
 'use client';
 
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import Link from 'next/link';
+import { useAdmin } from '@/context/AdminContext';
 import { 
   LayoutDashboard, 
   Package, 
@@ -54,27 +55,44 @@ const menuItems = [
   },
 ];
 
-export default function AdminSidebar() {
+export default function AdminSidebar({ sidebarOpen, setSidebarOpen }) {
   const pathname = usePathname();
+  const router = useRouter();
+  const { logout } = useAdmin();
 
   const isActive = (href) => pathname === href;
 
-  const handleLogout = () => {
-    // Clear admin token cookie
-    document.cookie = 'admin-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    window.location.href = '/admin/login';
+  const handleLogout = async () => {
+    try {
+      // Call logout from AdminContext (this will call API and clear cookies)
+      await logout();
+      // Redirect to login page
+      router.push('/admin/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force redirect even if logout fails
+      router.push('/admin/login');
+    }
   };
 
   return (
-    <aside className="fixed top-16 left-0 z-40 h-[calc(100vh-4rem)] w-64 bg-white border-r border-gray-200 overflow-y-auto">
+    <aside 
+      className={`
+        fixed top-16 my-4 left-0 z-40 h-[calc(100vh-4rem)] w-64 bg-white border-r border-gray-200 overflow-y-auto
+        transition-transform duration-300 ease-in-out
+        ${sidebarOpen ? 'translate-x-0' : '-translate-x-full'}
+        lg:translate-x-0
+      `}
+    >
       {/* Navigation */}
       <nav className="p-4 space-y-1">
         {menuItems.map((item, index) => (
           <Link
             key={index}
             href={item.href}
+            onClick={() => setSidebarOpen(false)}
             className={`
-              flex items-center gap-3 px-3 py-2 rounded-lg text-sm font-medium transition-colors
+              flex items-center gap-3 px-3 py-3 rounded-lg text-sm font-medium transition-colors
               ${isActive(item.href)
                 ? 'bg-blue-50 text-blue-700 border-r-2 border-blue-700'
                 : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'

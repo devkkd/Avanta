@@ -185,9 +185,21 @@ const Header = () => {
 
           {/* Desktop Navigation Bar */}
           <nav className="hidden lg:flex items-center justify-center mt-3 gap-10 pb-1">
-            {staticLinks.map(item => (
-              <NavLink key={item.name} item={item} pathname={pathname} />
-            ))}
+            {loading ? (
+              // Skeleton Loader for 10 menu items
+              <>
+                {[...Array(10)].map((_, index) => (
+                  <div key={index} className="flex flex-col gap-2">
+                    <div className="h-3 w-20 bg-gray-200 rounded animate-pulse"></div>
+                    <div className="h-0.5 w-0 bg-gray-200 rounded"></div>
+                  </div>
+                ))}
+              </>
+            ) : (
+              <>
+                {staticLinks.map(item => (
+                  <NavLink key={item.name} item={item} pathname={pathname} />
+                ))}
 
             {visibleCategories.map(item => {
               const category = categories.find(cat =>
@@ -355,6 +367,8 @@ const Header = () => {
             {footerLinks.map(item => (
               <NavLink key={item.name} item={item} pathname={pathname} />
             ))}
+              </>
+            )}
           </nav>
         </div>
       </div>

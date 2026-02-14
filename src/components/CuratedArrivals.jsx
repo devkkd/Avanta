@@ -37,9 +37,9 @@ export default function CuratedArrivals() {
   const curatedProducts = useMemo(() => {
     if (!products || products.length === 0) return [];
 
-    // ✅ Only isNew + isActive
+    // ✅ Only isNewArrival + isActive
     const newProducts = products.filter(
-      (p) => p.isNew === true && p.isActive === true
+      (p) => p.isNewArrival === true && p.isActive === true
     );
 
     // ✅ Fisher-Yates Shuffle

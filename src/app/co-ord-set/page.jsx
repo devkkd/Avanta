@@ -9,6 +9,9 @@ import { useProduct } from '@/context/ProductContext';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
 
+// Force dynamic rendering
+export const dynamic = 'force-dynamic';
+
 const CoOrdSetListing = () => {
   const router = useRouter();
   const { addToCart, addToWishlist } = useProduct();

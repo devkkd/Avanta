@@ -133,7 +133,7 @@ export default function AdminLogin() {
         {/* Footer */}
         <div className="text-center mt-8">
           <p className="text-white/40 text-xs">
-            © 2024 Avanta India. All rights reserved.
+            © 2026 Avanta India. All rights reserved.
           </p>
         </div>
       </div>

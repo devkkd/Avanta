@@ -84,7 +84,7 @@ export async function GET(request, { params }) {
           fabric: product.fabric,
           tags: product.tags,
           isFeatured: product.isFeatured,
-          isNew: product.isNew,
+          isNewArrival: product.isNewArrival,
           isActive: product.isActive,
           sortOrder: product.sortOrder
         }))

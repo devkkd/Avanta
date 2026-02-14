@@ -341,7 +341,7 @@ export async function POST(request) {
           // Status Flags
           isActive: parseBoolean(row.isActive !== undefined ? row.isActive : true),
           isFeatured: parseBoolean(row.isFeatured),
-          isNew: parseBoolean(row.isNew),
+          isNewArrival: parseBoolean(row.isNewArrival),
           
           // Tags
           tags: row.tags ? row.tags.split(',').map(tag => tag.trim()) : [],

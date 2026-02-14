@@ -45,7 +45,7 @@ export default function EditProductPage({ params }) {
     subcategoryId: '',
     tags: [],
     isFeatured: false,
-    isNew: false,
+    isNewArrival: false,
     isActive: true,
     sortOrder: 0
   });

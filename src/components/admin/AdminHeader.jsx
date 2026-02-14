@@ -8,31 +8,60 @@ import {
   Search, 
   User, 
   LogOut, 
-  Settings
+  Settings,
+  Menu,
+  X
 } from 'lucide-react';
 
-export default function AdminHeader() {
+export default function AdminHeader({ sidebarOpen, setSidebarOpen }) {
   const [showProfileMenu, setShowProfileMenu] = useState(false);
   const { admin, logout } = useAdmin();
   const router = useRouter();
 
   const handleLogout = async () => {
-    // Clear admin token cookie
-    document.cookie = 'admin-token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;';
-    window.location.href = '/admin/login';
+    try {
+      // Call logout from AdminContext (this will call API and clear cookies)
+      await logout();
+      // Redirect to login page
+      router.push('/admin/login');
+    } catch (error) {
+      console.error('Logout error:', error);
+      // Force redirect even if logout fails
+      router.push('/admin/login');
+    }
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-6 py-2 flex items-center justify-between">
+    <header className="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 px-4 md:px-6 py-3 flex items-center justify-between">
       {/* Left Section */}
-      <div className="flex items-center gap-4">
-        <div>
-          <h1 className="text-xl font-semibold text-gray-800">Avanta Admin</h1>
-          <p className="text-sm text-gray-500">Dashboard</p>
+      <div className="flex items-center gap-3">
+        {/* Hamburger Menu - Mobile/Tablet */}
+        <button
+          onClick={() => setSidebarOpen(!sidebarOpen)}
+          className="lg:hidden p-2 rounded-lg hover:bg-gray-100 transition-colors"
+        >
+          {sidebarOpen ? (
+            <X size={24} className="text-gray-600" />
+          ) : (
+            <Menu size={24} className="text-gray-600" />
+          )}
+        </button>
+
+        {/* Logo and Title */}
+        <div className="flex items-center gap-3">
+          <img 
+            src="/images/Avanta-Logo.svg" 
+            alt="Avanta Logo" 
+            className="h-8 md:h-10 w-auto"
+          />
+          <div className="hidden sm:block border-l border-gray-300 pl-3">
+            <h1 className="text-lg md:text-xl font-semibold text-gray-800">Admin Panel</h1>
+            <p className="text-xs text-gray-500">Dashboard</p>
+          </div>
         </div>
       </div>
 
-      {/* Center - Search */}
+      {/* Center - Search (Hidden on mobile) */}
       <div className="hidden md:flex flex-1 max-w-md mx-8">
         <div className="relative w-full">
           <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={20} />
@@ -45,7 +74,7 @@ export default function AdminHeader() {
       </div>
 
       {/* Right Section */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-2 md:gap-4">
         {/* Notifications */}
         <button className="relative p-2 rounded-lg hover:bg-gray-100 transition-colors">
           <Bell size={20} className="text-gray-600" />
@@ -58,12 +87,12 @@ export default function AdminHeader() {
         <div className="relative">
           <button
             onClick={() => setShowProfileMenu(!showProfileMenu)}
-            className="flex items-center gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
+            className="flex items-center gap-2 md:gap-3 p-2 rounded-lg hover:bg-gray-100 transition-colors"
           >
             <div className="w-8 h-8 bg-blue-600 rounded-full flex items-center justify-center">
               <User size={16} className="text-white" />
             </div>
-            <div className="hidden sm:block text-left">
+            <div className="hidden md:block text-left">
               <p className="text-sm font-medium text-gray-800">{admin?.username || 'Admin'}</p>
               <p className="text-xs text-gray-500 capitalize">{admin?.role || 'Administrator'}</p>
             </div>

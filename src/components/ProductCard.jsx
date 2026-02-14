@@ -57,14 +57,14 @@ Thank you!`;
           />
 
           {/* NEW Badge */}
-          {product.isNew && (
+          {product.isNewArrival && (
             <span className="absolute top-4 left-4 bg-[#00C349] text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider">
               New
             </span>
           )}
 
           {/* Featured Badge */}
-          {product.isFeatured && !product.isNew && (
+          {product.isFeatured && !product.isNewArrival && (
             <span className="absolute top-4 left-4 bg-[#DE3163] text-white text-[10px] font-bold px-3 py-1.5 rounded uppercase tracking-wider">
               Featured
             </span>

@@ -19,12 +19,16 @@ export const AdminProvider = ({ children }) => {
   // Check if admin is logged in
   const checkAuth = async () => {
     try {
-      const response = await fetch('/api/admin/verify');
+      const response = await fetch('/api/admin/verify', {
+        credentials: 'include', // Important: include cookies
+      });
       if (response.ok) {
         const data = await response.json();
         setAdmin(data.admin);
       } else {
         setAdmin(null);
+        // Clear any invalid cookies on client side
+        document.cookie = 'admin-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
       }
     } catch (error) {
       console.error('Auth check error:', error);
@@ -44,6 +48,7 @@ export const AdminProvider = ({ children }) => {
         headers: {
           'Content-Type': 'application/json',
         },
+        credentials: 'include', // Important: include cookies
         body: JSON.stringify({ username, password }),
       });
 
@@ -68,10 +73,16 @@ export const AdminProvider = ({ children }) => {
   // Logout function
   const logout = async () => {
     try {
-      await fetch('/api/admin/logout', { method: 'POST' });
+      await fetch('/api/admin/logout', { 
+        method: 'POST',
+        credentials: 'include' // Important: include cookies
+      });
       setAdmin(null);
+      // Clear cookie on client side too
+      document.cookie = 'admin-token=; path=/; expires=Thu, 01 Jan 1970 00:00:01 GMT;';
     } catch (error) {
       console.error('Logout error:', error);
+      setAdmin(null);
     }
   };
 

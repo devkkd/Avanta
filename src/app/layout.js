@@ -38,11 +38,13 @@ export default function RootLayout({ children }) {
       <body
         className={`${geistSans.variable} ${geistMono.variable} ${montserrat.variable} ${cinzel.variable} antialiased`}
       >
-        <CartProvider>
-          <EnquiryProvider>
-            <ConditionalLayout>{children}</ConditionalLayout>
-          </EnquiryProvider>
-        </CartProvider>
+        <ProductProvider>
+          <CartProvider>
+            <EnquiryProvider>
+              <ConditionalLayout>{children}</ConditionalLayout>
+            </EnquiryProvider>
+          </CartProvider>
+        </ProductProvider>
       </body>
     </html>
   );
