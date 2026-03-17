@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Search, Eye, Trash2, Filter, X, ChevronDown, FileText } from 'lucide-react';
 import toast from 'react-hot-toast';
+import { useNotifications } from '@/context/NotificationContext';
 
 export default function CustomerInquiriesPage() {
   const [inquiries, setInquiries] = useState([]);
@@ -14,6 +15,7 @@ export default function CustomerInquiriesPage() {
   const [showModal, setShowModal] = useState(false);
   const [page, setPage] = useState(1);
   const [pagination, setPagination] = useState({});
+  const { refresh: refreshNotifications } = useNotifications();
 
   // Fetch inquiries
   const fetchInquiries = async () => {
@@ -67,6 +69,7 @@ export default function CustomerInquiriesPage() {
       if (result.success) {
         toast.success('Status updated successfully');
         fetchInquiries();
+        refreshNotifications();
         if (selectedInquiry?._id === id) {
           setSelectedInquiry(result.data);
         }

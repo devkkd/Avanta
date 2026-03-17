@@ -5,6 +5,7 @@ import { ChevronDown, Search, Menu, X, ShoppingCart } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEnquiry } from "@/context/CartContext";
+import SearchBar from "@/components/SearchBar";
 
 const Header = () => {
   const pathname = usePathname();
@@ -104,14 +105,7 @@ const Header = () => {
                 </div>
               </div>
 
-              <div className="relative flex-1 max-w-sm">
-                <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
-                <input
-                  type="text"
-                  placeholder="Search product or categories & more..."
-                  className="w-full bg-white/40 border border-indigo-50/50 rounded-full py-2.5 pl-11 pr-4 text-sm focus:outline-none focus:bg-white focus:ring-4 focus:ring-indigo-50/30 transition-all"
-                />
-              </div>
+              <SearchBar />
             </div>
 
             {/* Center: Logo */}

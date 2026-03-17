@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 import toast, { Toaster } from "react-hot-toast";
+import { useNotifications } from '@/context/NotificationContext';
 
 export default function AdminInquiriesPage() {
   const [inquiries, setInquiries] = useState([]);
@@ -22,15 +23,11 @@ export default function AdminInquiriesPage() {
   const [selectedStatus, setSelectedStatus] = useState('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [counts, setCounts] = useState({
-    all: 0,
-    pending: 0,
-    contacted: 0,
-    quoted: 0,
-    converted: 0,
-    rejected: 0
+    all: 0, pending: 0, contacted: 0, quoted: 0, converted: 0, rejected: 0
   });
   const [selectedInquiry, setSelectedInquiry] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const { refresh: refreshNotifications } = useNotifications();
 
   // Fetch inquiries
   const fetchInquiries = async () => {
@@ -120,6 +117,7 @@ export default function AdminInquiriesPage() {
       if (result.success) {
         toast.success('Status updated successfully');
         fetchInquiries();
+        refreshNotifications();
         if (selectedInquiry && selectedInquiry._id === id) {
           setSelectedInquiry(result.data);
         }

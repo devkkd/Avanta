@@ -1,6 +1,7 @@
 'use client';
 
 import { AdminProvider, useAdmin } from '@/context/AdminContext';
+import { NotificationProvider } from '@/context/NotificationContext';
 import AdminHeader from '@/components/admin/AdminHeader';
 import AdminSidebar from '@/components/admin/AdminSidebar';
 import { usePathname, useRouter } from 'next/navigation';
@@ -77,7 +78,9 @@ function AdminLayoutContent({ children }) {
 export default function AdminLayout({ children }) {
   return (
     <AdminProvider>
-      <AdminLayoutContent>{children}</AdminLayoutContent>
+      <NotificationProvider>
+        <AdminLayoutContent>{children}</AdminLayoutContent>
+      </NotificationProvider>
     </AdminProvider>
   );
 }
