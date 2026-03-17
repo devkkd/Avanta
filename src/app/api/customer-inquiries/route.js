@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import CustomerInquiry from '@/models/CustomerInquiry';
+import { sendInquiryNotification } from '@/lib/mailer';
 
 // POST - Create new customer inquiry
 export async function POST(request) {
@@ -24,6 +25,11 @@ export async function POST(request) {
     };
 
     const inquiry = await CustomerInquiry.create(inquiryData);
+
+    // Fire-and-forget email notification
+    sendInquiryNotification('wholesale', inquiry).catch(err =>
+      console.error('Email notification failed:', err.message)
+    );
 
     return NextResponse.json({
       success: true,

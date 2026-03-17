@@ -56,7 +56,7 @@ const VideoSlider = () => {
   };
 
   return (
-    <section className="py-16 bg-white overflow-hidden">
+    <section className="py-10 bg-white overflow-hidden">
       {/* Header */}
       <div className="max-w-7xl mx-auto px-4 text-center mb-10">
         <div className="flex items-center justify-center gap-2 text-[#1F1951] font-bold text-[10px] md:text-xs tracking-[0.2em] uppercase mb-4">
@@ -65,7 +65,7 @@ const VideoSlider = () => {
           <span className="w-1.5 h-1.5 bg-[#C8205F] rounded-full" />
         </div>
 
-        <h2 className="text-3xl md:text-4xl font-cinzel font-bold uppercase mb-6">
+        <h2 className="text-xl md:text-4xl font-cinzel font-bold uppercase mb-6">
           We’re Manufacturing What Matters
         </h2>
 
@@ -82,12 +82,16 @@ const VideoSlider = () => {
         initialSlide={3}
         speed={600}
         spaceBetween={24}
-        slidesPerView={1.4}
+        slidesPerView={1.1}
         navigation={{
           nextEl: ".next-btn",
           prevEl: ".prev-btn",
         }}
         breakpoints={{
+          640: {
+            slidesPerView: 1.3,
+            spaceBetween: 20,
+          },
           1024: {
             slidesPerView: 1.8,
             spaceBetween: 30,
@@ -99,7 +103,7 @@ const VideoSlider = () => {
 
         {videoSlides.map((video, index) => (
           <SwiperSlide key={video.id}>
-            <div className="relative aspect-[16/7] rounded-2xl md:rounded-[2.5rem] overflow-hidden shadow-lg">
+            <div className="relative aspect-[4/3] sm:aspect-[16/7] rounded-2xl md:rounded-[2.5rem] overflow-hidden shadow-lg">
 
               {/* Thumbnail (always visible) */}
               <img

@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
 import Inquiry from '@/models/Inquiry';
+import { sendInquiryNotification } from '@/lib/mailer';
 
 // GET - Fetch all inquiries (for frontend - limited data)
 export async function GET(request) {
@@ -58,9 +59,9 @@ export async function POST(request) {
     } = body;
 
     // Validation
-    if (!fullName || !email || !phone) {
+    if (!fullName || !phone) {
       return NextResponse.json(
-        { success: false, error: 'Full name, email, and phone are required' },
+        { success: false, error: 'Full name and phone are required' },
         { status: 400 }
       );
     }
@@ -102,6 +103,11 @@ export async function POST(request) {
       userAgent,
       status: 'pending'
     });
+
+    // Fire-and-forget email notification
+    sendInquiryNotification('product', inquiry).catch(err =>
+      console.error('Email notification failed:', err.message)
+    );
 
     return NextResponse.json({
       success: true,

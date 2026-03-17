@@ -264,15 +264,14 @@ Thank you!`;
                   {/* Email */}
                   <div className="space-y-1">
                     <label className="text-[10px] font-bold text-gray-500 uppercase ml-1 tracking-wider">
-                      Email Address *
+                      Email Address
                     </label>
                     <input
                       type="email"
                       name="email"
                       value={formData.email}
                       onChange={handleInputChange}
-                      placeholder="business@email.com"
-                      required
+                      placeholder="business@email.com (optional)"
                       className="w-full px-5 py-4 bg-white border border-gray-100 rounded-2xl focus:outline-none focus:ring-2 focus:ring-[#1F1951]/10 text-gray-800 placeholder-gray-300 transition-all text-sm"
                     />
                   </div>

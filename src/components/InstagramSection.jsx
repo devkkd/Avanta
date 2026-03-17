@@ -20,7 +20,7 @@ const InstagramSection = () => {
           <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
         </div>
         
-        <h2 className="text-4xl md:text-5xl font-cinzel font-bold mb-6 text-gray-900 tracking-tight">
+        <h2 className="text-xl md:text-4xl font-cinzel font-bold mb-6 text-gray-900 tracking-tight">
           Stay Inspired
         </h2>
         

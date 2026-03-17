@@ -58,7 +58,7 @@ const Header = () => {
 
   const footerLinks = [
     { name: "CONTACT US", href: "/contact" },
-    { name: "DOWNLOAD CATALOG ↓", href: "#" }
+    // { name: "DOWNLOAD CATALOG ↓", href: "#" }
   ];
 
   const navigation = [
@@ -151,7 +151,7 @@ const Header = () => {
                   href="https://www.instagram.com/__avanta__"
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="bg-black text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:bg-zinc-800 transition-all shadow-md"
+                  className="bg-black text-white flex items-center gap-2 px-5 py-3 rounded-full hover:scale-105 text-[11px] font-bold tracking-tight hover:bg-zinc-800 transition-all shadow-md"
                 >
                   <img src="/images/icon/instagram.svg" alt="Instagram" className="w-3.5 h-3.5" />
                   Instagram

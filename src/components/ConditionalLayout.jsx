@@ -5,6 +5,7 @@ import { useState } from "react";
 import AnnouncementBar from "./AnnouncementBar";
 import Header from "./Header";
 import Footer from "./Footer";
+import InquiryPopup from "./InquiryPopup";
 
 export default function ConditionalLayout({ children }) {
   const pathname = usePathname();
@@ -26,6 +27,7 @@ export default function ConditionalLayout({ children }) {
       </main>
 
       <Footer />
+      <InquiryPopup />
     </>
   );
 }

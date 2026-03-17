@@ -62,7 +62,7 @@ const TrustedNetwork = () => {
           <span className="w-2 h-2 rounded-full bg-[#ee2a7b]"></span>
         </div>
 
-        <h2 className="text-2xl md:text-4xl font-bold font-cinzel text-[#1a1a3d] mb-6 uppercase ">
+        <h2 className="text-xl md:text-4xl font-bold font-cinzel text-[#1a1a3d] mb-6 uppercase ">
           Trusted Across India and the World
         </h2>
 
@@ -73,7 +73,7 @@ const TrustedNetwork = () => {
       </div>
 
       {/* India Top Cities */}
-      <div className="sm:mb-16">
+      <div className="sm:mb-6">
         <h3 className="text-center text-xl md:text-2xl font-cinzel font-bold text-[#0E0E0E] mb-10 uppercase ">
           India Top Cities
         </h3>

@@ -83,7 +83,7 @@ export default function CuratedArrivals() {
           <span className="h-1.5 w-1.5 bg-[#DE3163] rounded-full"></span>
         </div>
 
-        <h2 className="text-3xl md:text-4xl font-cinzel font-bold text-[#1a1a1a] mb-6 uppercase tracking-tight">
+        <h2 className="text-xl md:text-4xl font-cinzel font-bold text-[#1a1a1a] mb-6 uppercase tracking-tight">
           Curated New Arrivals
         </h2>
 

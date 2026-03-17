@@ -49,7 +49,7 @@ const BestSelling = () => {
             </h3>
             <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
           </div>
-          <h2 className="text-2xl md:text-4xl font-cinzel font-bold text-[#1a1a3d] mb-6 uppercase tracking-tight">
+          <h2 className="text-xl md:text-4xl font-cinzel font-bold text-[#1a1a3d] mb-6 uppercase tracking-tight">
             Best Selling Products
           </h2>
         </div>
@@ -70,7 +70,7 @@ const BestSelling = () => {
           <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
         </div>
         
-        <h2 className="text-2xl md:text-4xl font-cinzel font-bold text-[#1a1a3d] mb-6 uppercase tracking-tight">
+        <h2 className="text-xl md:text-4xl font-cinzel font-bold text-[#1a1a3d] mb-6 uppercase tracking-tight">
           Best Selling Products
         </h2>
       </div>

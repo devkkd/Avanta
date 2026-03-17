@@ -181,14 +181,13 @@ const ProductEnquiry = ({ productId = null, productName = null }) => {
             </div>
 
             <div>
-              <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address *</label>
+              <label className="block text-sm font-semibold text-gray-700 mb-2">Email Address</label>
               <input 
                 type="email" 
                 name="email"
                 value={formData.email}
                 onChange={handleChange}
-                placeholder="Enter Email Address" 
-                required
+                placeholder="Enter Email Address (optional)" 
                 className="w-full px-4 py-3 rounded-lg border border-gray-200 focus:outline-none focus:ring-1 focus:ring-indigo-500 bg-white text-sm" 
               />
             </div>

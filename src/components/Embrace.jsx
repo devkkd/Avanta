@@ -17,7 +17,7 @@ const Embrace = () => {
         </div>
 
         {/* Heading */}
-        <h1 className="text-3xl md:text-4xl lg:text-5xl font-cinzel font-bold text-gray-900 leading-tight mb-8">
+        <h1 className="text-xl md:text-4xl font-cinzel font-bold text-gray-900 leading-tight mb-8">
           EMBRACE EFFORTLESS <br /> ELEGANCE
         </h1>
 

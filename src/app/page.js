@@ -21,27 +21,26 @@ import WholesaleForm from "@/components/WholesaleForm";
 
 export default function Home() {
   return (
-   <>
-   <HeroCarousel/>
-   <TrustedCities/>
-   <Manufacturing/>
-   <PremiumCollections/>
-   <CuratedArrivals/>
-   <AvantaLanding/>
-   <ArtisanExcellence/>
-   <BestSelling/>
-   <AvantaBanner/>
-   <RefinedSelection/>
-   <PartnershipSection/>
-   <DiscoverMore/>
-   <Embrace/>
-   <CommitmentSection/>
-   <Achievements/>
-   <InstagramSection/>
-   <WholesaleForm/>
-   <FAQ/>
-   <ContactUs/>
-   <CraftsmanshipSection/>
-   </>
+    <>
+      <HeroCarousel />
+
+      <Manufacturing />
+      <PremiumCollections />
+      <CuratedArrivals />
+      <AvantaBanner />
+      <BestSelling />
+      <ArtisanExcellence />
+
+      <PartnershipSection />
+         <WholesaleForm />
+      <Embrace />
+       
+      <InstagramSection />
+
+  
+      <TrustedCities />
+      <ContactUs />
+      <CraftsmanshipSection />
+    </>
   );
 }
