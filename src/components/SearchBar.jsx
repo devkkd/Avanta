@@ -161,11 +161,6 @@ export default function SearchBar() {
                           {product.categoryId?.name}
                           {product.subcategoryId?.name ? ` · ${product.subcategoryId.name}` : ""}
                         </p>
-                        {product.priceRange && (
-                          <p className="text-xs font-bold text-[#1F1951] mt-1">
-                            ₹{product.priceRange.min.toLocaleString()} – ₹{product.priceRange.max.toLocaleString()}
-                          </p>
-                        )}
                       </div>
 
                       <ArrowRight className="w-4 h-4 text-gray-300 flex-shrink-0" />

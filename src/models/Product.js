@@ -14,31 +14,12 @@ const ProductSchema = new mongoose.Schema({
     trim: true,
     maxlength: [5000, 'Description cannot exceed 5000 characters']
   },
-  styleCode: {
-    type: String,
-    required: [true, 'Style code is required'],
-    unique: true,
-    trim: true,
-    uppercase: true
-  },
   sku: {
     type: String,
     required: [true, 'SKU is required'],
     unique: true,
     trim: true,
     uppercase: true
-  },
-  priceRange: {
-    min: {
-      type: Number,
-      required: [true, 'Minimum price is required'],
-      min: [0, 'Price must be a positive number']
-    },
-    max: {
-      type: Number,
-      required: [true, 'Maximum price is required'],
-      min: [0, 'Price must be a positive number']
-    }
   },
   images: {
     main: {
@@ -140,11 +121,10 @@ const ProductSchema = new mongoose.Schema({
   timestamps: true
 });
 
-// Indexes for better performance (removed duplicates that are already created by unique: true)
+// Indexes for better performance
 ProductSchema.index({ categoryId: 1, isActive: 1 });
 ProductSchema.index({ subcategoryId: 1, isActive: 1 });
 ProductSchema.index({ isActive: 1, isFeatured: 1 });
-ProductSchema.index({ 'priceRange.min': 1, 'priceRange.max': 1 });
 
 // Generate slug from name if not provided
 ProductSchema.pre('save', function() {
@@ -166,18 +146,12 @@ ProductSchema.pre('save', function() {
 
 // Generate SKU if not provided
 ProductSchema.pre('save', function() {
-  if (!this.sku && this.styleCode && this.color && this.color.name) {
+  if (!this.sku && this.color && this.color.name) {
     const colorCode = this.color.name.substring(0, 3).toUpperCase();
-    this.sku = `${this.styleCode}-${colorCode}`;
+    const timestamp = Date.now().toString().slice(-6);
+    this.sku = `AVT${timestamp}-${colorCode}`;
   }
 });
-
-// Helper method to generate style code
-export function generateStyleCode(prefix = 'AVT') {
-  const timestamp = Date.now().toString().slice(-6);
-  const random = Math.floor(Math.random() * 1000).toString().padStart(3, '0');
-  return `${prefix}${timestamp}${random}`;
-}
 
 const Product = mongoose.models.Product || mongoose.model('Product', ProductSchema);
 export default Product;

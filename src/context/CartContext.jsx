@@ -35,10 +35,8 @@ export function CartProvider({ children }) {
       productId: product._id,
       name: product.name,
       slug: product.slug,
-      styleCode: product.styleCode,
       sku: product.sku,
       size: size,
-      price: product.priceRange.min,
       image: product.images.main,
       color: product.color,
       quantity: 1

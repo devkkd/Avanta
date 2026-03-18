@@ -82,14 +82,13 @@ const CartPage = () => {
     // Build detailed product list with all information
     const productList = Enquiries.map((item, index) => {
       const productName = item.name || item.title;
-      const styleCode = item.styleCode || item._id.slice(-6);
       
       // Get actual material and color from database
       const material = item.material || item.productDetails?.material || "Premium Fabric";
-      const color = item.primaryColor || item.color || "As Shown";
+      const color = item.primaryColor || item.color?.name || "As Shown";
       
       return `${index + 1}. *${productName}*
-   Style Code: ${styleCode}
+   SKU: ${item.sku || item._id.slice(-6)}
    Material: ${material}
    Color: ${color}`;
     }).join("\n\n");
@@ -196,7 +195,7 @@ Thank you!`;
                           </h3>
                           <div className="flex flex-wrap gap-2 mb-3">
                             <span className="text-[10px] font-bold text-[#E12B5E] uppercase tracking-widest bg-pink-50 px-2 py-1 rounded">
-                              ID: {item.styleCode || item._id.slice(-6)}
+                              ID: {item.sku || item._id.slice(-6)}
                             </span>
                           </div>
                         </div>

@@ -1,48 +1,55 @@
 import React from 'react';
 import Image from 'next/image';
+import Link from 'next/link';
 
 const collections = [
   {
-    title: "SUITS SETS",
-    description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
+    title: "COTTON SUIT",
+    description: "Breathable, lightweight cotton suits crafted for everyday elegance. 500+ designs with vibrant color options from 250 to 500+ shades.",
     bgColor: "bg-[#FFF4D9]",
     img: "/images/collection/suit.svg",
     reverse: false,
-  },
-  {
-    title: "KURTI SETS",
-    description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
-    bgColor: "bg-[#F3E5F5]",
-    img: "/images/collection/kurti.svg",
-    reverse: true,
-  },
-  {
-    title: "ANARKALI SETS",
-    description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
-    bgColor: "bg-[#F2F9FF]",
-    img: "/images/collection/anarkali.svg",
-    reverse: false,
-  },
-  {
-    title: "TOP & TUNICS",
-    description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
-    bgColor: "bg-[#FCE4EC]",
-    img: "/images/collection/top.svg",
-    reverse: true,
-  },
-  {
-    title: "GOWN",
-    description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
-    bgColor: "bg-[#FFF3E0]",
-    img: "/images/collection/gown.svg",
-    reverse: false,
+    slug: "cotton-suit",
   },
   {
     title: "CO-ORD SETS",
-    description: "500+ suit designs. Extensive color options ranging from 250 to 500+ options.",
+    description: "Perfectly matched co-ordinated sets for a polished, effortless look. Mix, match and style with ease across 300+ curated designs.",
     bgColor: "bg-[#F9FBE7]",
     img: "/images/collection/co.svg",
     reverse: true,
+    slug: "co-ord-sets",
+  },
+  {
+    title: "TOP & TUNIC",
+    description: "Versatile tops and tunics designed for modern women. Pair with palazzos, jeans or leggings — 400+ styles to choose from.",
+    bgColor: "bg-[#FCE4EC]",
+    img: "/images/collection/top.svg",
+    reverse: false,
+    slug: "top-tunic",
+  },
+  {
+    title: "MUSLIN DUPATTA SETS",
+    description: "Soft, airy muslin dupatta sets with delicate prints and rich embroidery. A timeless choice for festive and casual occasions alike.",
+    bgColor: "bg-[#F3E5F5]",
+    img: "/images/collection/kurti.svg",
+    reverse: true,
+    slug: "muslin-dupatta-sets",
+  },
+  {
+    title: "ANARKALI DUPATTA SETS",
+    description: "Graceful anarkali silhouettes paired with flowing dupattas. Crafted for celebrations with 300+ designs in rich, festive hues.",
+    bgColor: "bg-[#F2F9FF]",
+    img: "/images/collection/anarkali.svg",
+    reverse: false,
+    slug: "anarkali-dupatta-sets",
+  },
+  {
+    title: "GOWN",
+    description: "Floor-length gowns that blend tradition with contemporary flair. Statement pieces for weddings, parties and special occasions.",
+    bgColor: "bg-[#FFF3E0]",
+    img: "/images/collection/gown.svg",
+    reverse: true,
+    slug: "gown",
   },
 ];
 
@@ -68,11 +75,12 @@ const PremiumCollections = () => {
       {/* Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2">
         {collections.map((item, index) => (
-          <div
+          <Link
             key={index}
+            href={`/store/${item.slug}`}
             className={`relative flex h-[160px] md:h-[260px] ${item.bgColor} ${
               index % 2 !== 0 ? 'flex-row-reverse' : 'flex-row'
-            } md:${item.reverse ? 'flex-row-reverse' : 'flex-row'}`}
+            } md:${item.reverse ? 'flex-row-reverse' : 'flex-row'} group cursor-pointer`}
           >
             {/* BG Cover Image */}
             <div
@@ -106,11 +114,11 @@ const PremiumCollections = () => {
               <p className="text-[10px] md:text-[12px] text-black mb-2 md:mb-3 font-mont leading-relaxed line-clamp-3">
                 {item.description}
               </p>
-              <button className="px-3 py-1.5 md:px-5 md:py-2 rounded-full border border-gray-400 text-[9px] md:text-[10px] font-bold uppercase text-gray-700 transition-all duration-300 hover:bg-[#DA295D] hover:text-white hover:border-transparent">
+              <button className="px-3 py-1.5 md:px-5 md:py-2 rounded-full border border-gray-400 text-[9px] md:text-[10px] font-bold uppercase text-gray-700 transition-all duration-300 group-hover:bg-[#DA295D] group-hover:text-white group-hover:border-transparent">
                 Explore +
               </button>
             </div>
-          </div>
+          </Link>
         ))}
       </div>
     </section>

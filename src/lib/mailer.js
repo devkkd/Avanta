@@ -47,7 +47,7 @@ export async function sendInquiryNotification(type, data) {
         ['Email', data.email || '—'],
         ['Company', data.company || '—'],
         ['Location', data.location || '—'],
-        ['Products', (data.products || []).map(p => `${p.name} (${p.styleCode})`).join(', ') || '—'],
+        ['Products', (data.products || []).map(p => `${p.name} (${p.sku || p._id?.slice(-6) || 'N/A'})`).join(', ') || '—'],
         ['Notes', data.notes || '—'],
       ];
 

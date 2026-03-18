@@ -48,7 +48,7 @@ const InquirySchema = new mongoose.Schema({
       type: String,
       required: true
     },
-    styleCode: {
+    sku: {
       type: String,
       required: true
     },

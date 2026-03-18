@@ -277,12 +277,9 @@ export async function POST(request) {
           }
         }
 
-        // Generate style code if not provided
-        const styleCode = row.styleCode || `AVT${Date.now().toString().slice(-6)}${Math.floor(Math.random() * 1000)}`;
-        
         // Generate SKU if not provided
         const colorCode = row.colorName ? row.colorName.substring(0, 3).toUpperCase() : 'DEF';
-        const sku = row.sku || `${styleCode}-${colorCode}`;
+        const sku = row.sku || `AVT${Date.now().toString().slice(-6)}-${colorCode}`;
 
         // Generate slug from product name if not provided
         const productSlug = row.slug || generateSlug(row.name);
@@ -297,20 +294,13 @@ export async function POST(request) {
           return false;
         };
 
-        // Create product object with ALL Product model fields
+        // Create product object
         const productData = {
           // Basic Info
           name: row.name.trim(),
           description: row.description.trim(),
-          styleCode: styleCode.toUpperCase(),
           sku: sku.toUpperCase(),
           slug: productSlug,
-          
-          // Price
-          priceRange: {
-            min: parseFloat(row.priceMin) || 0,
-            max: parseFloat(row.priceMax) || 0
-          },
           
           // Images
           images: {

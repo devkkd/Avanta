@@ -3,11 +3,6 @@ import Link from "next/link";
 import EnquiryBtn from "./EnquiryBtn";
 
 const ProductCard = ({ product }) => {
-  const priceText =
-    product?.priceRange?.min && product?.priceRange?.max
-      ? `₹${product.priceRange.min} – ₹${product.priceRange.max}`
-      : "Price on request";
-
   // Get main image from product.images.main or fallback
   const mainImage = product?.images?.main || product?.image || "/placeholder.jpg";
 
@@ -22,17 +17,15 @@ const ProductCard = ({ product }) => {
 
   // WhatsApp inquiry handler
   const handleWhatsAppInquiry = () => {
-    const styleCode = product?.styleCode || product?._id?.slice(-6) || "N/A";
     const material = product?.material || product?.productDetails?.material || "Premium Fabric";
-    const color = product?.primaryColor || product?.color || "As Shown";
+    const color = product?.primaryColor || product?.color?.name || "As Shown";
 
     const message = `Hello! I'm interested in this product:
 
 *${productName}*
-Style Code: ${styleCode}
+SKU: ${product?.sku || 'N/A'}
 Material: ${material}
 Color: ${color}
-Price: ${priceText}
 
 Please provide wholesale pricing, MOQ, and delivery details.
 
@@ -74,8 +67,6 @@ Thank you!`;
             {productName}
           </h3>
         </Link>
-
-        <p className="font-semibold text-[#1a1a1a] text-xs">{priceText}</p>
 
         <p className="text-gray-500 text-[11px] leading-relaxed line-clamp-2">
           {productDescription}

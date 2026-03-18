@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server';
 import dbConnect from '@/lib/mongodb';
-import Product, { generateStyleCode } from '@/models/Product';
+import Product from '@/models/Product';
 import Category from '@/models/Category';
 import Subcategory from '@/models/Subcategory';
 
@@ -37,7 +37,6 @@ export async function GET(request) {
       query.$or = [
         { name: { $regex: search, $options: 'i' } },
         { description: { $regex: search, $options: 'i' } },
-        { styleCode: { $regex: search, $options: 'i' } },
         { sku: { $regex: search, $options: 'i' } },
         { tags: { $in: [new RegExp(search, 'i')] } }
       ];
@@ -82,9 +81,7 @@ export async function POST(request) {
     const { 
       name, 
       description, 
-      styleCode, 
       sku,
-      priceRange, 
       images, 
       sizes, 
       productDetails, 
@@ -115,13 +112,6 @@ export async function POST(request) {
     if (!categoryId) {
       return NextResponse.json(
         { error: 'Category ID is required' },
-        { status: 400 }
-      );
-    }
-
-    if (!priceRange || !priceRange.min || !priceRange.max || priceRange.min < 0 || priceRange.max < priceRange.min) {
-      return NextResponse.json(
-        { error: 'Valid price range is required (min and max, with max >= min)' },
         { status: 400 }
       );
     }
@@ -177,22 +167,15 @@ export async function POST(request) {
     // Generate slug from name
     const slug = generateSlug(name);
 
-    // Generate style code if not provided
-    const finalStyleCode = styleCode || generateStyleCode();
-
     // Generate SKU if not provided
     const colorCode = color.name.substring(0, 3).toUpperCase();
-    const finalSku = sku || `${finalStyleCode}-${colorCode}`;
+    const timestamp = Date.now().toString().slice(-6);
+    const finalSku = sku || `AVT${timestamp}-${colorCode}`;
 
     const productData = {
       name: name.trim(),
       description: description.trim(),
-      styleCode: finalStyleCode,
       sku: finalSku,
-      priceRange: {
-        min: Number(priceRange.min),
-        max: Number(priceRange.max)
-      },
       images: {
         main: images.main.trim(),
         gallery: images.gallery || []

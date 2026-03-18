@@ -104,24 +104,6 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    // Check if there are subcategories under this category
-    const subcategoriesCount = await Subcategory.countDocuments({ categoryId: id });
-    if (subcategoriesCount > 0) {
-      return NextResponse.json(
-        { error: `Cannot delete category. It has ${subcategoriesCount} subcategories. Please delete them first.` },
-        { status: 400 }
-      );
-    }
-
-    // Check if there are products under this category
-    const productsCount = await Product.countDocuments({ categoryId: id });
-    if (productsCount > 0) {
-      return NextResponse.json(
-        { error: `Cannot delete category. It has ${productsCount} products. Please delete them first.` },
-        { status: 400 }
-      );
-    }
-
     // Hard delete the category
     await Category.findByIdAndDelete(id);
 

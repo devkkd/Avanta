@@ -119,15 +119,6 @@ export async function DELETE(request, { params }) {
       );
     }
 
-    // Check if there are products under this subcategory
-    const productsCount = await Product.countDocuments({ subcategoryId: id });
-    if (productsCount > 0) {
-      return NextResponse.json(
-        { error: `Cannot delete subcategory. It has ${productsCount} products. Please delete them first.` },
-        { status: 400 }
-      );
-    }
-
     // Hard delete the subcategory
     await Subcategory.findByIdAndDelete(id);
 

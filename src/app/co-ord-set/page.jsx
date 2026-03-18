@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect, useMemo } from 'react';
-import { ChevronDown, LayoutGrid, Maximize2, Phone, Heart, IndianRupee } from 'lucide-react';
+import { ChevronDown, LayoutGrid, Maximize2, Phone, Heart } from 'lucide-react';
 import FAQ from '@/components/FAQ';
 import ContactUs from '@/components/ContactUs';
 import CraftsmanshipSection from '@/components/CraftsmanshipSection';
@@ -100,10 +100,6 @@ const CoOrdSetListing = () => {
     
     // Sort products
     switch(sortOption) {
-      case 'price-low-high':
-        return filtered.sort((a, b) => (a.priceRange?.min || 0) - (b.priceRange?.min || 0));
-      case 'price-high-low':
-        return filtered.sort((a, b) => (b.priceRange?.max || 0) - (a.priceRange?.max || 0));
       case 'newest':
         return filtered.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       case 'featured':
@@ -222,8 +218,6 @@ const CoOrdSetListing = () => {
                 className="flex items-center gap-2 border border-gray-300 rounded-full px-5 py-1.5 text-xs text-gray-600 hover:bg-gray-50 transition appearance-none cursor-pointer"
               >
                 <option value="default">SORT BY: Default</option>
-                <option value="price-low-high">Price: Low to High</option>
-                <option value="price-high-low">Price: High to Low</option>
                 <option value="newest">Newest First</option>
                 <option value="featured">Featured First</option>
                 <option value="name">Name A-Z</option>
@@ -299,19 +293,13 @@ const CoOrdSetListing = () => {
                 <div className={`${viewMode === 'list' ? 'flex-1' : ''}`}>
                   <div className="space-y-2">
                     <h3 className="font-bold text-sm text-gray-900">{product.name}</h3>
-                    <div className="flex items-center gap-1">
-                      <IndianRupee size={12} className="text-gray-600" />
-                      <p className="text-sm font-semibold text-gray-800">
-                        {product.priceRange?.min} to {product.priceRange?.max}
-                      </p>
-                    </div>
                     <p className="text-[11px] text-gray-500 leading-relaxed line-clamp-2">
                       {product.description || 'Contemporary co-ord sets featuring perfectly matched top and bottom combinations.'}
                     </p>
                     
-                    {/* Style Code and Stock */}
+                    {/* Stock */}
                     <div className="text-[10px] text-gray-400 space-y-1">
-                      <div>Style Code: {product.styleCode}</div>
+                      <div>SKU: {product.sku}</div>
                       <div>Stock: {getTotalStock(product.sizes)} pieces</div>
                       {product.color && <div>Color: {product.color.name}</div>}
                     </div>
