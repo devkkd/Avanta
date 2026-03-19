@@ -96,14 +96,14 @@ const Header = () => {
 
             {/* Left: Shipping & Search */}
             <div className="hidden lg:flex items-center gap-4 flex-1">
-              <div className="flex items-center gap-2 border border-indigo-100/50 rounded-full px-4 py-2.5 bg-white/50 hover:bg-white transition-colors">
+              {/* <div className="flex items-center gap-2 border border-indigo-100/50 rounded-full px-4 py-2.5 bg-white/50 hover:bg-white transition-colors">
                 <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Ship To</span>
                 <div className="flex items-center gap-1.5">
                   <img src="https://flagcdn.com/w20/in.png" alt="India" className="w-4 h-3 object-cover" />
                   <span className="text-xs font-bold text-gray-800 uppercase">India</span>
                   <ChevronDown className="w-3 h-3 text-gray-400" />
                 </div>
-              </div>
+              </div> */}
 
               <SearchBar />
             </div>
