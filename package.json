@@ -4,9 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "set NODE_OPTIONS=--max-old-space-size=4096 && next dev --webpack",
-    "build": "set NODE_OPTIONS=--max-old-space-size=4096 && next build --webpack",
-    "build:turbo": "set NODE_OPTIONS=--max-old-space-size=4096 && next build --turbopack",
+    "dev": "next dev",
+    "build": "next build",
+    "build:turbo": "next build --turbopack",
     "start": "next start",
     "seed": "node scripts/seed.js",
     "create-admin": "node scripts/create-admin.js",
