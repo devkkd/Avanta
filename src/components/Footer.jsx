@@ -74,14 +74,14 @@ export default function Footer() {
         </div>
 
         {/* --- Main Links Grid --- */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-5">
+        <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-5 gap-10 mb-5">
 
           {/* Brand Info */}
           <div className="space-y-4">
             <h3 className="font-bold text-[13px] uppercase tracking-wider">
               Avanta India By Jaipur Kurti Gharana
             </h3>
-            <p className="text-xs leading-relaxed text-black text-justify">
+            <p className="text-xs leading-relaxed text-black">
               Avanta India is a celebration of refined Indian fashion where heritage craftsmanship meets contemporary design.
               Rooted in Jaipur's rich textile legacy, each creation reflects timeless elegance, thoughtful detailing, and uncompromising quality.
             </p>

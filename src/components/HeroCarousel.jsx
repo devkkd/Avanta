@@ -12,8 +12,9 @@ const slides = [
     subtitle: "Premium B2B Wholesale Ethnic Wear"
   },
   {
-    image: "/images/banner/banner-1.svg", // Replace with different imag
-    subtitle: "Exquisite Collections for Discerning Resellers"
+    image: "/images/banner/banner-1.svg", // Replace with different image
+    title: "EXQUISITE COLLECTIONS FOR DISCERNING RESELLERS",
+    subtitle: "Elevate Your Inventory with Our Exclusive Selection"
   }
 ];
 

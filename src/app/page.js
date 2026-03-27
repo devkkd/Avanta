@@ -32,12 +32,12 @@ export default function Home() {
       <ArtisanExcellence />
 
       <PartnershipSection />
-         <WholesaleForm />
+      <WholesaleForm />
       <Embrace />
-       
+
       <InstagramSection />
 
-  
+
       <TrustedCities />
       <ContactUs />
     </>

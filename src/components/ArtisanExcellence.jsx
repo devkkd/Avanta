@@ -75,11 +75,11 @@ const ArtisanExcellence = () => {
           {signatureSkills.map((skill, index) => (
             <div 
               key={index} 
-              className={`p-6 text-center flex flex-col items-center justify-start border-r border-gray-200 
+              className={`p-6 text-center font-semibold flex flex-col items-center justify-start border-r border-gray-200 
                 ${index !== signatureSkills.length - 1 ? 'md:border-r' : ''} min-h-[160px]`}
             >
               <span className="text-xs mb-4">↗</span>
-              <p className="text-[10px] font-mont md:text-xs leading-relaxed tracking-widest font-medium text-gray-700 uppercase">
+              <p className="text-[10px] font-mont md:text-xs leading-relaxed tracking-widest text-gray-700 uppercase">
                 {skill}
               </p>
             </div>

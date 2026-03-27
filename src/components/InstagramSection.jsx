@@ -36,7 +36,7 @@ const InstagramSection = () => {
       </div>
 
       {/* Responsive Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto px-4">
+      <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-6 max-w-7xl mx-auto px-4">
         {cards.map((card) => (
           <div key={card.id} className="relative group overflow-hidden bg-gray-50 rounded-sm shadow-sm transition-all duration-300 hover:shadow-lg">
             {/* Top Icon */}

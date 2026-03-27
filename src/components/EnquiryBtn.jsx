@@ -27,14 +27,14 @@ export default function EnquiryBtn({ product }) {
   return (
     <button
       onClick={handleClick}
-      className={`w-full border py-3.5 rounded-full text-[11px] md:text-[12px] font-bold uppercase tracking-wide transition-all duration-300 active:scale-95
+      className={`w-full border py-3 rounded-lg md:rounded-full text-[9px] md:text-[10px] font-bold uppercase tracking-wide transition-all duration-300 active:scale-95
         ${
           isAdded
-            ? "bg-red-600 border-red-600 text-white"
+            ? "bg-red-500 border-red-500 text-white"
             : "bg-[#231f40] border-[#231f40] text-white hover:bg-[#2d2852]"
         }`}
     >
-      {isAdded ? "Remove from Cart" : "+ Add to Cart"}
+      {isAdded ? "Remove" : "+ Add to Cart"}
     </button>
   );
 }

@@ -14,7 +14,7 @@
     "upload-images": "node scripts/upload-images-to-r2.js"
   },
   "dependencies": {
-    "@aws-sdk/client-s3": "^3.989.0",
+    "@aws-sdk/client-s3": "^3.1018.0",
     "autoprefixer": "^10.4.24",
     "bcryptjs": "^3.0.3",
     "cloudinary": "^1.41.3",
@@ -23,8 +23,8 @@
     "embla-carousel-react": "^8.6.0",
     "jsonwebtoken": "^9.0.3",
     "lucide-react": "^0.563.0",
-    "mongodb": "^6.0.0",
-    "mongoose": "^9.1.5",
+    "mongodb": "^6.21.0",
+    "mongoose": "^9.3.3",
     "multer": "^2.0.2",
     "next": "15.3.6",
     "next-auth": "^4.24.13",
