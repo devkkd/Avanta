@@ -280,7 +280,7 @@ const Header = () => {
                   {overflowCategories.map((item) => {
                     const category = categories.find((cat) => cat.slug === item.href.split("/").pop());
                     const relatedSubCategories = category?.subcategories || [];
-                    console.log("sub", relatedSubCategories);
+                    // console.log("sub", relatedSubCategories);
                     const hasSubs = relatedSubCategories.length > 0;
 
                     return (

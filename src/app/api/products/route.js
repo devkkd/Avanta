@@ -130,9 +130,9 @@ export async function POST(request) {
       );
     }
 
-    if (!productDetails || !productDetails.material || !productDetails.productCare) {
+    if (!productDetails) {
       return NextResponse.json(
-        { error: 'Product details (material and product care) are required' },
+        { error: 'Product details are required' },
         { status: 400 }
       );
     }

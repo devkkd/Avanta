@@ -38,11 +38,16 @@ export default function HeroCarousel() {
       <div className="flex h-full">
         {slides.map((slide, index) => (
           <div key={index} className="flex-[0_0_100%] min-w-0 relative h-full">
-            {/* Background Image - Responsive Object Cover */}
-            <img
+            {/* Background Image */}
+            <Image
               src={slide.image}
               alt="Avanta Hero Banner"
-              className="w-full h-full object-cover object-bottom lg:object-bottom"
+              fill
+              className="object-cover object-bottom"
+              priority={index === 0}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              sizes="100vw"
+              quality={90}
             />
 
             {/* Dark Overlay for better readability */}

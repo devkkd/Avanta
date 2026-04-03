@@ -166,17 +166,13 @@ export async function PUT(request, { params }) {
     }
     
     if (productDetails !== undefined) {
-      if (!productDetails.material || !productDetails.productCare) {
-        return NextResponse.json(
-          { error: 'Product details (material and product care) are required' },
-          { status: 400 }
-        );
-      }
+    if (productDetails) {
       updateData.productDetails = {
-        material: productDetails.material.trim(),
-        productCare: productDetails.productCare.trim(),
+        material: productDetails.material ? productDetails.material.trim() : '',
+        productCare: productDetails.productCare ? productDetails.productCare.trim() : '',
         additionalInfo: productDetails.additionalInfo ? productDetails.additionalInfo.trim() : ''
       };
+    }
     }
     
     if (color !== undefined) {
