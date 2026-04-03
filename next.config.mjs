@@ -1,20 +1,44 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  serverExternalPackages: ['mongodb'],
-  // Add empty turbopack config to silence the warning
-  turbopack: {},
-  webpack: (config, { isServer }) => {
-    // Optimize memory usage
+  serverExternalPackages: ['mongodb', 'mongoose'],
+
+  // Compress responses
+  compress: true,
+
+  // Reduce build output size
+  output: 'standalone',
+
+  // Image optimization
+  images: {
+    minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
+    formats: ['image/webp', 'image/avif'],
+    remotePatterns: [
+      { protocol: 'https', hostname: '**.r2.dev' },
+      { protocol: 'https', hostname: '**.cloudflarestorage.com' },
+      { protocol: 'https', hostname: 'pub-ef870e8af3bd4d27b398c74259f23059.r2.dev' },
+    ],
+  },
+
+  // Cache headers for static assets
+  async headers() {
+    return [
+      {
+        source: '/_next/static/(.*)',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=31536000, immutable' }],
+      },
+      {
+        source: '/images/(.*)',
+        headers: [{ key: 'Cache-Control', value: 'public, max-age=86400' }],
+      },
+    ];
+  },
+
+  webpack: (config) => {
     config.optimization = {
       ...config.optimization,
       splitChunks: {
         chunks: 'all',
         cacheGroups: {
-          default: {
-            minChunks: 1,
-            priority: -20,
-            reuseExistingChunk: true,
-          },
           vendor: {
             test: /[\\/]node_modules[\\/]/,
             name: 'vendors',
@@ -24,19 +48,6 @@ const nextConfig = {
         },
       },
     };
-    
-    // Handle large assets
-    config.module.rules.push({
-      test: /\.(mp4|webm|ogg|mp3|wav|flac|aac)$/,
-      use: {
-        loader: 'file-loader',
-        options: {
-          publicPath: '/_next/static/media/',
-          outputPath: 'static/media/',
-        },
-      },
-    });
-
     return config;
   },
 };

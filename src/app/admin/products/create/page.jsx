@@ -25,9 +25,11 @@ export default function CreateProductPage() {
       gallery: []
     },
     sizes: [
-      { size: 'S', available: true, stock: 0 },
       { size: 'M', available: true, stock: 0 },
-      { size: 'L', available: true, stock: 0 }
+      { size: 'L', available: true, stock: 0 },
+      { size: 'XL', available: true, stock: 0 },
+      { size: '2XL', available: true, stock: 0 },
+      { size: '3XL', available: true, stock: 0 }
     ],
     productDetails: {
       material: '',
@@ -74,7 +76,7 @@ export default function CreateProductPage() {
   useEffect(() => {
     if (formData.categoryId) {
       const filtered = subcategories.filter(sub => 
-        (typeof sub.categoryId === 'object' ? sub.categoryId._id : sub.categoryId) === formData.categoryId
+        (sub.categoryId && typeof sub.categoryId === 'object' ? sub.categoryId._id : sub.categoryId)?.toString() === formData.categoryId
       );
       setFilteredSubcategories(filtered);
     } else {
@@ -106,16 +108,6 @@ export default function CreateProductPage() {
 
       if (!formData.images.main) {
         alert('Main product image is required');
-        return;
-      }
-
-      if (!formData.productDetails.material.trim()) {
-        alert('Material information is required');
-        return;
-      }
-
-      if (!formData.productDetails.productCare.trim()) {
-        alert('Product care information is required');
         return;
       }
 
@@ -414,7 +406,7 @@ export default function CreateProductPage() {
           <div className="space-y-6">
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Material *
+                Material
               </label>
               <input
                 type="text"
@@ -424,14 +416,13 @@ export default function CreateProductPage() {
                   productDetails: { ...formData.productDetails, material: e.target.value }
                 })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g., Viscose Chinnon(100% Viscose)"
-                required
+                placeholder="e.g., Viscose Chinnon (optional)"
               />
             </div>
 
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">
-                Product Care *
+                Product Care
               </label>
               <input
                 type="text"
@@ -441,8 +432,7 @@ export default function CreateProductPage() {
                   productDetails: { ...formData.productDetails, productCare: e.target.value }
                 })}
                 className="w-full border border-gray-300 rounded-lg px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
-                placeholder="e.g., Professional Dry Clean Only"
-                required
+                placeholder="e.g., Dry Clean Only (optional)"
               />
             </div>
 

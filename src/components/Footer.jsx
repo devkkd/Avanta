@@ -49,7 +49,7 @@ export default function Footer() {
     { name: "Instagram", icon: "/images/icon/instagram.svg", href: "#" },
     { name: "Facebook", icon: "/images/icon/facebook.png", href: "#" },
     { name: "Youtube", icon: "/images/icon/youtube.png", href: "#" },
-    { name: "Linkedin", icon: "/images/icon/linkedIn.png", href: "#" },
+    { name: "Linkedin", icon: "/images/icon/Linkdin.png", href: "#" },
   ];
 
   return (

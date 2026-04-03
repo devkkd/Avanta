@@ -157,8 +157,8 @@ export default function CategoryPage() {
       </div>
 
       {/* ================= TOOLBAR ================= */}
-      <div className="flex flex-col sm:flex-row justify-between items-center mb-10 border-b border-gray-100 pb-5 gap-4">
-        {/* Sort */}
+      {/* <div className="flex flex-col sm:flex-row justify-between items-center mb-10 border-b border-gray-100 pb-5 gap-4">
+        
         <div className="relative w-full sm:w-auto">
           <select
             value={sortBy}
@@ -175,7 +175,6 @@ export default function CategoryPage() {
           />
         </div>
 
-        {/* View Icons */}
         <div className="flex items-center gap-5 text-gray-400">
           <span className="text-[11px] uppercase tracking-wider font-medium">
             View
@@ -187,7 +186,7 @@ export default function CategoryPage() {
             <Maximize2 size={16} />
           </button>
         </div>
-      </div>
+      </div> */}
 
       {/* ================= PRODUCT GRID ================= */}
       <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-x-6 gap-y-12">
