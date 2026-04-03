@@ -12,9 +12,6 @@ const nextConfig = {
   images: {
     minimumCacheTTL: 60 * 60 * 24 * 30, // 30 days
     formats: ['image/webp', 'image/avif'],
-    dangerouslyAllowSVG: true,
-    contentDispositionType: 'attachment',
-    contentSecurityPolicy: "default-src 'self'; script-src 'none'; sandbox;",
     remotePatterns: [
       { protocol: 'https', hostname: '**.r2.dev' },
       { protocol: 'https', hostname: '**.cloudflarestorage.com' },
