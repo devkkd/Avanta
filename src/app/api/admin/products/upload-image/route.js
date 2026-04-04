@@ -1,6 +1,11 @@
 import { NextResponse } from 'next/server';
 import { uploadToR2 } from '@/lib/cloudflare-r2';
 
+// Increase body size limit to 20MB for image uploads
+export const config = {
+  api: { bodyParser: { sizeLimit: '20mb' } },
+};
+
 // POST /api/admin/products/upload-image
 // Accepts: FormData with multiple 'file' entries
 // Returns: { success, data: { filename: url, ... } }

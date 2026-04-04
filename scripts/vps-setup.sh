@@ -35,6 +35,18 @@ server {
     limit_req_zone $binary_remote_addr zone=api:10m rate=30r/m;
     limit_req_zone $binary_remote_addr zone=general:10m rate=60r/m;
 
+    location /api/admin/products/upload-image {
+        client_max_body_size 20M;
+        limit_req zone=api burst=10 nodelay;
+        proxy_pass http://localhost:3000;
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection 'upgrade';
+        proxy_set_header Host $host;
+        proxy_cache_bypass $http_upgrade;
+        proxy_read_timeout 120s;
+    }
+
     location /api/ {
         limit_req zone=api burst=10 nodelay;
         proxy_pass http://localhost:3000;
