@@ -2,8 +2,7 @@ import { Geist, Geist_Mono, Montserrat, Cinzel } from "next/font/google";
 import "./globals.css";
 import { ProductProvider } from '@/context/ProductContext';
 import ConditionalLayout from '@/components/ConditionalLayout';
-import { EnquiryProvider, InquiryProvider } from "@/context/CartContext";
-import { CartProvider } from "@/context/CartContext";
+import { EnquiryProvider, CartProvider } from "@/context/CartContext";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",

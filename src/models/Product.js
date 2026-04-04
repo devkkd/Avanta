@@ -52,13 +52,13 @@ const ProductSchema = new mongoose.Schema({
   productDetails: {
     material: {
       type: String,
-      required: [true, 'Material information is required'],
-      trim: true
+      trim: true,
+      default: ''
     },
     productCare: {
       type: String,
-      required: [true, 'Product care information is required'],
-      trim: true
+      trim: true,
+      default: ''
     },
     additionalInfo: {
       type: String,

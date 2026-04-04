@@ -3,7 +3,6 @@ import dbConnect from '@/lib/mongodb';
 import Product from '@/models/Product';
 import Category from '@/models/Category';
 import Subcategory from '@/models/Subcategory';
-import { uploadToR2 } from '@/lib/cloudflare-r2';
 import Papa from 'papaparse';
 import * as XLSX from 'xlsx';
 
@@ -26,6 +25,13 @@ function extractFilename(str) {
   return str.split(/[/\\]/).pop();
 }
 
+// Build R2 public URL from just a filename (no upload needed)
+function filenameToR2Url(filename) {
+  const base = process.env.CLOUDFLARE_R2_PUBLIC_URL;
+  if (!base || !filename) return '';
+  return `${base}/products/${filename}`;
+}
+
 const parseBoolean = (value) => {
   if (typeof value === 'boolean') return value;
   if (typeof value === 'string') {
@@ -44,14 +50,6 @@ export async function POST(request) {
 
     if (!file) {
       return NextResponse.json({ success: false, error: 'No file uploaded' }, { status: 400 });
-    }
-
-    // Build a map of filename → File object from uploaded images
-    const uploadedMap = {};
-    for (const [key, value] of formData.entries()) {
-      if (key.startsWith('img_') && value instanceof File) {
-        uploadedMap[value.name] = value;
-      }
     }
 
     // Parse CSV / Excel
@@ -83,22 +81,9 @@ export async function POST(request) {
     const resolveImage = async (value) => {
       if (!value) return '';
       if (isValidUrl(value)) return value;
-
+      // It's a filename — construct R2 URL directly (image was pre-uploaded)
       const filename = extractFilename(value) || value;
-      const fileObj = uploadedMap[filename];
-      if (!fileObj) { results.imageUploads.failed++; return ''; }
-
-      results.imageUploads.total++;
-      try {
-        const buf = Buffer.from(await fileObj.arrayBuffer());
-        const url = await uploadToR2(buf, filename, fileObj.type || 'image/jpeg');
-        results.imageUploads.success++;
-        return url;
-      } catch (e) {
-        console.error(`R2 upload failed for ${filename}:`, e);
-        results.imageUploads.failed++;
-        return '';
-      }
+      return filenameToR2Url(filename);
     };
 
     for (let i = 0; i < products.length; i++) {

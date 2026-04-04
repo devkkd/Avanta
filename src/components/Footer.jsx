@@ -205,9 +205,9 @@ export default function Footer() {
           </div>
 
           <div className="flex flex-wrap justify-center gap-4">
-            <button className="bg-[#1e1b3a] text-white flex items-center gap-3 px-6 py-2.5 rounded-full text-[11px] font-semibold hover:opacity-90 transition-opacity shadow-md">
+            <a href="tel:+919784562130" className="bg-[#1e1b3a] text-white flex items-center gap-3 px-6 py-2.5 rounded-full text-[11px] font-semibold hover:opacity-90 transition-opacity shadow-md">
               <Phone size={14} /> Call Now →
-            </button>
+            </a>
 
             <Link
               href="https://wa.me/919784562130"

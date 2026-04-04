@@ -130,14 +130,14 @@ const Header = () => {
 
               <div className="hidden lg:flex items-center gap-3">
 
-                <button className="bg-[#1F1951] text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:scale-105 transition-all shadow-md">
+                <a href="tel:+919784562130" className="bg-[#1F1951] text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:scale-105 transition-all shadow-md">
                   <img src="/images/icon/call-calling.svg" alt="Call" className="w-3.5 h-3.5" />
                   Call Now →
-                </button>
+                </a>
 
                 {/* WhatsApp */}
                 <a
-                  href="https://wa.me/918619242626"
+                  href="https://wa.me/919784562130"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-[#00C349] text-white flex items-center gap-2 px-5 py-3 rounded-full text-[11px] font-bold tracking-tight hover:scale-105 transition-all shadow-md"

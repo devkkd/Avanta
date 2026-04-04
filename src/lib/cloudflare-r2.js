@@ -17,9 +17,10 @@ const r2Client = new S3Client({
  * @param {string} contentType - MIME type
  * @returns {Promise<string>} - Public URL of uploaded image
  */
-export async function uploadToR2(fileBuffer, fileName, contentType = 'image/jpeg') {
+export async function uploadToR2(fileBuffer, fileName, contentType = 'image/jpeg', folder = 'products') {
   try {
-    const key = `products/${Date.now()}-${fileName}`;
+    // Use stable key (no timestamp) so filename can be used to reconstruct URL later
+    const key = `${folder}/${fileName}`;
     
     const command = new PutObjectCommand({
       Bucket: process.env.CLOUDFLARE_R2_BUCKET_NAME,
