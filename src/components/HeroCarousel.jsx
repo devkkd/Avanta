@@ -7,12 +7,12 @@ import Image from 'next/image';
 
 const slides = [
   {
-    image: "/images/banner/banner-1.svg",
+    image: "/images/banner/banner.png",
     title: "THE LEGACY OF CRAFT UNITED WITH MODERN DISTINCTION",
     subtitle: "Premium B2B Wholesale Ethnic Wear"
   },
   {
-    image: "/images/banner/banner-1.svg", // Replace with different image
+    image: "/images/banner/banner.png", // Replace with different image
     title: "EXQUISITE COLLECTIONS FOR DISCERNING RESELLERS",
     subtitle: "Elevate Your Inventory with Our Exclusive Selection"
   }
