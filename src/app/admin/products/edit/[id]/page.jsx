@@ -92,8 +92,8 @@ export default function EditProductPage({ params }) {
               name: product.color?.name || '',
               code: product.color?.code || ''
             },
-            categoryId: typeof product.categoryId === 'object' ? product.categoryId._id : product.categoryId || '',
-            subcategoryId: typeof product.subcategoryId === 'object' ? product.subcategoryId._id : product.subcategoryId || '',
+            categoryId: product.categoryId && typeof product.categoryId === 'object' ? product.categoryId._id?.toString() : product.categoryId || '',
+            subcategoryId: product.subcategoryId && typeof product.subcategoryId === 'object' ? product.subcategoryId._id?.toString() : product.subcategoryId || '',
             tags: product.tags || [],
             isFeatured: product.isFeatured || false,
             isActive: product.isActive !== false,
@@ -118,7 +118,7 @@ export default function EditProductPage({ params }) {
   useEffect(() => {
     if (formData.categoryId) {
       const filtered = subcategories.filter(sub => 
-        (typeof sub.categoryId === 'object' ? sub.categoryId._id : sub.categoryId) === formData.categoryId
+        (sub.categoryId && typeof sub.categoryId === 'object' ? sub.categoryId._id : sub.categoryId)?.toString() === formData.categoryId
       );
       setFilteredSubcategories(filtered);
     } else {

@@ -1,30 +1,8 @@
-import { Geist, Geist_Mono, Montserrat, Cinzel } from "next/font/google";
 import "./globals.css";
+import { geistSans, geistMono, cinzel, montserrat } from '@/lib/fonts';
 import { ProductProvider } from '@/context/ProductContext';
 import ConditionalLayout from '@/components/ConditionalLayout';
 import { EnquiryProvider, CartProvider } from "@/context/CartContext";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-export const cinzel = Cinzel({
-  subsets: ["latin"],
-  weight: ["400", "500", "600", "700"],
-  variable: "--font-cinzel",
-});
-
-export const montserrat = Montserrat({
-  subsets: ['latin'],
-  weight: ['300', '400', '500', '600', '700'],
-  variable: '--font-montserrat',
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
 
 export const metadata = {
   title: "Avanta India - Jaipur Kurti Creations",
