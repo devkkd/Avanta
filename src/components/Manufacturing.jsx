@@ -66,11 +66,11 @@ const VideoSlider = () => {
         </div>
 
         <h2 className="text-xl md:text-4xl font-cinzel font-bold uppercase mb-6">
-          We’re Manufacturing What Matters
+          We’re Manufacturing of Cotton Kurtis
         </h2>
 
         <p className="max-w-4xl mx-auto text-black text-sm md:text-base">
-          Discover the products we build and the expertise behind them.
+          Premium cotton kurtis made with care by Avanta.
         </p>
       </div>
 

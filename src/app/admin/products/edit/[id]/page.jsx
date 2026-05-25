@@ -40,6 +40,7 @@ export default function EditProductPage({ params }) {
     subcategoryId: '',
     tags: [],
     isFeatured: false,
+    isBestSeller: false,
     isNewArrival: false,
     isActive: true,
     sortOrder: 0
@@ -96,6 +97,7 @@ export default function EditProductPage({ params }) {
             subcategoryId: product.subcategoryId && typeof product.subcategoryId === 'object' ? product.subcategoryId._id?.toString() : product.subcategoryId || '',
             tags: product.tags || [],
             isFeatured: product.isFeatured || false,
+            isBestSeller: product.isBestSeller || false,
             isActive: product.isActive !== false,
             sortOrder: product.sortOrder || 0
           });
@@ -662,25 +664,25 @@ export default function EditProductPage({ params }) {
               />
             </div>
 
-            <div className="flex items-center gap-4 pt-6">
-              <label className="flex items-center gap-2">
+            <div className="flex flex-wrap items-center gap-4 pt-6">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
-                  checked={formData.isFeatured}
-                  onChange={(e) => setFormData({ ...formData, isFeatured: e.target.checked })}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  checked={formData.isBestSeller}
+                  onChange={(e) => setFormData({ ...formData, isBestSeller: e.target.checked })}
+                  className="w-4 h-4 rounded border-gray-300 text-orange-500 focus:ring-orange-400"
                 />
-                <span className="text-sm text-gray-700">Featured Product</span>
+                <span className="text-sm font-medium text-gray-700">⭐ Best Selling Product</span>
               </label>
 
-              <label className="flex items-center gap-2">
+              <label className="flex items-center gap-2 cursor-pointer">
                 <input
                   type="checkbox"
                   checked={formData.isActive}
                   onChange={(e) => setFormData({ ...formData, isActive: e.target.checked })}
-                  className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
+                  className="w-4 h-4 rounded border-gray-300 text-blue-600 focus:ring-blue-500"
                 />
-                <span className="text-sm text-gray-700">Active</span>
+                <span className="text-sm font-medium text-gray-700">✅ Active</span>
               </label>
             </div>
           </div>

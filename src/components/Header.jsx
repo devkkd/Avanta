@@ -84,9 +84,18 @@ const Header = () => {
         <p className="text-[10px] md:text-xs tracking-wide text-center px-8 font-light italic">
           Welcome To Avanta India By Jaipur Kurti Gharana Thoughtfully Crafted To Celebrate Heritage, Purpose-built For Discerning Resellers.
         </p>
-        <button className="absolute right-4 lg:right-10 text-white/70 hover:text-white">
-          <ChevronDown className="-rotate-90 w-5 h-5" />
-        </button>
+
+        {/* BNI Badge — right side of announcement bar */}
+        <div className="absolute right-4 lg:right-10 flex items-center gap-2">
+          <div className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-full px-2.5 py-1 backdrop-blur-sm">
+            <img
+              src="/images/BNI-logo.jpeg"
+              alt="BNI Member"
+              className="w-5 h-5 rounded-full object-cover ring-1 ring-white/40"
+            />
+            <span className="text-[9px] font-bold tracking-widest text-white/90 uppercase hidden sm:block">BNI Member</span>
+          </div>
+        </div>
       </div>
 
       {/* Glassmorphism Header Content - Stays Exactly the Same */}
@@ -94,17 +103,13 @@ const Header = () => {
         <div className="max-w-[1440px] mx-auto px-4 py-2 lg:py-3">
           <div className="flex items-center justify-between gap-4 relative">
 
-            {/* Left: Shipping & Search */}
-            <div className="hidden lg:flex items-center gap-4 flex-1">
-              {/* <div className="flex items-center gap-2 border border-indigo-100/50 rounded-full px-4 py-2.5 bg-white/50 hover:bg-white transition-colors">
-                <span className="text-[10px] font-bold text-gray-500 uppercase tracking-wider">Ship To</span>
-                <div className="flex items-center gap-1.5">
-                  <img src="https://flagcdn.com/w20/in.png" alt="India" className="w-4 h-3 object-cover" />
-                  <span className="text-xs font-bold text-gray-800 uppercase">India</span>
-                  <ChevronDown className="w-3 h-3 text-gray-400" />
-                </div>
-              </div> */}
-
+            {/* Left: BNI Logo + Search */}
+            <div className="hidden lg:flex items-center gap-3 flex-1">
+              <img
+                src="/images/BNI-logo.jpeg"
+                alt="BNI Member"
+                className="w-14 h-14 rounded-full object-cover shrink-0"
+              />
               <SearchBar />
             </div>
 

@@ -17,13 +17,13 @@ const BestSelling = () => {
 
         if (!result.success) return;
 
-        // ✅ Only active products
-        const activeProducts = result.data.filter(
-          (p) => p.isActive === true
+        // ✅ Only isBestSeller + isActive products
+        const bestSellers = result.data.filter(
+          (p) => p.isBestSeller === true && p.isActive === true
         );
 
-        // ✅ Proper Fisher-Yates shuffle
-        const shuffled = [...activeProducts];
+        // ✅ Fisher-Yates shuffle for variety
+        const shuffled = [...bestSellers];
         for (let i = shuffled.length - 1; i > 0; i--) {
           const j = Math.floor(Math.random() * (i + 1));
           [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];

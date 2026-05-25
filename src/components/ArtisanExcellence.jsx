@@ -26,7 +26,7 @@ const ArtisanExcellence = () => {
         </div>
           
           <h2 className="text-2xl md:text-4xl sm:py-3 font-cinzel font-bold text-[#1a1a3d] mb-6 uppercase ">
-            ARTISAN <br /> EXCELLENCE
+           Crafted With Love
           </h2>
           
           <div className="text-black text-sm md:text-base leading-relaxed space-y-4 px-2">
@@ -68,7 +68,7 @@ const ArtisanExcellence = () => {
       {/* Bottom Section: Signature Craftsmanship */}
       <div className="mt-24 max-w-5xl mx-auto">
         <h3 className="text-center text-xl md:text-2xl font-bold font-cinzel mb-12 uppercase text-gray-800">
-          Signature Craftsmanship Includes
+     Our Craftsmanship
         </h3>
         
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6">

@@ -16,16 +16,16 @@ const TrustedNetwork = () => {
   ];
 
   const worldCities = [
-    { name: "London", country: "(UK)", img: "/images/cities/London.svg" },
+    // { name: "London", country: "(UK)", img: "/images/cities/London.svg" },
     { name: "Dubai", country: "(UAE)", img: "/images/cities/Dubai.svg" },
-    { name: "New York", country: "(USA)", img: "/images/cities/New-York.svg" },
-    { name: "Toronto", country: "(Canada)", img: "/images/cities/Toronto.svg" },
+    { name: "United States", country: "(USA)", img: "/images/cities/New-York.svg" },
+    // { name: "Toronto", country: "(Canada)", img: "/images/cities/Toronto.svg" },
     { name: "Singapore", country: "(Singapore)", img: "/images/cities/Singapore.svg" },
-    { name: "Sydney", country: "(Australia)", img: "/images/cities/Sydney.svg" },
-    { name: "Melbourne", country: "(Australia)", img: "/images/cities/Melbourne.svg" },
-    { name: "Los Angeles", country: "(USA)", img: "/images/cities/Los-Angeles.svg" },
-    { name: "Chicago", country: "(USA)", img: "/images/cities/Chicago.svg" },
-    { name: "Abu Dhabi", country: "(UAE)", img: "/images/cities/Abu-Dhabi.svg" },
+    { name: "Mauritius ", country: "(Australia)", img: "/images/cities/Sydney.svg" },
+    // { name: "Melbourne", country: "(Australia)", img: "/images/cities/Melbourne.svg" },
+    // { name: "Los Angeles", country: "(USA)", img: "/images/cities/Los-Angeles.svg" },
+    { name: "Malaysia ", country: "(USA)", img: "/images/cities/Chicago.svg" },
+    // { name: "Abu Dhabi", country: "(UAE)", img: "/images/cities/Abu-Dhabi.svg" },
   ];
 
   const CityCard = ({ city, isWorld = false }) => (
@@ -91,7 +91,7 @@ const TrustedNetwork = () => {
         <h3 className="text-center text-xl md:text-2xl font-cinzel font-bold text-[#0E0E0E] mb-10 uppercase">
           Worldwide Top Cities
         </h3>
-        <div className="flex md:grid md:grid-cols-5 lg:grid-cols-10 gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x px-2">
+        <div className="flex md:grid md:grid-cols-5 lg:grid-cols-5 gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x px-2">
           {worldCities.map((city, idx) => (
             <div key={idx} className="snap-center">
               <CityCard city={city} isWorld={true} />

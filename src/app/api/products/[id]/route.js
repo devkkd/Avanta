@@ -95,6 +95,7 @@ export async function PUT(request, { params }) {
       subcategoryId,
       tags,
       isFeatured,
+      isBestSeller,
       isActive,
       sortOrder
     } = body;
@@ -136,6 +137,7 @@ export async function PUT(request, { params }) {
     if (sortOrder !== undefined) updateData.sortOrder = parseInt(sortOrder) || 0;
     if (isActive !== undefined) updateData.isActive = Boolean(isActive);
     if (isFeatured !== undefined) updateData.isFeatured = Boolean(isFeatured);
+    if (isBestSeller !== undefined) updateData.isBestSeller = Boolean(isBestSeller);
     if (tags !== undefined) updateData.tags = tags;
     
     if (images !== undefined) {

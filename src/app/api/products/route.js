@@ -90,6 +90,7 @@ export async function POST(request) {
       subcategoryId,
       tags,
       isFeatured = false,
+      isBestSeller = false,
       isNewArrival = false,
       sortOrder = 0
     } = body;
@@ -199,6 +200,7 @@ export async function POST(request) {
       subcategoryId: subcategoryId || null,
       tags: tags || [],
       isFeatured: Boolean(isFeatured),
+      isBestSeller: Boolean(isBestSeller),
       isNewArrival: Boolean(isNewArrival),
       sortOrder: Number(sortOrder) || 0,
       isActive: true

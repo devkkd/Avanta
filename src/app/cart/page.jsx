@@ -79,24 +79,33 @@ const CartPage = () => {
       return;
     }
 
-    // Build detailed product list with all information
+    const siteBaseUrl = typeof window !== "undefined" ? window.location.origin : "https://avantafashion.in";
+
+    // Build detailed product list — image URL + product page link + details
     const productList = Enquiries.map((item, index) => {
       const productName = item.name || item.title;
-      
-      // Get actual material and color from database
+      const sku = item.sku || item._id.slice(-6);
       const material = item.material || item.productDetails?.material || "Premium Fabric";
       const color = item.primaryColor || item.color?.name || "As Shown";
-      
-      return `${index + 1}. *${productName}*
-   SKU: ${item.sku || item._id.slice(-6)}
-   Material: ${material}
-   Color: ${color}`;
+      const imageUrl = item.images?.main || item.images?.gallery?.[0] || "";
+      const productUrl = item.slug ? `${siteBaseUrl}/product/${item.slug}` : "";
+
+      // Image URL first so WhatsApp shows preview, then product details
+      const imageLine = imageUrl ? `🖼️ ${imageUrl}\n` : "";
+      const productLine = productUrl ? `🔗 ${productUrl}\n` : "";
+
+      return `━━━━━━━━━━━━━━━━━━
+*${index + 1}. ${productName}*
+🏷️ SKU: ${sku}
+🎨 Color: ${color}
+🧵 Material: ${material}
+${imageLine}${productLine}`.trim();
     }).join("\n\n");
 
     // Build customer details if filled
     let customerDetails = "";
     if (formData.fullName || formData.email || formData.phone || formData.company || formData.location) {
-      customerDetails = "\n\n*Customer Details:*\n";
+      customerDetails = "\n\n━━━━━━━━━━━━━━━━━━\n*👤 Customer Details:*\n";
       if (formData.fullName) customerDetails += `Name: ${formData.fullName}\n`;
       if (formData.email) customerDetails += `Email: ${formData.email}\n`;
       if (formData.phone) customerDetails += `Phone: ${formData.phone}\n`;
@@ -107,23 +116,22 @@ const CartPage = () => {
     // Add notes if provided
     let notesSection = "";
     if (formData.notes) {
-      notesSection = `\n\n*Additional Requirements:*\n${formData.notes}`;
+      notesSection = `\n\n*📝 Additional Requirements:*\n${formData.notes}`;
     }
 
     // Complete message
-    const message = `Hello! I'm interested in wholesale inquiry for the following products:
+    const message = `Hello! 👋 I'm interested in a *wholesale inquiry* for the following products:
 
-*Selected Products (${Enquiries.length}):*
+*🛍️ Selected Products (${Enquiries.length}):*
 
 ${productList}${customerDetails}${notesSection}
 
+━━━━━━━━━━━━━━━━━━
 Please provide wholesale pricing, MOQ, and delivery details.
 
-Thank you!`;
+Thank you! 🙏`;
 
-    // Use api.whatsapp.com instead of wa.me for better compatibility
-    // This works even if number is not on WhatsApp
-    const whatsappNumber = "+919784562130"; // Update this with actual number
+    const whatsappNumber = "+919784562130";
     const whatsappUrl = `https://api.whatsapp.com/send?phone=${whatsappNumber}&text=${encodeURIComponent(message)}`;
     
     window.open(whatsappUrl, '_blank');
@@ -144,7 +152,7 @@ Thank you!`;
           Explore our latest collections to request a customized wholesale quote.
         </p>
         <Link
-          href="/store/suits-set"
+          href="/store/cotton-suit"
           className="bg-[#1F1951] text-white px-10 py-4 rounded-full font-bold text-sm tracking-widest uppercase hover:bg-[#2a2f6b] transition-all"
         >
           Go to Store
@@ -195,7 +203,7 @@ Thank you!`;
                           </h3>
                           <div className="flex flex-wrap gap-2 mb-3">
                             <span className="text-[10px] font-bold text-[#E12B5E] uppercase tracking-widest bg-pink-50 px-2 py-1 rounded">
-                              ID: {item.sku || item._id.slice(-6)}
+                              SKU: {item.sku || item._id.slice(-6)}
                             </span>
                           </div>
                         </div>
@@ -347,7 +355,7 @@ Thank you!`;
                       type="submit"
                       className="w-full bg-[#1F1951] text-white py-5 rounded-full font-bold text-sm uppercase tracking-widest hover:bg-[#2a2f6b] transition-all shadow-xl shadow-indigo-100 flex items-center justify-center gap-3 active:scale-95"
                     >
-                      Submit Inquiry
+                      Send Inquiry
                       <ArrowRight size={18} />
                     </button>
 

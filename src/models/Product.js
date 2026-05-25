@@ -100,6 +100,10 @@ const ProductSchema = new mongoose.Schema({
     type: Boolean,
     default: false
   },
+  isBestSeller: {
+    type: Boolean,
+    default: false
+  },
   isNewArrival: {
     type: Boolean,
     default: false

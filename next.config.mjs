@@ -30,21 +30,24 @@ const nextConfig = {
     ];
   },
 
-  webpack: (config) => {
-    config.optimization = {
-      ...config.optimization,
-      splitChunks: {
-        chunks: 'all',
-        cacheGroups: {
-          vendor: {
-            test: /[\\/]node_modules[\\/]/,
-            name: 'vendors',
-            priority: -10,
-            chunks: 'all',
+  webpack: (config, { dev }) => {
+    // Only apply custom splitChunks in production
+    if (!dev) {
+      config.optimization = {
+        ...config.optimization,
+        splitChunks: {
+          chunks: 'all',
+          cacheGroups: {
+            vendor: {
+              test: /[\\/]node_modules[\\/]/,
+              name: 'vendors',
+              priority: -10,
+              chunks: 'all',
+            },
           },
         },
-      },
-    };
+      };
+    }
     return config;
   },
 };
