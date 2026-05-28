@@ -3,7 +3,6 @@ import React, { useEffect, useState } from 'react';
 import useEmblaCarousel from 'embla-carousel-react';
 import Autoplay from 'embla-carousel-autoplay';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import Image from 'next/image';
 
 const slides = [
   {
@@ -49,27 +48,17 @@ export default function HeroCarousel() {
           return (
             <div key={index} className="flex-[0_0_100%] min-w-0 relative h-full">
             {/* Desktop Background Image */}
-            <Image
+            <img
               src={slide.desktopImage}
               alt="Avanta Hero Banner Desktop"
-              fill
-              className="hidden md:block object-cover object-bottom"
-              priority={index === 0}
-              loading={index === 0 ? 'eager' : 'lazy'}
-              sizes="100vw"
-              quality={90}
+              className="hidden md:block w-full h-full object-cover object-bottom absolute inset-0"
             />
 
             {/* Mobile Background Image */}
-            <Image
+            <img
               src={slide.mobileImage || slide.desktopImage}
               alt="Avanta Hero Banner Mobile"
-              fill
-              className="block md:hidden object-cover object-top"
-              priority={index === 0}
-              loading={index === 0 ? 'eager' : 'lazy'}
-              sizes="100vw"
-              quality={90}
+              className="block md:hidden w-full h-full object-cover object-top absolute inset-0"
             />
 
             {/* Dark Overlay for better readability */}
