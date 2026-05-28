@@ -157,7 +157,6 @@ const ReelCard = ({ reel, activeReelId, setActiveReelId }) => {
       <video
         ref={videoRef}
         src={reel.video}
-        poster={reel.poster}
         loop
         muted={isMuted}
         playsInline
@@ -198,10 +197,10 @@ const ReelCard = ({ reel, activeReelId, setActiveReelId }) => {
       </button>
 
       {/* Dark Overlay (gradient for text readability) */}
-      <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none z-0" />
+      {/* <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent pointer-events-none z-0" /> */}
 
       {/* Reel Info (Bottom Overlays) */}
-      <div className="absolute bottom-0 left-0 right-0 p-5 text-white flex flex-col gap-1.5 select-none pointer-events-none z-10">
+      {/* <div className="absolute bottom-0 left-0 right-0 p-5 text-white flex flex-col gap-1.5 select-none pointer-events-none z-10">
         <div className="flex items-center gap-1.5">
           <div className="w-5 h-5 rounded-full bg-white/20 flex items-center justify-center overflow-hidden border border-white/30 shrink-0">
             <img src="/images/BNI-logo.jpeg" alt="Logo" className="w-full h-full object-cover" />
@@ -217,7 +216,7 @@ const ReelCard = ({ reel, activeReelId, setActiveReelId }) => {
           </svg>
           Watch on Instagram
         </span>
-      </div>
+      </div> */}
     </div>
   );
 };
