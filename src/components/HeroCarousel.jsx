@@ -7,12 +7,20 @@ import Image from 'next/image';
 
 const slides = [
   {
-    image: "/images/banner/banner.png",
+    desktopImage: "/images/banner/banner-2.png?v=3",
+    mobileImage: "/images/banner/mobile-1.png?v=3", // User can replace this with their mobile-specific image path
     title: "THE LEGACY OF CRAFT UNITED WITH MODERN DISTINCTION",
     subtitle: "Premium B2B Wholesale Ethnic Wear"
   },
   {
-    image: "/images/banner/banner.png", // Replace with different image
+    desktopImage: "/images/banner/banner-3.png?v=3",
+    mobileImage: "/images/banner/mobile-2.png?v=3", // User can replace this with their mobile-specific image path
+    title: "THE LEGACY OF CRAFT UNITED WITH MODERN DISTINCTION",
+    subtitle: "Premium B2B Wholesale Ethnic Wear"
+  },
+  {
+    desktopImage: "/images/banner/banner-4.png?v=3",
+    mobileImage: "/images/banner/mobile-3.png?v=3", // User can replace this with their mobile-specific image path
     title: "EXQUISITE COLLECTIONS FOR DISCERNING RESELLERS",
     subtitle: "Elevate Your Inventory with Our Exclusive Selection"
   }
@@ -34,16 +42,30 @@ export default function HeroCarousel() {
   }, [emblaApi]);
 
   return (
-    <section className="relative overflow-hidden max-w-[1490px] mx-auto h-[320px] md:h-[400px] lg:h-[500px] xl:h-[700px] 2xl:h-[800px] group" ref={emblaRef}>
+    <section className="relative overflow-hidden max-w-[1490px] mx-auto h-[580px] sm:h-[450px] md:h-[580px] lg:h-[680px] xl:h-[780px] 2xl:h-[850px] group" ref={emblaRef}>
       <div className="flex h-full">
-        {slides.map((slide, index) => (
-          <div key={index} className="flex-[0_0_100%] min-w-0 relative h-full">
-            {/* Background Image */}
+        {slides.map((slide, index) => {
+          console.log("Carousel Slide info:", { index, desktopImage: slide.desktopImage, mobileImage: slide.mobileImage });
+          return (
+            <div key={index} className="flex-[0_0_100%] min-w-0 relative h-full">
+            {/* Desktop Background Image */}
             <Image
-              src={slide.image}
-              alt="Avanta Hero Banner"
+              src={slide.desktopImage}
+              alt="Avanta Hero Banner Desktop"
               fill
-              className="object-cover object-bottom"
+              className="hidden md:block object-cover object-bottom"
+              priority={index === 0}
+              loading={index === 0 ? 'eager' : 'lazy'}
+              sizes="100vw"
+              quality={90}
+            />
+
+            {/* Mobile Background Image */}
+            <Image
+              src={slide.mobileImage || slide.desktopImage}
+              alt="Avanta Hero Banner Mobile"
+              fill
+              className="block md:hidden object-cover object-top"
               priority={index === 0}
               loading={index === 0 ? 'eager' : 'lazy'}
               sizes="100vw"
@@ -54,10 +76,9 @@ export default function HeroCarousel() {
             {/* <div className="absolute inset-0 bg-black/10" /> */}
 
             {/* Central Content Card - Responsive Implementation */}
-            <div className="hidden absolute inset-0 sm:flex items-center justify-center p-4 pointer-events-none">
+            {/* <div className="hidden absolute inset-0 sm:flex items-center justify-center p-4 pointer-events-none">
               <div className="bg-[#801830] text-white p-6 md:p-12 rounded-[30px] md:rounded-[40px] w-full max-w-[90%] sm:max-w-sm md:max-w-[400px] text-center shadow-2xl pointer-events-auto border border-white/10 relative z-10 transition-transform duration-500 hover:scale-[1.02]">
 
-                {/* Decorative Flourish */}
                 <div className="mb-4 md:mb-6 flex justify-center opacity-80">
                   <img
                     src='/images/banner/Group.svg'
@@ -78,9 +99,9 @@ export default function HeroCarousel() {
                   Explore Collections <span className="text-sm md:text-lg">↓</span>
                 </button>
               </div>
-            </div>
+            </div> */}
           </div>
-        ))}
+        )})}
       </div>
 
       {/* Navigation Arrows - Adjusted for accessibility and responsiveness */}

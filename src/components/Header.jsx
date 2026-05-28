@@ -86,16 +86,16 @@ const Header = () => {
         </p>
 
         {/* BNI Badge — right side of announcement bar */}
-        <div className="absolute right-4 lg:right-10 flex items-center gap-2">
-          <div className="flex items-center gap-1.5 bg-white/10 border border-white/20 rounded-full px-2.5 py-1 backdrop-blur-sm">
+        {/* <div className="absolute right-4 lg:right-10 flex items-center gap-2">
+          <div className="flex items-center gap-2 bg-white/10 border border-white/20 rounded-md px-2.5 py-1 backdrop-blur-sm">
             <img
-              src="/images/BNI-logo.jpeg"
+              src="/images/BNI-logo.jpeg?v=2"
               alt="BNI Member"
-              className="w-5 h-5 rounded-full object-cover ring-1 ring-white/40"
+              className="h-5 w-auto object-contain rounded-sm"
             />
             <span className="text-[9px] font-bold tracking-widest text-white/90 uppercase hidden sm:block">BNI Member</span>
           </div>
-        </div>
+        </div> */}
       </div>
 
       {/* Glassmorphism Header Content - Stays Exactly the Same */}
@@ -104,12 +104,18 @@ const Header = () => {
           <div className="flex items-center justify-between gap-4 relative">
 
             {/* Left: BNI Logo + Search */}
-            <div className="hidden lg:flex items-center gap-3 flex-1">
-              <img
-                src="/images/BNI-logo.jpeg"
-                alt="BNI Member"
-                className="w-14 h-14 rounded-full object-cover shrink-0"
-              />
+            <div className="hidden lg:flex items-center gap-4 flex-1">
+              <div className="flex items-center gap-2.5 bg-white border border-gray-200 rounded-xl p-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all duration-300 shrink-0">
+                <img
+                  src="/images/BNI-logo.jpeg?v=2"
+                  alt="BNI Member"
+                  className="h-9 w-auto object-contain rounded-md"
+                />
+                <div className="flex flex-col pr-1 select-none border-l border-gray-200 pl-2.5">
+                  <span className="text-[8px] tracking-[0.15em] text-gray-400 font-bold uppercase leading-tight">PROUD</span>
+                  <span className="text-[10px] tracking-wider text-[#1F1951] font-black uppercase leading-tight">MEMBER</span>
+                </div>
+              </div>
               <SearchBar />
             </div>
 
@@ -390,6 +396,21 @@ const Header = () => {
                 {item.name}
               </Link>
             ))}
+            
+            {/* Mobile BNI Badge */}
+            {/* <div className="mt-8 pt-6 border-t border-gray-200 flex items-center gap-2.5">
+              <div className="flex items-center gap-2.5 bg-white border border-gray-200 rounded-xl p-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] shrink-0">
+                <img
+                  src="/images/BNI-logo.jpeg?v=2"
+                  alt="BNI Member"
+                  className="h-8 w-auto object-contain rounded-md"
+                />
+                <div className="flex flex-col pr-1 select-none border-l border-gray-200 pl-2.5">
+                  <span className="text-[8px] tracking-[0.15em] text-gray-400 font-bold uppercase leading-tight">PROUD</span>
+                  <span className="text-[10px] tracking-wider text-[#1F1951] font-black uppercase leading-tight">MEMBER</span>
+                </div>
+              </div>
+            </div> */}
           </div>
         </div>
       </div>

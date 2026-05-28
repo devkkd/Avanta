@@ -138,7 +138,7 @@ const TermsAndConditions = () => {
                     <p className="mb-4">For any questions regarding these Terms & Conditions, you can reach us at:</p>
                     <ul className="space-y-2">
                         <li><span className="font-bold">Email:</span> jaipurkurtigharana@gmail.com</li>
-                        <li><span className="font-bold">Phone:</span> +91-9784562130</li>
+                        <li><span className="font-bold">Phone:</span> +91-9784562130, +91-9540008054, +91-9540008056</li>
                         <li><span className="font-bold">Website:</span> https://avantaindia.com/contact-us/</li>
                     </ul>
                 </section>

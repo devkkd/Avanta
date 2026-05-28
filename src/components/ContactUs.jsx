@@ -32,7 +32,9 @@ const ContactUs = () => {
             {/* Phone */}
             <div className="border-t border-gray-200 pt-4">
               <h4 className="font-bold text-sm mb-1">Phone No</h4>
-              <p className="text-xs text-gray-600">+91-9784562130</p>
+              <p className="text-xs text-gray-600"><span className="font-semibold text-gray-800">Enquiry/WhatsApp:</span> +91-9784562130</p>
+              <p className="text-xs text-gray-600 mt-1"><span className="font-semibold text-gray-800">Office:</span> +91-9540008054</p>
+              <p className="text-xs text-gray-600 mt-1"><span className="font-semibold text-gray-800">Office:</span> +91-9540008056</p>
             </div>
 
             {/* Email */}

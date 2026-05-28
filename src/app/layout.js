@@ -8,7 +8,7 @@ export const metadata = {
   title: "Avanta India - Jaipur Kurti Creations",
   description: "Welcome to Avanta India by Jaipur Kurti Creations. Thoughtfully crafted to celebrate heritage.",
   icons: {
-    icon: "/images/icon/favIcons.svg",
+    icon: "/favicon.avif",
   },
 };
 

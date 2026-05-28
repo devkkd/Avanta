@@ -2,18 +2,27 @@ import React from 'react';
 
 const AvantaBanner = () => {
   return (
-    <div className="w-full bg-gradient-to-b from-[#d9195c] to-[#6d092d]">
+    <div className="w-full my-10 bg-gradient-to-b from-[#d9195c] to-[#6d092d]">
       
       {/* Container stretching to make images touch top/bottom */}
       <div className="max-w-[90rem] mx-auto flex flex-col md:flex-row items-stretch overflow-hidden">
 
-        {/* Top Image (only mobile) */}
-        <div className="w-full md:hidden">
-          <img
-            src="/images/manufacuring/image-44.svg"
-            alt="Model"
-            className="w-full h-48 object-cover"
-          />
+        {/* Top Images (on mobile, side-by-side for balanced look) */}
+        <div className="flex w-full md:hidden gap-3 p-4 pb-0">
+          <div className="flex-1 rounded-xl overflow-hidden h-52 shadow-lg">
+            <img
+              src="/images/manufacuring/image-44.svg"
+              alt="Model Left"
+              className="w-full h-full object-cover"
+            />
+          </div>
+          <div className="flex-1 rounded-xl overflow-hidden h-52 shadow-lg">
+            <img
+              src="/images/manufacuring/image-43.svg"
+              alt="Model Right"
+              className="w-full h-full object-cover"
+            />
+          </div>
         </div>
 
         {/* Left Image (desktop only) */}

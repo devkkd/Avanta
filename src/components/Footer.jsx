@@ -85,6 +85,10 @@ export default function Footer() {
               Avanta India is a celebration of refined Indian fashion where heritage craftsmanship meets contemporary design.
               Rooted in Jaipur's rich textile legacy, each creation reflects timeless elegance, thoughtful detailing, and uncompromising quality.
             </p>
+            <div className="space-y-1 text-xs text-gray-800 border-t border-gray-200/50 pt-3">
+              <p><span className="font-semibold">Enquiry:</span> +91-9784562130</p>
+              <p><span className="font-semibold">Office:</span> +91-9540008054, +91-9540008056</p>
+            </div>
             <p className="text-xs font-bold italic text-gray-800">
               Exquisite Indian fashion, crafted with purpose.
             </p>

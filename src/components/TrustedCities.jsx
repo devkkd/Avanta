@@ -41,11 +41,11 @@ const TrustedNetwork = () => {
         <p className="text-[11px] md:text-xs font-bold text-[#1a1a3d]  tracking-tighter">
           {city.name}
         </p>
-        {isWorld && (
+        {/* {isWorld && (
           <p className="text-[10px] md:text-[12px] text-gray-500 font-medium">
             {city.country}
           </p>
-        )}
+        )} */}
       </div>
     </div>
   );
@@ -91,7 +91,7 @@ const TrustedNetwork = () => {
         <h3 className="text-center text-xl md:text-2xl font-cinzel font-bold text-[#0E0E0E] mb-10 uppercase">
           Worldwide Top Cities
         </h3>
-        <div className="flex md:grid md:grid-cols-5 lg:grid-cols-5 gap-6 overflow-x-auto pb-6 scrollbar-hide snap-x px-2">
+        <div className="flex md:flex md:justify-center md:flex-wrap gap-6 md:gap-10 overflow-x-auto pb-6 scrollbar-hide snap-x px-2">
           {worldCities.map((city, idx) => (
             <div key={idx} className="snap-center">
               <CityCard city={city} isWorld={true} />

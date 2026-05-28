@@ -186,7 +186,7 @@ const PrivacyPolicy = () => {
             <ul className="space-y-2">
               <li><span className="font-bold">By email:</span> jaipurkurtigharana@gmail.com</li>
               <li><span className="font-bold">By visiting this page on our website:</span> https://avantaindia.com/contact-us/</li>
-              <li><span className="font-bold">By phone number:</span> +91-9784562130.</li>
+              <li><span className="font-bold">By phone number:</span> +91-9784562130, +91-9540008054, +91-9540008056.</li>
             </ul>
           </section>
         </div>
