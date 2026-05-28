@@ -7,20 +7,20 @@ import Image from 'next/image';
 
 const slides = [
   {
-    desktopImage: "/images/banner/banner-2.png?v=3",
-    mobileImage: "/images/banner/mobile-1.png?v=3", // User can replace this with their mobile-specific image path
+    desktopImage: "/images/banner/banner-2.png",
+    mobileImage: "/images/banner/mobile-1.png", // User can replace this with their mobile-specific image path
     title: "THE LEGACY OF CRAFT UNITED WITH MODERN DISTINCTION",
     subtitle: "Premium B2B Wholesale Ethnic Wear"
   },
   {
-    desktopImage: "/images/banner/banner-3.png?v=3",
-    mobileImage: "/images/banner/mobile-2.png?v=3", // User can replace this with their mobile-specific image path
+    desktopImage: "/images/banner/banner-3.png",
+    mobileImage: "/images/banner/mobile-2.png", // User can replace this with their mobile-specific image path
     title: "THE LEGACY OF CRAFT UNITED WITH MODERN DISTINCTION",
     subtitle: "Premium B2B Wholesale Ethnic Wear"
   },
   {
-    desktopImage: "/images/banner/banner-4.png?v=3",
-    mobileImage: "/images/banner/mobile-3.png?v=3", // User can replace this with their mobile-specific image path
+    desktopImage: "/images/banner/banner-4.png",
+    mobileImage: "/images/banner/mobile-3.png", // User can replace this with their mobile-specific image path
     title: "EXQUISITE COLLECTIONS FOR DISCERNING RESELLERS",
     subtitle: "Elevate Your Inventory with Our Exclusive Selection"
   }
