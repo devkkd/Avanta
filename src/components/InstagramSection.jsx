@@ -10,9 +10,9 @@ const InstagramSection = () => {
     { id: 2, video: '/images/videos/reel-2.mp4', poster: '/images/videos/thumb2.png', title: "Heritage Jaipuri Craftsmanship & Prints" },
     { id: 3, video: '/images/videos/reel-3.mp4', poster: '/images/videos/thumb3.png', title: "Chic and Modern Anarkali Collections" },
     { id: 4, video: '/images/videos/reel-4.mp4', poster: '/images/videos/thumb4.png', title: "Wholesale Festive wear collection 2026" },
-    { id: 5, video: '/images/videos/reel-5.mp4', poster: '/images/videos/thumb2.png', title: "A Showcase of Exquisite Craft and Color" },
-    { id: 6, video: '/images/videos/reel-6.mp4', poster: '/images/videos/thumb1.png', title: "Discerning Styles for Resellers & Boutiques" },
-    { id: 7, video: '/images/videos/reel-7.mp4', poster: '/images/videos/thumb3.png', title: "Traditional Heritage, Styled for Today" }
+    // { id: 5, video: '/images/videos/reel-5.mp4', poster: '/images/videos/thumb2.png', title: "A Showcase of Exquisite Craft and Color" },
+    // { id: 6, video: '/images/videos/reel-6.mp4', poster: '/images/videos/thumb1.png', title: "Discerning Styles for Resellers & Boutiques" },
+    // { id: 7, video: '/images/videos/reel-7.mp4', poster: '/images/videos/thumb3.png', title: "Traditional Heritage, Styled for Today" }
   ];
 
   const [emblaRef, emblaApi] = useEmblaCarousel({

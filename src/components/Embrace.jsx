@@ -11,7 +11,7 @@ const Embrace = () => {
         <div className="flex items-center justify-start gap-2 mb-3 md:mb-4">
           <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
           <h3 className="text-[10px] md:text-sm font-bold text-[#1a1a3d] uppercase tracking-widest">
-            Avanta by Jaipur Kurti Gharana
+            Avanta by Jaipur Kurti Gharana.
           </h3>
           <span className="h-1.5 w-1.5 md:h-2 md:w-2 bg-[#DE3163] rounded-full"></span>
         </div>
@@ -24,14 +24,10 @@ const Embrace = () => {
         {/* Description */}
         <div className="space-y-4 text-gray-600 text-sm md:text-base leading-relaxed ">
           <p>
-            Step into a world of understated luxury with Avanta India. Our collections bring 
-            together classic refinement and contemporary design, each piece crafted with 
-            meticulous attention to detail and uncompromising quality.
+           Welcome to Avanta India. Explore our collection of stylish and comfortable ethnic wear, thoughtfully designed with quality fabrics, beautiful details, and timeless appeal.
           </p>
           <p>
-            Discover thoughtfully designed styles that elevate everyday dressing while offering 
-            timeless appeal. Whether for personal wear or curated retail selections, Avanta India 
-            delivers elegance that endures.
+         Discover stylish and comfortable ethnic wear designed for everyday use. Whether you're shopping for yourself or for your store, Avanta India offers quality designs that combine elegance, comfort, and lasting style.
           </p>
         </div>
 

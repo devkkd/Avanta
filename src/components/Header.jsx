@@ -82,7 +82,7 @@ const Header = () => {
           <ChevronDown className="rotate-90 w-5 h-5" />
         </button>
         <p className="text-[10px] md:text-xs tracking-wide text-center px-8 font-light italic">
-          Welcome To Avanta India By Jaipur Kurti Gharana Thoughtfully Crafted To Celebrate Heritage, Purpose-built For Discerning Resellers.
+          Welcome to Avanta India — Manufacturer &amp; Bulk Wholesaler of Premium Ethnic Wear &nbsp;·&nbsp; Minimum Order Applicable &nbsp;·&nbsp; No Single Piece Sales
         </p>
 
         {/* BNI Badge — right side of announcement bar */}
@@ -103,20 +103,39 @@ const Header = () => {
         <div className="max-w-[1440px] mx-auto px-4 py-2 lg:py-3">
           <div className="flex items-center justify-between gap-4 relative">
 
-            {/* Left: BNI Logo + Search */}
-            <div className="hidden lg:flex items-center gap-4 flex-1">
-              <div className="flex items-center gap-2.5 bg-white border border-gray-200 rounded-xl p-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all duration-300 shrink-0">
-                <img
-                  src="/images/BNI-logo.jpeg?v=2"
-                  alt="BNI Member"
-                  className="h-9 w-auto object-contain rounded-md"
-                />
-                <div className="flex flex-col pr-1 select-none border-l border-gray-200 pl-2.5">
-                  <span className="text-[8px] tracking-[0.15em] text-gray-400 font-bold uppercase leading-tight">PROUD</span>
-                  <span className="text-[10px] tracking-wider text-[#1F1951] font-black uppercase leading-tight">MEMBER</span>
-                </div>
+            {/* Left: BNI Logo + Search (desktop) | Call + Instagram (mobile) */}
+            <div className="flex items-center gap-3 flex-1">
+              {/* Mobile: Call + Instagram icons on left */}
+              <div className="flex items-center gap-2 lg:hidden">
+                <a href="tel:+919784562130" className="flex items-center justify-center w-8 h-8 bg-[#1F1951] rounded-full shadow-sm">
+                  <img src="/images/icon/call-calling.svg" alt="Call" className="w-4 h-4" />
+                </a>
+                <a
+                  href="https://www.instagram.com/__avanta__"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center justify-center w-8 h-8 rounded-full shadow-sm"
+                  style={{ background: 'linear-gradient(135deg, #833ab4, #fd1d1d, #fcb045)' }}
+                >
+                  <img src="/images/icon/instagram.svg" alt="Instagram" className="w-4 h-4" />
+                </a>
               </div>
-              <SearchBar />
+
+              {/* Desktop: BNI + Search */}
+              <div className="hidden lg:flex items-center gap-4 flex-1">
+                <div className="flex items-center gap-2.5 bg-white border border-gray-200 rounded-xl p-1.5 shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.08)] transition-all duration-300 shrink-0">
+                  <img
+                    src="/images/BNI-logo.jpeg?v=2"
+                    alt="BNI Member"
+                    className="h-9 w-auto object-contain rounded-md"
+                  />
+                  <div className="flex flex-col pr-1 select-none border-l border-gray-200 pl-2.5">
+                    <span className="text-[8px] tracking-[0.15em] text-gray-400 font-bold uppercase leading-tight">PROUD</span>
+                    <span className="text-[10px] tracking-wider text-[#1F1951] font-black uppercase leading-tight">MEMBER</span>
+                  </div>
+                </div>
+                <SearchBar />
+              </div>
             </div>
 
             {/* Center: Logo */}
@@ -171,8 +190,8 @@ const Header = () => {
               </div>
 
 
-              {/* Mobile Right Section (Cart + Menu) */}
-              <div className="flex items-center gap-3 lg:hidden">
+              {/* Mobile Right Section (Cart + Icons + Menu) */}
+              <div className="flex items-center gap-2.5 lg:hidden">
                 <Link href="/cart" className="relative">
                   <ShoppingCart className="w-6 h-6 text-[#1F1951]" />
                   {Enquiries.length > 0 && (

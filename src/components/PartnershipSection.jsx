@@ -53,7 +53,7 @@ const PartnershipSection = () => {
         <div className="text-center mb-8">
           <p className="text-xs tracking-[0.3em] uppercase mb-3 opacity-80 flex items-center justify-center gap-2">
             <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
-            Avanta by Jaipur Kurti Charana
+            Avanta by Jaipur Kurti Gharana
             <span className="w-1.5 h-1.5 bg-white rounded-full"></span>
           </p>
           <h2 className="text-2xl md:text-4xl font-cinzel font-bold tracking-wide mb-3">

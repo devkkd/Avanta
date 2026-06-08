@@ -31,10 +31,10 @@ const ArtisanExcellence = () => {
           
           <div className="text-black text-sm md:text-base leading-relaxed space-y-4 px-2">
             <p>
-              <span className="font-bold">At Avanta India,</span> we preserve and elevate the legacy of Indian craftsmanship. Each garment is an expression of heritage meticulously handcrafted by master artisans whose skills have been refined and passed down through generations.
+              <span className="font-bold">At Avanta India,</span>we create beautiful ethnic wear inspired by India's rich traditions. Every garment is made with care, using quality fabrics and attention to detail to ensure style, comfort, and lasting quality.
             </p>
             <p>
-              Our creations celebrate the artistry of handwork, from intricate embroidery to refined zardozi detailing, harmoniously paired with contemporary silhouettes. The result is timeless design crafted for the modern connoisseur of Indian fashion.
+              Our collections feature beautiful designs, quality craftsmanship, and thoughtful details. By combining traditional techniques with modern styles, we create ethnic wear that is elegant, comfortable, and timeless.
             </p>
           </div>
         </div>
