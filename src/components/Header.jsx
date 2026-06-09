@@ -111,7 +111,7 @@ const Header = () => {
                   <img src="/images/icon/call-calling.svg" alt="Call" className="w-4 h-4" />
                 </a>
                 <a
-                  href="https://www.instagram.com/__avanta__"
+                  href="https://www.instagram.com/jaipur_kurti_gharana?igsh=NDZmeGNna3dmMjBx"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="flex items-center justify-center w-8 h-8 rounded-full shadow-sm"
@@ -178,7 +178,7 @@ const Header = () => {
 
                 {/* Instagram */}
                 <a
-                  href="https://www.instagram.com/__avanta__"
+                  href="https://www.instagram.com/jaipur_kurti_gharana?igsh=NDZmeGNna3dmMjBx"
                   target="_blank"
                   rel="noopener noreferrer"
                   className="bg-black text-white flex items-center gap-2 px-5 py-3 rounded-full hover:scale-105 text-[11px] font-bold tracking-tight hover:bg-zinc-800 transition-all shadow-md"

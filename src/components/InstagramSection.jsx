@@ -60,7 +60,7 @@ const InstagramSection = () => {
         </p>
 
         <a 
-          href="https://www.instagram.com/__avanta__" 
+          href="https://www.instagram.com/jaipur_kurti_gharana?igsh=NDZmeGNna3dmMjBx" 
           target="_blank" 
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full bg-gradient-to-r from-[#833ab4] via-[#fd1d1d] to-[#fcb045] text-white text-xs font-bold uppercase tracking-wider hover:opacity-95 transition-opacity shadow-md"

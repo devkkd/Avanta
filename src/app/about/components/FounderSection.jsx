@@ -9,7 +9,7 @@ const FounderSection = () => {
         <div className="w-full md:w-1/2 flex justify-center">
           <div className="relative w-full md:aspect-[5/4] overflow-hidden rounded-sm shadow-sm">
             <Image
-              src="/images/about/about4.png" // Replace with your image
+              src="/images/about/about4.jpeg" // Replace with your image
               alt="Mr. Rishabh Agarwal"
               fill
               className="object-cover object-top w-full h-full"
